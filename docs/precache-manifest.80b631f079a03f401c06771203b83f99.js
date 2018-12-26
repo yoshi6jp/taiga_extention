@@ -4,23 +4,23 @@ self.__precacheManifest = [
     "url": "/taiga_extention/static/js/runtime~main.53ca8b91.js"
   },
   {
-    "revision": "689804e5a4d247e9507e",
-    "url": "/taiga_extention/static/js/main.689804e5.chunk.js"
+    "revision": "09ed955703340ce99f9f",
+    "url": "/taiga_extention/static/js/main.09ed9557.chunk.js"
   },
   {
-    "revision": "1f485a64df9591e718c4",
-    "url": "/taiga_extention/static/js/1.1f485a64.chunk.js"
+    "revision": "9ea92fa9e618a6860649",
+    "url": "/taiga_extention/static/js/1.9ea92fa9.chunk.js"
   },
   {
-    "revision": "689804e5a4d247e9507e",
+    "revision": "09ed955703340ce99f9f",
     "url": "/taiga_extention/static/css/main.d9a0a9e1.chunk.css"
   },
   {
-    "revision": "1f485a64df9591e718c4",
+    "revision": "9ea92fa9e618a6860649",
     "url": "/taiga_extention/static/css/1.0d961efd.chunk.css"
   },
   {
-    "revision": "64ff5567224f7e197dc54242f51a379f",
+    "revision": "41eb17a324b26d312034935187be5870",
     "url": "/taiga_extention/index.html"
   }
 ];
