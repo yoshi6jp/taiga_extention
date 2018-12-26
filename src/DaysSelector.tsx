@@ -50,7 +50,11 @@ export const DaysSelector = () => {
   const milestone = getMilestone(mid, milestones);
   if (milestone) {
     const days = getDays(milestone);
-    if (biz_days.length === 0) {
+    if (
+      biz_days.length === 0 ||
+      moment(milestone.estimated_start).diff(moment(_.first(biz_days))) > 0 ||
+      moment(milestone.estimated_finish).diff(moment(_.last(biz_days))) < 0
+    ) {
       setBizDays(getDefaultBizDays(days));
     }
     return (
