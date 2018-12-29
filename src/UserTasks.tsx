@@ -1,30 +1,48 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import { IProject, IUser, ITask, ICustomValue, ICustomAttr } from './store';
+import { ICustomValueMap, IProject, IUser, ITask, ICustomAttr } from './store';
 import { RootContext, baseUrl } from './Provider';
 import { Table } from 'reactstrap';
 import _ from 'lodash';
 
 const getTasksByUser = (items: ITask[]) => _.groupBy(items, 'assigned_to');
-const getCustomAttrVal = (val: ICustomValue | undefined, id: number) =>
-  val && val.attributes_values ? Number(val.attributes_values[id]) || 0 : 0;
+export const getCustomVal = (
+  custom_value_map: ICustomValueMap,
+  task: ITask,
+  id: number
+) => {
+  if (custom_value_map.has(task)) {
+    return Number(
+      _.get(custom_value_map.get(task), `attributes_values.${id}`, '0').replace(
+        /[^0-9.]/g,
+        ''
+      )
+    );
+  } else {
+    return 0;
+  }
+};
+
 const getTaskSumByUser = (
   items: ITask[],
-  custom_value_map: WeakMap<ITask, ICustomValue>,
+  custom_value_map: ICustomValueMap,
   custom_eid: string,
   custom_rid: string
 ) => {
-  const tasksByUser = _.chain(getTasksByUser(items))
-    .mapValues(userTasks =>
-      userTasks.map(task => custom_value_map.get(task)).reduce(
-        (result, attr_vals) => ({
-          e: result.e + getCustomAttrVal(attr_vals, Number(custom_eid)),
-          r: result.r + getCustomAttrVal(attr_vals, Number(custom_rid))
-        }),
-        { e: 0, r: 0 }
-      )
-    )
-    .value();
+  const eid = Number(custom_eid);
+  const rid = Number(custom_rid);
+  const tasksByUser = _.mapValues(getTasksByUser(items), tasks =>
+    _.chain(tasks)
+      .map(task => ({
+        e: getCustomVal(custom_value_map, task, eid),
+        r: getCustomVal(custom_value_map, task, rid)
+      }))
+      .reduce((result, val) => ({ e: result.e + val.e, r: result.r + val.r }), {
+        e: 0,
+        r: 0
+      })
+      .value()
+  );
   return tasksByUser;
 };
 const getCustomAttr = (items: ICustomAttr[], id: number) =>

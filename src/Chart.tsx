@@ -12,25 +12,13 @@ import { ITask, ICustomValueMap } from './store';
 import _ from 'lodash';
 import moment from 'moment';
 import { RootContext } from './Provider';
+import { getCustomVal } from './UserTasks';
 interface IChartItem {
   label: string;
   estimate: number;
   result?: number;
   add?: number;
 }
-const getCustomVal = (
-  custom_value_map: ICustomValueMap,
-  task: ITask,
-  id: number
-) => {
-  if (custom_value_map.has(task)) {
-    return Number(
-      _.get(custom_value_map.get(task), `attributes_values.${id}`, 0)
-    );
-  } else {
-    return 0;
-  }
-};
 
 const getTaskFinished = (tasks: ITask[], date: string) =>
   tasks.filter(
