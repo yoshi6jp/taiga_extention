@@ -3,12 +3,7 @@ import axios from 'axios';
 import { Input, InputGroup } from 'reactstrap';
 import InputGroupAddon from 'reactstrap/lib/InputGroupAddon';
 import { RootContext, baseUrl } from './Provider';
-import { IUser } from './UserTasks';
-export interface IProject {
-  id: number;
-  name: string;
-  members: IUser[];
-}
+import { IProject } from './store';
 export const ProjectSelector = () => {
   const {
     state: { url, pid: statePid },

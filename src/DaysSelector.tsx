@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { Input, Label } from 'reactstrap';
-import { IMilestore } from './store';
+import { IMilestone } from './store';
 import { RootContext } from './Provider';
 import moment, { Moment } from 'moment';
 import biz from 'moment-business';
 import _ from 'lodash';
-const getMilestone = (mid: string, items: IMilestore[]) =>
+const getMilestone = (mid: string, items: IMilestone[]) =>
   items.find(item => String(item.id) === mid);
-const getDays = (item: IMilestore) => {
+const getDays = (item: IMilestone) => {
   const startM = moment(item.estimated_start);
   const finishM = moment(item.estimated_finish);
   const daysInSprint = finishM.diff(startM, 'days');

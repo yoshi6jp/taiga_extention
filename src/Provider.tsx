@@ -2,7 +2,7 @@ import React, { createContext, useReducer, useCallback } from 'react';
 import { ActionTypes } from './actions';
 import {
   initialStateFn,
-  IMilestore,
+  IMilestone,
   ICustomAttr,
   ITask,
   ICustomValueMap
@@ -17,7 +17,7 @@ export const RootContext = createContext({
   setUrl: (url: string) => {},
   setPid: (pid: string) => {},
   setMid: (mid: string) => {},
-  setMilestones: (milestones: IMilestore[]) => {},
+  setMilestones: (milestones: IMilestone[]) => {},
   setCustomEid: (custom_eid: string) => {},
   setCustomRid: (custom_rid: string) => {},
   setCustomAttrs: (custom_attrs: ICustomAttr[]) => {},
@@ -51,7 +51,7 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
       [dispatch]
     ),
     setMilestones: useCallback(
-      (milestones: IMilestore[]) => {
+      (milestones: IMilestone[]) => {
         dispatch({ type: ActionTypes.SET_MILESTONES, payload: { milestones } });
       },
       [dispatch]

@@ -99,18 +99,24 @@ export const Chart = () => {
           }
         });
         setData(data);
+      } else {
+        setData([]);
       }
     },
     [tasks, biz_days, custom_eid, custom_value_map, setData]
   );
-  return (
-    <ComposedChart data={data} width={800} height={400}>
-      <YAxis />
-      <XAxis dataKey="label" />
-      <Tooltip />
-      <Bar dataKey="result" fill="#8884d8" stackId="a" />
-      <Bar dataKey="add" fill="#82ca9d" stackId="a" />
-      <Line dataKey="estimate" />
-    </ComposedChart>
-  );
+  if (data.length === 0) {
+    return null;
+  } else {
+    return (
+      <ComposedChart data={data} width={800} height={400}>
+        <YAxis />
+        <XAxis dataKey="label" />
+        <Tooltip />
+        <Bar dataKey="result" fill="#8884d8" stackId="a" />
+        <Bar dataKey="add" fill="#82ca9d" stackId="a" />
+        <Line dataKey="estimate" />
+      </ComposedChart>
+    );
+  }
 };

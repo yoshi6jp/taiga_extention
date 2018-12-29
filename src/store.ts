@@ -3,7 +3,7 @@ export interface ICustomAttr {
   id: number;
   name: string;
 }
-export interface IMilestore {
+export interface IMilestone {
   id: number;
   name: string;
   estimated_start: string;
@@ -23,6 +23,18 @@ export interface ICustomValue {
     [key: number]: string;
   };
 }
+export interface IUser {
+  id: number;
+  username: string;
+  full_name: string;
+  full_name_display: string;
+  photo: string;
+}
+export interface IProject {
+  id: number;
+  name: string;
+  members: IUser[];
+}
 export type ICustomValueMap = WeakMap<ITask, ICustomValue>;
 export interface IState {
   url: string;
@@ -32,7 +44,7 @@ export interface IState {
   custom_rid: string; // pid
   custom_attrs: ICustomAttr[]; // pid
   biz_days: string[]; //mid
-  milestones: IMilestore[]; // pid
+  milestones: IMilestone[]; // pid
   tasks: ITask[]; //mid
   custom_value_map: ICustomValueMap; // pid
 }

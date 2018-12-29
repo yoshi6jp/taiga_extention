@@ -1,17 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import { IProject } from './ProjectSelector';
-import { ITask, ICustomValue, ICustomAttr } from './store';
+import { IProject, IUser, ITask, ICustomValue, ICustomAttr } from './store';
 import { RootContext, baseUrl } from './Provider';
 import { Table } from 'reactstrap';
 import _ from 'lodash';
-export interface IUser {
-  id: number;
-  username: string;
-  full_name: string;
-  full_name_display: string;
-  photo: string;
-}
+
 const getTasksByUser = (items: ITask[]) => _.groupBy(items, 'assigned_to');
 const getCustomAttrVal = (val: ICustomValue | undefined, id: number) =>
   val && val.attributes_values ? Number(val.attributes_values[id]) || 0 : 0;
