@@ -68,10 +68,10 @@ export const Chart = () => {
   useEffect(
     () => {
       const days_len = biz_days.length;
-      if (days_len > 0 && tasks.length > 0 && custom_eid) {
+      if (days_len > 1 && tasks.length > 0 && custom_eid) {
         const allTaskVal = getSumVal(
           custom_value_map,
-          getTaskCreated(tasks, biz_days[0]),
+          getTaskCreated(tasks, biz_days[1]),
           custom_eid
         );
         const data = biz_days.map((day, idx) => {
