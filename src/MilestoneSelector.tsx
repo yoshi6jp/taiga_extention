@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useContext, useState } from 'react';
 import axios from 'axios';
-import { Input, InputGroup } from 'reactstrap';
-import InputGroupAddon from 'reactstrap/lib/InputGroupAddon';
+import { Input, InputGroup, InputGroupAddon } from 'reactstrap';
 import { RootContext, baseUrl } from './Provider';
 import { IMilestone } from './store';
 

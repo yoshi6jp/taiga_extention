@@ -8,8 +8,8 @@ import _ from 'lodash';
 const getMilestone = (mid: string, items: IMilestone[]) =>
   items.find(item => String(item.id) === mid);
 const getDays = (item: IMilestone) => {
-  const startM = moment(item.estimated_start);
-  const finishM = moment(item.estimated_finish);
+  const startM = moment(item.estimated_start).local();
+  const finishM = moment(item.estimated_finish).local();
   const daysInSprint = finishM.diff(startM, 'days');
   return _.times(daysInSprint).map(i => startM.clone().add(i, 'days'));
 };
