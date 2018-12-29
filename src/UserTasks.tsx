@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { IProject } from './ProjectSelector';
-import { RootContext, baseUrl, ITask, ICustomValue } from './Provider';
-import { ICustomAttr } from './CustomValuesSelector';
+import { ITask, ICustomValue, ICustomAttr } from './store';
+import { RootContext, baseUrl } from './Provider';
 import { Table } from 'reactstrap';
 import _ from 'lodash';
 export interface IUser {

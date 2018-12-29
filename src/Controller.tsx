@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback, useEffect } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import { RootContext } from './Provider';
 import { Form, Input, InputGroup, InputGroupAddon, Button } from 'reactstrap';
 import { ProjectSelector } from './ProjectSelector';

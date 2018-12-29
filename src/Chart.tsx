@@ -8,9 +8,10 @@ import {
   YAxis,
   Bar
 } from 'recharts';
+import { ITask, ICustomValueMap } from './store';
 import _ from 'lodash';
 import moment from 'moment';
-import { RootContext, ITask, ICustomValue } from './Provider';
+import { RootContext } from './Provider';
 interface IChartItem {
   label: string;
   estimate: number;
@@ -18,7 +19,7 @@ interface IChartItem {
   add?: number;
 }
 const getCustomVal = (
-  custom_value_map: WeakMap<ITask, ICustomValue>,
+  custom_value_map: ICustomValueMap,
   task: ITask,
   id: number
 ) => {
@@ -50,7 +51,7 @@ const getTaskCreated = (tasks: ITask[], date: string) =>
   tasks.filter(task => moment(date).diff(moment(task.created_date)) > 0);
 
 const getSumVal = (
-  custom_value_map: WeakMap<ITask, ICustomValue>,
+  custom_value_map: ICustomValueMap,
   tasks: ITask[],
   custom_eid: string
 ) => {

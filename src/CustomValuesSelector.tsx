@@ -2,11 +2,9 @@ import React, { useCallback, useEffect, useContext, useState } from 'react';
 import axios from 'axios';
 import { Input, InputGroup } from 'reactstrap';
 import InputGroupAddon from 'reactstrap/lib/InputGroupAddon';
-import { RootContext, baseUrl, ITask, ICustomValue } from './Provider';
-export interface ICustomAttr {
-  id: number;
-  name: string;
-}
+import { ITask, ICustomValue, ICustomAttr } from './store';
+import { RootContext, baseUrl } from './Provider';
+
 export const CustomValuesSelector = () => {
   const {
     state: { url, pid, custom_eid: stateEid, custom_rid: stateRid, tasks },
