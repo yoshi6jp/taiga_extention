@@ -72,14 +72,15 @@ export const CustomValuesSelector = () => {
     <div className="row">
       <InputGroup className="col">
         <InputGroupAddon addonType="prepend">Estimate</InputGroupAddon>
-        <Input name="eid" type="select" onChange={handleChange}>
-          <option> --- </option>
+        <Input
+          value={stateEid}
+          name="eid"
+          type="select"
+          onChange={handleChange}
+        >
+          <option value=""> --- </option>
           {items.map(item => (
-            <option
-              key={item.id}
-              value={item.id}
-              selected={String(item.id) === stateEid}
-            >
+            <option key={item.id} value={item.id}>
               {item.name}
             </option>
           ))}
@@ -87,14 +88,15 @@ export const CustomValuesSelector = () => {
       </InputGroup>
       <InputGroup className="col">
         <InputGroupAddon addonType="prepend">Result</InputGroupAddon>
-        <Input name="rid" type="select" onChange={handleChange}>
+        <Input
+          value={stateRid}
+          name="rid"
+          type="select"
+          onChange={handleChange}
+        >
           <option> --- </option>
           {items.map(item => (
-            <option
-              key={item.id}
-              value={item.id}
-              selected={String(item.id) === stateRid}
-            >
+            <option key={item.id} value={item.id}>
               {item.name}
             </option>
           ))}

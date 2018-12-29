@@ -63,14 +63,10 @@ export const MilestoneSelector = () => {
   return (
     <InputGroup className="col">
       <InputGroupAddon addonType="prepend">Sprint</InputGroupAddon>
-      <Input type="select" onChange={handleChange}>
-        <option> --- </option>
+      <Input type="select" value={stateMid} onChange={handleChange}>
+        <option value=""> --- </option>
         {items.map(item => (
-          <option
-            key={item.id}
-            value={item.id}
-            selected={String(item.id) === stateMid}
-          >
+          <option key={item.id} value={item.id}>
             {item.name}
           </option>
         ))}

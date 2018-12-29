@@ -1,7 +1,11 @@
 import _ from 'lodash';
 import { initialStateFn, IState, StorageKey } from './store';
 import { ActionTypes, IAction } from './actions';
-import { setToStorage, setToStorageWithSubkey } from './store';
+import {
+  setToStorage,
+  setToStorageWithSubkey,
+  getFromStorageWithSubkey
+} from './store';
 export const reducer = (state = initialStateFn(), action: IAction) => {
   switch (action.type) {
     case ActionTypes.SET_URL: {
@@ -15,9 +19,11 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       return {
         ...state,
         pid,
-        custom_eid: '',
-        custom_rid: '',
+        mid: '',
+        custom_eid: getFromStorageWithSubkey(StorageKey.CUSTOM_EID, pid),
+        custom_rid: getFromStorageWithSubkey(StorageKey.CUSTOM_RID, pid),
         custom_attrs: [],
+        milestones: [],
         custom_value_map: new WeakMap()
       } as IState;
     }
@@ -28,7 +34,9 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
         ...state,
         mid,
         tasks: [],
-        biz_days: []
+        biz_days: _.compact(
+          getFromStorageWithSubkey(StorageKey.BIZ_DAYS, mid).split(',')
+        ).sort()
       } as IState;
     }
     case ActionTypes.SET_MILESTONES: {
@@ -53,7 +61,7 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       const { biz_days } = action.payload;
       setToStorageWithSubkey(
         StorageKey.BIZ_DAYS,
-        state.pid,
+        state.mid,
         biz_days.join(',')
       );
       return { ...state, biz_days } as IState;
@@ -66,7 +74,7 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
         .value();
       setToStorageWithSubkey(
         StorageKey.BIZ_DAYS,
-        state.pid,
+        state.mid,
         biz_days.join(',')
       );
       return { ...state, biz_days } as IState;
@@ -76,7 +84,7 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       const biz_days = _.reject([...state.biz_days], item => item === biz_day);
       setToStorageWithSubkey(
         StorageKey.BIZ_DAYS,
-        state.pid,
+        state.mid,
         biz_days.join(',')
       );
       return { ...state, biz_days } as IState;

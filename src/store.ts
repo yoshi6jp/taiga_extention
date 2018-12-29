@@ -32,7 +32,7 @@ export interface IState {
   custom_rid: string; // pid
   custom_attrs: ICustomAttr[]; // pid
   biz_days: string[]; //mid
-  milestones: IMilestore[]; // mid
+  milestones: IMilestore[]; // pid
   tasks: ITask[]; //mid
   custom_value_map: ICustomValueMap; // pid
 }
@@ -46,9 +46,9 @@ export enum StorageKey {
   BIZ_DAYS = 'taiga_biz_days'
 }
 
-const getFromStorage = (key: string) => localStorage.getItem(key) || '';
+export const getFromStorage = (key: string) => localStorage.getItem(key) || '';
 
-const getFromStorageWithSubkey = (key: StorageKey, subkey: string) =>
+export const getFromStorageWithSubkey = (key: StorageKey, subkey: string) =>
   subkey ? getFromStorage(`${subkey}/${key}`) : '';
 
 export const setToStorage = (key: string, item: string) => {

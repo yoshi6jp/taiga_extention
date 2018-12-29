@@ -65,11 +65,7 @@ export const DaysSelector = () => {
     [mid, milestones, biz_days]
   );
   if (items.length === 0) {
-    return (
-      <div className="text-center">
-        <div className="spinner-grow text-center" />
-      </div>
-    );
+    return null;
   } else {
     return (
       <>

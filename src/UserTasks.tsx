@@ -84,7 +84,7 @@ export const UserTasks = () => {
       </thead>
       <tbody>
         {items.map(item => (
-          <tr>
+          <tr key={item.id}>
             <td>{item.username}</td>
             <td>{_.get(taskSumByUser, `${item.id}.e`)}</td>
             <td>{_.get(taskSumByUser, `${item.id}.r`)}</td>

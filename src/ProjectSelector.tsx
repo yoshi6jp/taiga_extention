@@ -39,14 +39,10 @@ export const ProjectSelector = () => {
   return (
     <InputGroup className="col">
       <InputGroupAddon addonType="prepend">Project</InputGroupAddon>
-      <Input type="select" onChange={handleChange}>
-        <option> --- </option>
+      <Input value={statePid} type="select" onChange={handleChange}>
+        <option value=""> --- </option>
         {items.map(item => (
-          <option
-            key={item.id}
-            value={item.id}
-            selected={String(item.id) === statePid}
-          >
+          <option key={item.id} value={item.id}>
             {item.name}
           </option>
         ))}
