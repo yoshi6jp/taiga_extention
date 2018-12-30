@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { ICustomValueMap, IProject, IUser, ITask, ICustomAttr } from './store';
 import { RootContext, baseUrl } from './Provider';
@@ -87,6 +87,7 @@ export const UserTasks = () => {
   if (!customAttrE || !customAttrR) {
     return null;
   }
+  const unassignedSum = _.get(taskSumByUser, 'null.e', 0);
   return (
     <>
       <div className="text-right">
@@ -94,7 +95,7 @@ export const UserTasks = () => {
           <FontAwesomeIcon icon={faSyncAlt} />
         </Button>
       </div>
-      <Table>
+      <Table bordered>
         <thead>
           <tr>
             <th>Name</th>
@@ -114,6 +115,11 @@ export const UserTasks = () => {
               </td>
             </tr>
           ))}
+          <tr key="null">
+            <td>unassigned</td>
+            <td className="text-right text-danger">{unassignedSum}</td>
+            <td />
+          </tr>
         </tbody>
       </Table>
     </>

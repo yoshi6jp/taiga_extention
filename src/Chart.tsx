@@ -13,6 +13,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import { RootContext } from './Provider';
 import { getCustomVal } from './UserTasks';
+import { Card, CardHeader } from 'reactstrap';
 interface IChartItem {
   label: string;
   estimate: number;
@@ -106,14 +107,17 @@ export const Chart = () => {
     return null;
   } else {
     return (
-      <ComposedChart data={data} width={800} height={400}>
-        <YAxis />
-        <XAxis dataKey="label" />
-        <Tooltip />
-        <Bar dataKey="result" fill="#8884d8" stackId="a" />
-        <Bar dataKey="add" fill="#82ca9d" stackId="a" />
-        <Line dataKey="estimate" />
-      </ComposedChart>
+      <Card>
+        <CardHeader>Burn down chart</CardHeader>
+        <ComposedChart data={data} width={800} height={400}>
+          <YAxis />
+          <XAxis dataKey="label" />
+          <Tooltip />
+          <Bar dataKey="result" fill="#8884d8" stackId="a" />
+          <Bar dataKey="add" fill="#82ca9d" stackId="a" />
+          <Line dataKey="estimate" />
+        </ComposedChart>
+      </Card>
     );
   }
 };

@@ -9,6 +9,11 @@ export interface IMilestone {
   estimated_start: string;
   estimated_finish: string;
 }
+interface IProjectExtraInfo {
+  id: number;
+  name: string;
+  slug: string;
+}
 export interface ITask {
   id: number;
   assigned_to: number | null;
@@ -16,6 +21,8 @@ export interface ITask {
   finished_date: string;
   is_closed: boolean;
   subject: string;
+  ref: number;
+  project_extra_info: IProjectExtraInfo;
 }
 export interface IAttrValue {}
 export interface ICustomValue {
