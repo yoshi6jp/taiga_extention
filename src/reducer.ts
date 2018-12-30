@@ -97,6 +97,10 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       const { custom_value_map } = action.payload;
       return { ...state, custom_value_map } as IState;
     }
+    case ActionTypes.UPDATE_DATA: {
+      return { ...state, updated_time: Date.now() } as IState;
+    }
+
     default: {
       return state;
     }

@@ -25,7 +25,8 @@ export const RootContext = createContext({
   addBizDay: (biz_day: string) => {},
   removeBizDay: (biz_day: string) => {},
   setTasks: (tasks: ITask[]) => {},
-  setCustomValueMap: (custom_value_map: ICustomValueMap) => {}
+  setCustomValueMap: (custom_value_map: ICustomValueMap) => {},
+  updateData: () => {}
 });
 
 export const Provider = ({ children }: { children: React.ReactNode }) => {
@@ -106,6 +107,14 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
         dispatch({
           type: ActionTypes.SET_CUSTOM_VALUE_MAP,
           payload: { custom_value_map }
+        });
+      },
+      [dispatch]
+    ),
+    updateData: useCallback(
+      () => {
+        dispatch({
+          type: ActionTypes.UPDATE_DATA
         });
       },
       [dispatch]

@@ -1,9 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { ICustomValueMap, IProject, IUser, ITask, ICustomAttr } from './store';
 import { RootContext, baseUrl } from './Provider';
-import { Table } from 'reactstrap';
+import { Table, Button } from 'reactstrap';
 import _ from 'lodash';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 
 const getTasksByUser = (items: ITask[]) => _.groupBy(items, 'assigned_to');
 export const getCustomVal = (
@@ -57,7 +59,8 @@ export const UserTasks = () => {
       custom_attrs,
       custom_eid,
       custom_rid
-    }
+    },
+    updateData
   } = useContext(RootContext);
   const [items, setItems] = useState<IUser[]>([]);
   useEffect(
@@ -85,23 +88,34 @@ export const UserTasks = () => {
     return null;
   }
   return (
-    <Table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>{customAttrE.name}</th>
-          <th>{customAttrR.name}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {items.map(item => (
-          <tr key={item.id}>
-            <td>{item.username}</td>
-            <td>{_.get(taskSumByUser, `${item.id}.e`)}</td>
-            <td>{_.get(taskSumByUser, `${item.id}.r`)}</td>
+    <>
+      <div className="text-right">
+        <Button onClick={updateData}>
+          <FontAwesomeIcon icon={faSyncAlt} />
+        </Button>
+      </div>
+      <Table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>{customAttrE.name}</th>
+            <th>{customAttrR.name}</th>
           </tr>
-        ))}
-      </tbody>
-    </Table>
+        </thead>
+        <tbody>
+          {items.map(item => (
+            <tr key={item.id}>
+              <td>{item.username}</td>
+              <td className="text-right">
+                {_.get(taskSumByUser, `${item.id}.e`)}
+              </td>
+              <td className="text-right">
+                {_.get(taskSumByUser, `${item.id}.r`)}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </>
   );
 };

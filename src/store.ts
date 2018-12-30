@@ -47,6 +47,7 @@ export interface IState {
   milestones: IMilestone[]; // pid
   tasks: ITask[]; //mid
   custom_value_map: ICustomValueMap; // pid
+  updated_time: number;
 }
 
 export enum StorageKey {
@@ -91,6 +92,7 @@ export const initialStateFn = (): IState => {
     biz_days,
     milestones: [],
     tasks: [],
-    custom_value_map: new WeakMap()
+    custom_value_map: new WeakMap(),
+    updated_time: 0
   };
 };

@@ -6,7 +6,7 @@ import { IMilestone } from './store';
 
 export const MilestoneSelector = () => {
   const {
-    state: { url, pid, mid: stateMid },
+    state: { url, pid, mid: stateMid, updated_time },
     setMid,
     setMilestones,
     setTasks
@@ -34,7 +34,7 @@ export const MilestoneSelector = () => {
         })();
       }
     },
-    [url, pid, setItems, setMilestones]
+    [url, pid]
   );
   useEffect(
     () => {
@@ -52,7 +52,7 @@ export const MilestoneSelector = () => {
         })();
       }
     },
-    [url, stateMid, setTasks]
+    [url, stateMid, updated_time]
   );
 
   return (
