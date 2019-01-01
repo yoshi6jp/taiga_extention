@@ -2,11 +2,12 @@ import React, { useCallback, useEffect, useContext, useState } from 'react';
 import axios from 'axios';
 import { Input, InputGroup, InputGroupAddon } from 'reactstrap';
 import { RootContext, baseUrl } from './Provider';
-import { IMilestone } from './store';
+import { IMilestone, ITask } from './store';
+import _ from 'lodash';
 
 export const MilestoneSelector = () => {
   const {
-    state: { url, pid, mid: stateMid, updated_time },
+    state: { url, pid, mid: stateMid, updated_time, reject_task_status_ids },
     setMid,
     setMilestones,
     setTasks
@@ -40,19 +41,25 @@ export const MilestoneSelector = () => {
     () => {
       if (url && stateMid) {
         (async () => {
-          const { data: items } = await axios.get(`${baseUrl(url)}/tasks`, {
-            headers: {
-              'x-disable-pagination': true
-            },
-            params: {
-              milestone: stateMid
+          const { data: items } = await axios.get<ITask[]>(
+            `${baseUrl(url)}/tasks`,
+            {
+              headers: {
+                'x-disable-pagination': true
+              },
+              params: {
+                milestone: stateMid
+              }
             }
-          });
-          setTasks(items);
+          );
+          const tasks = items.filter(
+            item => !_.includes(reject_task_status_ids, String(item.status))
+          );
+          setTasks(tasks);
         })();
       }
     },
-    [url, stateMid, updated_time]
+    [url, stateMid, updated_time, reject_task_status_ids]
   );
 
   return (

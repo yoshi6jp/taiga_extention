@@ -5,6 +5,7 @@ import { ProjectSelector } from './ProjectSelector';
 import { MilestoneSelector } from './MilestoneSelector';
 import { CustomValuesSelector } from './CustomValuesSelector';
 import { DaysSelector } from './DaysSelector';
+import { TaskStatusSelector } from './TaskStatusSelector';
 export const Controller = () => {
   const { state, setUrl } = useContext(RootContext);
   const [url, setStateUrl] = useState('');
@@ -24,24 +25,27 @@ export const Controller = () => {
     [url, setUrl]
   );
   return (
-    <Form onSubmit={handleSubmit}>
-      <InputGroup>
-        <InputGroupAddon addonType="prepend">URL</InputGroupAddon>
-        <Input
-          defaultValue={state.url}
-          onChange={handleUrl}
-          placeholder="http://hostname:port"
-        />
-        <InputGroupAddon addonType="append">
-          <Button>Set</Button>
-        </InputGroupAddon>
-      </InputGroup>
+    <>
+      <Form onSubmit={handleSubmit}>
+        <InputGroup>
+          <InputGroupAddon addonType="prepend">URL</InputGroupAddon>
+          <Input
+            defaultValue={state.url}
+            onChange={handleUrl}
+            placeholder="http://hostname:port"
+          />
+          <InputGroupAddon addonType="append">
+            <Button>Set</Button>
+          </InputGroupAddon>
+        </InputGroup>
+      </Form>
       <div className="row">
         <ProjectSelector />
         <MilestoneSelector />
       </div>
       <CustomValuesSelector />
       <DaysSelector />
-    </Form>
+      <TaskStatusSelector />
+    </>
   );
 };

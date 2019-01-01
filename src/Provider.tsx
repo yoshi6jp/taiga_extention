@@ -26,6 +26,7 @@ export const RootContext = createContext({
   removeBizDay: (biz_day: string) => {},
   setTasks: (tasks: ITask[]) => {},
   setCustomValueMap: (custom_value_map: ICustomValueMap) => {},
+  toggeRejectTaskStatus: (task_status_id: string, is_reject: boolean) => {},
   updateData: () => {}
 });
 
@@ -107,6 +108,18 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
         dispatch({
           type: ActionTypes.SET_CUSTOM_VALUE_MAP,
           payload: { custom_value_map }
+        });
+      },
+      [dispatch]
+    ),
+    toggeRejectTaskStatus: useCallback(
+      (reject_task_status_id: string, is_reject: boolean) => {
+        const type = is_reject
+          ? ActionTypes.ADD_REJECT_TASK_STATUS_ID
+          : ActionTypes.REMOVE_REJECT_TASK_STATUS_ID;
+        dispatch({
+          type,
+          payload: { reject_task_status_id }
         });
       },
       [dispatch]

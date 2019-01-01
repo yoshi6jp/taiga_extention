@@ -97,10 +97,47 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       const { custom_value_map } = action.payload;
       return { ...state, custom_value_map } as IState;
     }
+    case ActionTypes.SET_REJECT_TASK_STATUS_IDS: {
+      const { reject_task_status_ids } = action.payload;
+      setToStorageWithSubkey(
+        StorageKey.REJECT_TASK_STATUS_IDS,
+        state.pid,
+        reject_task_status_ids.join(',')
+      );
+      return { ...state, reject_task_status_ids } as IState;
+    }
+    case ActionTypes.ADD_REJECT_TASK_STATUS_ID: {
+      const { reject_task_status_id } = action.payload;
+      const reject_task_status_ids = _.chain([
+        ...state.reject_task_status_ids,
+        reject_task_status_id
+      ])
+        .compact()
+        .uniq()
+        .value();
+      setToStorageWithSubkey(
+        StorageKey.REJECT_TASK_STATUS_IDS,
+        state.pid,
+        reject_task_status_ids.join(',')
+      );
+      return { ...state, reject_task_status_ids } as IState;
+    }
+    case ActionTypes.REMOVE_REJECT_TASK_STATUS_ID: {
+      const { reject_task_status_id } = action.payload;
+      const reject_task_status_ids = _.reject(
+        [...state.reject_task_status_ids],
+        item => item === reject_task_status_id
+      );
+      setToStorageWithSubkey(
+        StorageKey.REJECT_TASK_STATUS_IDS,
+        state.pid,
+        reject_task_status_ids.join(',')
+      );
+      return { ...state, reject_task_status_ids } as IState;
+    }
     case ActionTypes.UPDATE_DATA: {
       return { ...state, updated_time: Date.now() } as IState;
     }
-
     default: {
       return state;
     }

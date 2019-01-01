@@ -14,6 +14,10 @@ interface IProjectExtraInfo {
   name: string;
   slug: string;
 }
+interface IStatusExtraInfo {
+  name: string;
+  is_closed: boolean;
+}
 export interface ITask {
   id: number;
   assigned_to: number | null;
@@ -22,7 +26,18 @@ export interface ITask {
   is_closed: boolean;
   subject: string;
   ref: number;
+  project: number;
   project_extra_info: IProjectExtraInfo;
+  status: number;
+  status_extra_info: IStatusExtraInfo;
+}
+export interface ITaskStatus {
+  id: number;
+  name: string;
+  order: number;
+  project: number;
+  is_closed: boolean;
+  slug: string;
 }
 export interface IAttrValue {}
 export interface ICustomValue {
@@ -54,6 +69,7 @@ export interface IState {
   milestones: IMilestone[]; // pid
   tasks: ITask[]; //mid
   custom_value_map: ICustomValueMap; // pid
+  reject_task_status_ids: string[]; // pid
   updated_time: number;
 }
 
@@ -63,7 +79,8 @@ export enum StorageKey {
   MID = 'taiga_mid',
   CUSTOM_EID = 'taiga_custom_eid',
   CUSTOM_RID = 'taiga_custom_rid',
-  BIZ_DAYS = 'taiga_biz_days'
+  BIZ_DAYS = 'taiga_biz_days',
+  REJECT_TASK_STATUS_IDS = 'reject_task_status_ids'
 }
 
 export const getFromStorage = (key: string) => localStorage.getItem(key) || '';
@@ -89,6 +106,9 @@ export const initialStateFn = (): IState => {
   const custom_rid = getFromStorageWithSubkey(StorageKey.CUSTOM_RID, pid);
   const biz_days_str = getFromStorageWithSubkey(StorageKey.BIZ_DAYS, mid);
   const biz_days = _.compact(biz_days_str.split(',')).sort();
+  const reject_task_status_ids = _.compact(
+    getFromStorageWithSubkey(StorageKey.REJECT_TASK_STATUS_IDS, pid).split(',')
+  );
   return {
     url,
     pid,
@@ -100,6 +120,7 @@ export const initialStateFn = (): IState => {
     milestones: [],
     tasks: [],
     custom_value_map: new WeakMap(),
+    reject_task_status_ids,
     updated_time: 0
   };
 };

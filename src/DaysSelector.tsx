@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
-import { Input, Label } from 'reactstrap';
+import { Input, Label, Form, FormGroup } from 'reactstrap';
 import { IMilestone } from './store';
 import { RootContext } from './Provider';
 import moment, { Moment } from 'moment';
@@ -29,20 +29,19 @@ const DayItem = ({ item, biz_days }: { item: Moment; biz_days: string[] }) => {
     [addBizDay, removeBizDay]
   );
   return (
-    <div className="form-check form-check-inline">
-      <Input
-        onChange={handleChange}
-        disabled={biz.isWeekendDay(item)}
-        id={value}
-        value={value}
-        type="checkbox"
-        defaultChecked={_.includes(biz_days, value)}
-        className="form-check-input"
-      />
-      <Label className="form-check-label" for={value}>
+    <FormGroup check inline>
+      <Label check>
+        <Input
+          onChange={handleChange}
+          disabled={biz.isWeekendDay(item)}
+          value={value}
+          type="checkbox"
+          defaultChecked={_.includes(biz_days, value)}
+          className="form-check-input"
+        />
         {value}
       </Label>
-    </div>
+    </FormGroup>
   );
 };
 export const DaysSelector = () => {
