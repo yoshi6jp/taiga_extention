@@ -1,15 +1,15 @@
 {
-  "main.css": "/taiga_extention/static/css/main.0a921b09.chunk.css",
-  "main.js": "/taiga_extention/static/js/main.7b5ec668.chunk.js",
-  "main.js.map": "/taiga_extention/static/js/main.7b5ec668.chunk.js.map",
-  "static/css/1.714ee7e1.chunk.css": "/taiga_extention/static/css/1.714ee7e1.chunk.css",
-  "static/js/1.df4a1dcb.chunk.js": "/taiga_extention/static/js/1.df4a1dcb.chunk.js",
-  "static/js/1.df4a1dcb.chunk.js.map": "/taiga_extention/static/js/1.df4a1dcb.chunk.js.map",
-  "runtime~main.js": "/taiga_extention/static/js/runtime~main.53ca8b91.js",
-  "runtime~main.js.map": "/taiga_extention/static/js/runtime~main.53ca8b91.js.map",
-  "static/css/main.0a921b09.chunk.css.map": "/taiga_extention/static/css/main.0a921b09.chunk.css.map",
-  "static/css/1.714ee7e1.chunk.css.map": "/taiga_extention/static/css/1.714ee7e1.chunk.css.map",
-  "index.html": "/taiga_extention/index.html",
-  "precache-manifest.3626513e2d265e310c5c6b2165a41a58.js": "/taiga_extention/precache-manifest.3626513e2d265e310c5c6b2165a41a58.js",
-  "service-worker.js": "/taiga_extention/service-worker.js"
+  "main.css": "./static/css/main.0a921b09.chunk.css",
+  "main.js": "./static/js/main.daa76ffd.chunk.js",
+  "main.js.map": "./static/js/main.daa76ffd.chunk.js.map",
+  "static/css/1.714ee7e1.chunk.css": "./static/css/1.714ee7e1.chunk.css",
+  "static/js/1.df4a1dcb.chunk.js": "./static/js/1.df4a1dcb.chunk.js",
+  "static/js/1.df4a1dcb.chunk.js.map": "./static/js/1.df4a1dcb.chunk.js.map",
+  "runtime~main.js": "./static/js/runtime~main.4a686d48.js",
+  "runtime~main.js.map": "./static/js/runtime~main.4a686d48.js.map",
+  "static/css/1.714ee7e1.chunk.css.map": "./static/css/1.714ee7e1.chunk.css.map",
+  "static/css/main.0a921b09.chunk.css.map": "./static/css/main.0a921b09.chunk.css.map",
+  "index.html": "./index.html",
+  "precache-manifest.21fc6e7ef8f45e2e07ddaffd05639f1d.js": "./precache-manifest.21fc6e7ef8f45e2e07ddaffd05639f1d.js",
+  "service-worker.js": "./service-worker.js"
 }
