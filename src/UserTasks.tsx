@@ -8,17 +8,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 
 const getTasksByUser = (items: ITask[]) => _.groupBy(items, 'assigned_to');
+export const parseCustomVal = (val: string) =>
+  _.chain(val)
+    .replace(/[^0-9.+,]/g, '')
+    .replace(/[+]/g, ',')
+    .split(',')
+    .compact()
+    .map(Number)
+    .sum()
+    .value();
+
 export const getCustomVal = (
   custom_value_map: ICustomValueMap,
   task: ITask,
   id: number
 ) => {
   if (custom_value_map.has(task)) {
-    return Number(
-      _.get(custom_value_map.get(task), `attributes_values.${id}`, '0').replace(
-        /[^0-9.]/g,
-        ''
-      )
+    return parseCustomVal(
+      _.get(custom_value_map.get(task), `attributes_values.${id}`, '0')
     );
   } else {
     return 0;
