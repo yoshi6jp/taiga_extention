@@ -14,6 +14,10 @@ describe.each`
   ${'1,2'}                 | ${3}
   ${'1 , 2,3'}             | ${6}
   ${'1 , 2,3,'}            | ${6}
+  ${''}                    | ${0}
+  ${' '}                   | ${0}
+  ${' '}                   | ${0}
+  ${' + 1'}                | ${1}
 `('$value => $expected', ({ value, expected }) => {
   it('should parsed', () => {
     expect(parseCustomVal(value)).toEqual(expected);
