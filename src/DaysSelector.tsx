@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
-import { Input, Label, Form, FormGroup } from 'reactstrap';
+import classNames from 'classnames';
+import { Table, Card, CardHeader, Input, Label, FormGroup } from 'reactstrap';
 import { IMilestone } from './store';
 import { RootContext } from './Provider';
 import moment, { Moment } from 'moment';
@@ -18,7 +19,27 @@ const getDefaultBizDays = (items: Moment[]) =>
     .filter(item => biz.isWeekDay(item))
     .map(item => item.format('YYYY-MM-DD'));
 
-const DayItem = ({ item, biz_days }: { item: Moment; biz_days: string[] }) => {
+const weekClassName = (day: number) => ({
+  'text-danger': day === 0,
+  'text-info': day === 6
+});
+
+const DayItem = ({
+  item,
+  biz_days,
+  idx
+}: {
+  item: Moment | null;
+  biz_days: string[];
+  idx: number;
+}) => {
+  if (!item) {
+    return (
+      <td>
+        <br />
+      </td>
+    );
+  }
   const { addBizDay, removeBizDay } = useContext(RootContext);
   const value = item.format('YYYY-MM-DD');
   const handleChange = useCallback(
@@ -29,21 +50,24 @@ const DayItem = ({ item, biz_days }: { item: Moment; biz_days: string[] }) => {
     [addBizDay, removeBizDay]
   );
   return (
-    <FormGroup check inline>
-      <Label check>
-        <Input
-          onChange={handleChange}
-          disabled={biz.isWeekendDay(item)}
-          value={value}
-          type="checkbox"
-          defaultChecked={_.includes(biz_days, value)}
-          className="form-check-input"
-        />
-        {value}
-      </Label>
-    </FormGroup>
+    <td className={classNames(weekClassName(idx))}>
+      <FormGroup check inline>
+        <Label check>
+          <Input
+            onChange={handleChange}
+            disabled={biz.isWeekendDay(item)}
+            value={value}
+            type="checkbox"
+            defaultChecked={_.includes(biz_days, value)}
+            className="form-check-input"
+          />
+          {value}
+        </Label>
+      </FormGroup>
+    </td>
   );
 };
+
 export const DaysSelector = () => {
   const {
     state: { mid, milestones, biz_days },
@@ -66,12 +90,39 @@ export const DaysSelector = () => {
   if (items.length === 0) {
     return null;
   } else {
+    const weekdays = _.chunk(
+      [..._.times(items[0].day(), () => null), ...items],
+      7
+    );
     return (
-      <>
-        {items.map(item => (
-          <DayItem key={item.toString()} item={item} biz_days={biz_days} />
-        ))}
-      </>
+      <Card>
+        <CardHeader>Business Days</CardHeader>
+        <Table bordered>
+          <thead>
+            <tr>
+              {moment.weekdays().map((item, idx) => (
+                <th className={classNames('text-center', weekClassName(idx))}>
+                  {item}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {weekdays.map(days => (
+              <tr>
+                {days.map((item, idx) => (
+                  <DayItem
+                    idx={idx}
+                    key={idx}
+                    item={item}
+                    biz_days={biz_days}
+                  />
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </Card>
     );
   }
 };
