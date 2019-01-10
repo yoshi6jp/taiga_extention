@@ -25,7 +25,10 @@ const getTaskFinished = (tasks: ITask[], date: string) =>
   tasks.filter(
     task =>
       task.finished_date
-        ? moment(date).diff(moment(task.finished_date)) > 0
+        ? moment(date)
+            .local()
+            .endOf('days')
+            .diff(moment(task.finished_date)) > 0
         : false
   );
 
@@ -75,7 +78,12 @@ export const Chart = () => {
         const data = biz_days.map((day, idx) => {
           const label = `day ${idx + 1}`;
           const estimate = allTaskVal - (allTaskVal * idx) / (days_len - 1);
-          if (moment().diff(moment(day), 'days') >= 0) {
+          if (
+            moment()
+              .local()
+              .endOf('days')
+              .diff(moment(day)) > 0
+          ) {
             const result =
               allTaskVal -
               getSumVal(
