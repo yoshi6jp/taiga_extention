@@ -1,8 +1,19 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import classNames from 'classnames';
-import { Table, Card, CardHeader, Input, Label, FormGroup } from 'reactstrap';
+import {
+  UncontrolledTooltip,
+  Table,
+  Card,
+  CardHeader,
+  Input,
+  Label,
+  FormGroup,
+  Badge
+} from 'reactstrap';
 import { IMilestone } from './store';
 import { RootContext } from './Provider';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import moment, { Moment } from 'moment';
 import biz from 'moment-business';
 import _ from 'lodash';
@@ -49,22 +60,39 @@ const DayItem = ({
     },
     [addBizDay, removeBizDay]
   );
+  const isPlanning = value === biz_days[0];
+  const eleId = `biz-day-${value}`;
   return (
-    <td className={classNames(weekClassName(idx))}>
-      <FormGroup check inline>
-        <Label check>
-          <Input
-            onChange={handleChange}
-            disabled={biz.isWeekendDay(item)}
-            value={value}
-            type="checkbox"
-            defaultChecked={_.includes(biz_days, value)}
-            className="form-check-input"
-          />
-          {value}
-        </Label>
-      </FormGroup>
-    </td>
+    <>
+      <td
+        className={classNames(weekClassName(idx), { 'table-info': isPlanning })}
+        id={eleId}
+      >
+        {biz.isWeekDay(item) ? (
+          <FormGroup check inline>
+            <Label check>
+              <Input
+                onChange={handleChange}
+                disabled={biz.isWeekendDay(item)}
+                value={value}
+                type="checkbox"
+                defaultChecked={_.includes(biz_days, value)}
+                className="form-check-input"
+              />
+              {value}
+            </Label>
+          </FormGroup>
+        ) : (
+          <span>{value}</span>
+        )}
+      </td>
+      {isPlanning ? (
+        <UncontrolledTooltip target={eleId}>
+          <FontAwesomeIcon className="mr-1" icon={faClipboardList} />
+          Planning
+        </UncontrolledTooltip>
+      ) : null}
+    </>
   );
 };
 

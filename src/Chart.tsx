@@ -76,7 +76,7 @@ export const Chart = () => {
           custom_eid
         );
         const data = biz_days.map((day, idx) => {
-          const label = `day ${idx + 1}`;
+          const label = `day ${idx}`;
           const estimate = allTaskVal - (allTaskVal * idx) / (days_len - 1);
           if (
             moment()
