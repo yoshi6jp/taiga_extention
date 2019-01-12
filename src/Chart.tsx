@@ -12,6 +12,7 @@ import { ITask, ICustomValueMap } from './store';
 import _ from 'lodash';
 import moment from 'moment';
 import { RootContext } from './Provider';
+import { dayNameFromIdx } from './DaysSelector';
 import { getCustomVal } from './UserTasks';
 import { Card, CardHeader } from 'reactstrap';
 interface IChartItem {
@@ -76,7 +77,7 @@ export const Chart = () => {
           custom_eid
         );
         const data = biz_days.map((day, idx) => {
-          const label = `day ${idx}`;
+          const label = dayNameFromIdx(day, idx);
           const estimate = allTaskVal - (allTaskVal * idx) / (days_len - 1);
           if (
             moment()

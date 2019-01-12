@@ -12,11 +12,31 @@ import {
 } from 'reactstrap';
 import { IMilestone } from './store';
 import { RootContext } from './Provider';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import moment, { Moment } from 'moment';
 import biz from 'moment-business';
 import _ from 'lodash';
+export const isToday = (date: string) => {
+  moment()
+    .local()
+    .format('YYYY-MM-DD') ===
+    moment(date)
+      .local()
+      .format('YYYY-MM-DD');
+};
+export const dayNameFromIdx = (date: string, idx: number) => {
+  if (idx === -1) {
+    return '';
+  }
+  if (idx === 0) {
+    return 'Planning';
+  }
+  return `Day ${idx}`;
+};
+
+export const dayName = (date: string, biz_days: string[]) => {
+  const idx = biz_days.indexOf(date);
+  return dayNameFromIdx(date, idx);
+};
 const getMilestone = (mid: string, items: IMilestone[]) =>
   items.find(item => String(item.id) === mid);
 const getDays = (item: IMilestone) => {
@@ -86,10 +106,9 @@ const DayItem = ({
           <span>{value}</span>
         )}
       </td>
-      {isPlanning ? (
+      {_.includes(biz_days, value) ? (
         <UncontrolledTooltip target={eleId}>
-          <FontAwesomeIcon className="mr-1" icon={faClipboardList} />
-          Planning
+          {dayName(value, biz_days)}
         </UncontrolledTooltip>
       ) : null}
     </>
