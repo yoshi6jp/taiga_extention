@@ -1,13 +1,57 @@
 import React, { useContext, useState, useCallback } from 'react';
+import _ from 'lodash';
+import classNames from 'classnames';
 import { RootContext } from './Provider';
-import { Form, Input, InputGroup, InputGroupAddon, Button } from 'reactstrap';
+import {
+  Card,
+  CardHeader,
+  Collapse,
+  Form,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  Button,
+  Badge
+} from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faChevronCircleRight,
+  faExternalLinkAlt
+} from '@fortawesome/free-solid-svg-icons';
 import { ProjectSelector } from './ProjectSelector';
 import { MilestoneSelector } from './MilestoneSelector';
 import { CustomValuesSelector } from './CustomValuesSelector';
-import { DaysSelector } from './DaysSelector';
+import { DaysSelector, getMilestone } from './DaysSelector';
 import { TaskStatusSelector } from './TaskStatusSelector';
+import { IMilestone } from './store';
+import styles from './Controller.module.css';
+const getSpName = (mid: string, items: IMilestone[]) =>
+  _.get(getMilestone(mid, items), 'name', '');
+const getTaskboardUrl = (url: string, mid: string, items: IMilestone[]) => {
+  const milestone = getMilestone(mid, items);
+  if (url && milestone) {
+    return `${url}/project/${milestone.project_extra_info.slug}/taskboard/${
+      milestone.slug
+    }`;
+  } else {
+    return '';
+  }
+};
+
+const getRange = (biz_days: string[]) => {
+  if (biz_days.length > 1) {
+    return `[${_.head(biz_days)} - ${_.last(biz_days)}]`;
+  } else {
+    return '';
+  }
+};
 export const Controller = () => {
-  const { state, setUrl } = useContext(RootContext);
+  const {
+    state: { url: stateUrl, isOpen, mid, milestones, biz_days },
+    setUrl,
+    openController,
+    closeController
+  } = useContext(RootContext);
   const [url, setStateUrl] = useState('');
   const handleUrl = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,28 +68,65 @@ export const Controller = () => {
     },
     [url, setUrl]
   );
+  const handleHref = useCallback((e: React.FormEvent) => {
+    e.stopPropagation();
+  }, []);
+  const rotation = isOpen ? 90 : undefined;
+  const toggle = useCallback(
+    () => {
+      if (isOpen) {
+        closeController();
+      } else {
+        openController();
+      }
+    },
+    [openController, closeController, isOpen]
+  );
+  const taskboardUrl = getTaskboardUrl(stateUrl, mid, milestones);
   return (
-    <>
-      <Form onSubmit={handleSubmit}>
-        <InputGroup>
-          <InputGroupAddon addonType="prepend">URL</InputGroupAddon>
-          <Input
-            defaultValue={state.url}
-            onChange={handleUrl}
-            placeholder="http://hostname:port"
-          />
-          <InputGroupAddon addonType="append">
-            <Button>Set</Button>
-          </InputGroupAddon>
-        </InputGroup>
-      </Form>
-      <div className="row">
-        <ProjectSelector />
-        <MilestoneSelector />
-      </div>
-      <CustomValuesSelector />
-      <DaysSelector />
-      <TaskStatusSelector />
-    </>
+    <Card>
+      <CardHeader className={classNames(styles.header)} onClick={toggle}>
+        <FontAwesomeIcon rotation={rotation} icon={faChevronCircleRight} />
+        <Badge color="primary" pill className="p-1 m-1">
+          <span>{getSpName(mid, milestones)}</span>
+        </Badge>
+        <Badge className="p-1 m-1">
+          <span>{getRange(biz_days)}</span>
+        </Badge>
+        {taskboardUrl ? (
+          <a
+            target="_blank"
+            onClick={handleHref}
+            className="float-right"
+            href={taskboardUrl}
+          >
+            <FontAwesomeIcon className="mr-1" icon={faExternalLinkAlt} />
+            Taskboard
+          </a>
+        ) : null}
+      </CardHeader>
+      <Collapse isOpen={isOpen}>
+        <Form onSubmit={handleSubmit}>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">URL</InputGroupAddon>
+            <Input
+              defaultValue={stateUrl}
+              onChange={handleUrl}
+              placeholder="http://hostname:port"
+            />
+            <InputGroupAddon addonType="append">
+              <Button>Set</Button>
+            </InputGroupAddon>
+          </InputGroup>
+        </Form>
+        <div className="row">
+          <ProjectSelector />
+          <MilestoneSelector />
+        </div>
+        <CustomValuesSelector />
+        <DaysSelector />
+        <TaskStatusSelector />
+      </Collapse>
+    </Card>
   );
 };

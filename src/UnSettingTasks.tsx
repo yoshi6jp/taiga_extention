@@ -2,6 +2,8 @@ import React, { useContext, useState, useEffect } from 'react';
 import { RootContext } from './Provider';
 import { ITask } from './store';
 import { ListGroup, ListGroupItem, Card, CardHeader } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { getCustomVal } from './UserTasks';
 const TaskItem = ({ url, item }: { item: ITask; url: string }) => {
   const {
@@ -10,7 +12,7 @@ const TaskItem = ({ url, item }: { item: ITask; url: string }) => {
   const href = `${url}/project/${slug}/task/${item.ref}`;
   return (
     <ListGroupItem tag="a" target="_blank" href={href}>
-      {item.subject}
+      <FontAwesomeIcon icon={faExternalLinkAlt} /> {item.subject}
     </ListGroupItem>
   );
 };

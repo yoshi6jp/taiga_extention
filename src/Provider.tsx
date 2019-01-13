@@ -27,6 +27,8 @@ export const RootContext = createContext({
   setTasks: (tasks: ITask[]) => {},
   setCustomValueMap: (custom_value_map: ICustomValueMap) => {},
   toggeRejectTaskStatus: (task_status_id: string, is_reject: boolean) => {},
+  openController: () => {},
+  closeController: () => {},
   updateData: () => {}
 });
 
@@ -121,6 +123,18 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
           type,
           payload: { reject_task_status_id }
         });
+      },
+      [dispatch]
+    ),
+    openController: useCallback(
+      () => {
+        dispatch({ type: ActionTypes.OPEN_CONTROLLER });
+      },
+      [dispatch]
+    ),
+    closeController: useCallback(
+      () => {
+        dispatch({ type: ActionTypes.CLOSE_CONTROLLER });
       },
       [dispatch]
     ),

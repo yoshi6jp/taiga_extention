@@ -37,7 +37,7 @@ export const dayName = (date: string, biz_days: string[]) => {
   const idx = biz_days.indexOf(date);
   return dayNameFromIdx(date, idx);
 };
-const getMilestone = (mid: string, items: IMilestone[]) =>
+export const getMilestone = (mid: string, items: IMilestone[]) =>
   items.find(item => String(item.id) === mid);
 const getDays = (item: IMilestone) => {
   const startM = moment(item.estimated_start).local();
@@ -148,15 +148,18 @@ export const DaysSelector = () => {
           <thead>
             <tr>
               {moment.weekdays().map((item, idx) => (
-                <th className={classNames('text-center', weekClassName(idx))}>
+                <th
+                  key={idx}
+                  className={classNames('text-center', weekClassName(idx))}
+                >
                   {item}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {weekdays.map(days => (
-              <tr>
+            {weekdays.map((days, i) => (
+              <tr key={i}>
                 {days.map((item, idx) => (
                   <DayItem
                     idx={idx}

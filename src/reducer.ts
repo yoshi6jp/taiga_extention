@@ -135,6 +135,12 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       );
       return { ...state, reject_task_status_ids } as IState;
     }
+    case ActionTypes.OPEN_CONTROLLER: {
+      return { ...state, isOpen: true } as IState;
+    }
+    case ActionTypes.CLOSE_CONTROLLER: {
+      return { ...state, isOpen: false } as IState;
+    }
     case ActionTypes.UPDATE_DATA: {
       return { ...state, updated_time: Date.now() } as IState;
     }

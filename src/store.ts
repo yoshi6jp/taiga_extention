@@ -8,6 +8,9 @@ export interface IMilestone {
   name: string;
   estimated_start: string;
   estimated_finish: string;
+  slug: string;
+  project: number;
+  project_extra_info: IProjectExtraInfo;
 }
 interface IProjectExtraInfo {
   id: number;
@@ -71,6 +74,7 @@ export interface IState {
   custom_value_map: ICustomValueMap; // pid
   reject_task_status_ids: string[]; // pid
   updated_time: number;
+  isOpen: boolean;
 }
 
 export enum StorageKey {
@@ -109,6 +113,7 @@ export const initialStateFn = (): IState => {
   const reject_task_status_ids = _.compact(
     getFromStorageWithSubkey(StorageKey.REJECT_TASK_STATUS_IDS, pid).split(',')
   );
+  const isOpen = !(url && pid && mid && custom_eid && custom_rid);
   return {
     url,
     pid,
@@ -121,6 +126,7 @@ export const initialStateFn = (): IState => {
     tasks: [],
     custom_value_map: new WeakMap(),
     reject_task_status_ids,
-    updated_time: 0
+    updated_time: 0,
+    isOpen
   };
 };
