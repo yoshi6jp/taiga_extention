@@ -96,7 +96,7 @@ const DayItem = ({
                 disabled={biz.isWeekendDay(item)}
                 value={value}
                 type="checkbox"
-                defaultChecked={_.includes(biz_days, value)}
+                checked={_.includes(biz_days, value)}
                 className="form-check-input"
               />
               {value}
