@@ -40,7 +40,7 @@ export const UnSettingTasks = () => {
   } else {
     return (
       <Card>
-        <CardHeader>Unsetting tasks</CardHeader>
+        <CardHeader>Unset tasks</CardHeader>
         <ListGroup>
           {items.map(item => (
             <TaskItem url={url} key={item.id} item={item} />

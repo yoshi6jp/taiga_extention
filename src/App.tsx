@@ -2,7 +2,7 @@ import React from 'react';
 import { Chart } from './Chart';
 import { Controller } from './Controller';
 import { UserTasks } from './UserTasks';
-import { UnSettingTasks } from './UnSettingTasks';
+import { UnSettingTasks } from './UnSetTasks';
 import { Provider } from './Provider';
 export const App = () => (
   <div className="container">
