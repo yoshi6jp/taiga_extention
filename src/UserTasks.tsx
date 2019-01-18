@@ -151,7 +151,12 @@ export const UserTasks = () => {
     return null;
   }
   const unassignedSum = _.get(taskSumByUser, 'null.e', 0);
-  const isPast = moment().diff(moment(_.last(biz_days))) > 0;
+  const isPast =
+    moment().diff(
+      moment(_.last(biz_days))
+        .local()
+        .endOf('days')
+    ) > 0;
   return (
     <>
       <div className="text-right">
