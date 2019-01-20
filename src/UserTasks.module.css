@@ -5,5 +5,9 @@
   color: silver;
 }
 .bronze {
-  color: green;
+  color: orange;
+}
+:global(.table) td.custom_input_td {
+  padding: 0.5rem;
+  max-width: 4rem;
 }

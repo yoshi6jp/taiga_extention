@@ -1,11 +1,29 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { ICustomValueMap, IProject, IUser, ITask, ICustomAttr } from './store';
 import { RootContext, baseUrl } from './Provider';
-import { Table, Button } from 'reactstrap';
+import classNames from 'classnames';
+import {
+  Table,
+  Button,
+  Navbar,
+  Form,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText
+} from 'reactstrap';
 import _ from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSyncAlt, faMedal } from '@fortawesome/free-solid-svg-icons';
+import {
+  faSyncAlt,
+  faMedal,
+  faTimes,
+  faEquals,
+  faGrinBeam,
+  faGrinBeamSweat,
+  faDizzy
+} from '@fortawesome/free-solid-svg-icons';
 import styles from './UserTasks.module.css';
 import moment from 'moment';
 
@@ -48,6 +66,50 @@ const getGrade = (e: any, r: any): [string | null, number] => {
   }
   return [null, 0];
 };
+const NameAndWorkLoad = ({
+  username,
+  val,
+  total
+}: {
+  username: string;
+  val: any;
+  total: number;
+}) => {
+  if (val <= 0) {
+    return (
+      <>
+        <td />
+        <td />
+      </>
+    );
+  }
+  const diff = (val - total) / total;
+  let icon;
+  let tblCls;
+  if (diff < -0.1) {
+    icon = faGrinBeam;
+    tblCls = '';
+  } else if (diff <= 0.1) {
+    tblCls = 'table-success';
+    icon = faGrinBeam;
+  } else if (diff <= 0.2) {
+    tblCls = 'table-warning';
+    icon = faGrinBeamSweat;
+  } else {
+    tblCls = 'table-danger';
+    icon = faDizzy;
+  }
+  return (
+    <>
+      <td className={tblCls}>
+        <FontAwesomeIcon className="mx-1" icon={icon} />
+        {username}
+      </td>
+      <td className={classNames(tblCls, 'text-right')}>{val}</td>
+    </>
+  );
+};
+
 const Medal = ({ e, r }: { e: any; r: any }) => {
   const [grade, num] = getGrade(e, r);
   if (grade) {
@@ -66,19 +128,56 @@ const Medal = ({ e, r }: { e: any; r: any }) => {
 const UserRow = ({
   item,
   sums,
-  isPast
+  isPast,
+  total,
+  hpd
 }: {
   item: IUser;
   sums: { [key: string]: { e: number; r: number } };
   isPast: boolean;
+  total: number;
+  hpd: number;
 }) => {
+  const [customTotal, setTotal] = useState<number>(0);
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setTotal(Number(e.target.value) || 0);
+    },
+    [setTotal]
+  );
   const e = _.get(sums, `${item.id}.e`);
   const r = _.get(sums, `${item.id}.r`);
+  const margedTotal = customTotal || total;
+  const totalStr = String(margedTotal);
   return (
     <tr key={item.id}>
-      <td>{item.username}</td>
-      <td className="text-right">{e}</td>
-      <td className="text-right">{r}</td>
+      {total > 0 ? (
+        <>
+          <NameAndWorkLoad
+            username={item.username}
+            val={e}
+            total={margedTotal}
+          />
+          <td className="text-right">{total}</td>
+          <td className={styles.custom_input_td}>
+            <Input
+              bsSize="sm"
+              type="number"
+              className="text-right"
+              value={totalStr}
+              step={hpd}
+              onChange={handleChange}
+            />
+          </td>
+        </>
+      ) : (
+        <>
+          <td>{item.username}</td>
+          <td className="text-right">{e}</td>
+          <td className="text-right">{r}</td>
+        </>
+      )}
+
       {isPast ? (
         <td>
           <Medal e={e} r={r} />
@@ -126,6 +225,9 @@ export const UserTasks = () => {
     updateData
   } = useContext(RootContext);
   const [items, setItems] = useState<IUser[]>([]);
+  const [hpd, setHpd] = useState<number>(0);
+  const [total, setTotal] = useState<number>(0);
+  const activeLen = biz_days.length - 1;
   useEffect(
     () => {
       if (url && pid) {
@@ -139,6 +241,22 @@ export const UserTasks = () => {
     },
     [url, pid, setItems]
   );
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setHpd(Number(e.target.value) || 0);
+    },
+    [setHpd]
+  );
+  const disableSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+  useEffect(
+    () => {
+      setTotal(hpd * activeLen);
+    },
+    [hpd, activeLen, setTotal]
+  );
   const taskSumByUser = getTaskSumByUser(
     tasks,
     custom_value_map,
@@ -151,7 +269,9 @@ export const UserTasks = () => {
     return null;
   }
   const unassignedSum = _.get(taskSumByUser, 'null.e', 0);
+  const isPlanning = total > 0;
   const isPast =
+    !isPlanning &&
     moment().diff(
       moment(_.last(biz_days))
         .local()
@@ -159,17 +279,49 @@ export const UserTasks = () => {
     ) > 0;
   return (
     <>
-      <div className="text-right">
+      <Navbar color="light" light>
+        <Form inline={true} className="mr-auto" onSubmit={disableSubmit}>
+          <InputGroup>
+            <Input
+              type="number"
+              step="0.5"
+              placeholder="hours / day"
+              className="text-right"
+              onChange={handleChange}
+            />
+            <InputGroupAddon addonType="append">
+              <InputGroupText>
+                <FontAwesomeIcon className="mx-2" icon={faTimes} />
+                {activeLen} [days]
+                <FontAwesomeIcon className="mx-2" icon={faEquals} />
+              </InputGroupText>
+              {total > 0 ? (
+                <>
+                  <InputGroupText className="bg-white">
+                    <strong>{total}</strong>
+                  </InputGroupText>
+                  <InputGroupText>hours / sprint</InputGroupText>
+                </>
+              ) : null}
+            </InputGroupAddon>
+          </InputGroup>
+        </Form>
         <Button onClick={updateData}>
           <FontAwesomeIcon icon={faSyncAlt} />
         </Button>
-      </div>
+      </Navbar>
       <Table bordered>
         <thead>
           <tr>
             <th>Name</th>
             <th>{customAttrE.name}</th>
-            <th>{customAttrR.name}</th>
+            {isPlanning ? (
+              <>
+                <th>Total</th> <th>Custom</th>
+              </>
+            ) : (
+              <th>{customAttrR.name}</th>
+            )}
             {isPast ? <th>Grade</th> : null}
           </tr>
         </thead>
@@ -180,13 +332,15 @@ export const UserTasks = () => {
               isPast={isPast}
               item={item}
               sums={taskSumByUser}
+              total={total}
+              hpd={hpd}
             />
           ))}
           <tr key="null">
             <td>unassigned</td>
             <td className="text-right text-danger">{unassignedSum}</td>
             <td />
-            {isPast ? <td /> : null}
+            {isPast || isPlanning ? <td /> : null}
           </tr>
         </tbody>
       </Table>
