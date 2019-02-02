@@ -75,10 +75,10 @@ const NameAndWorkLoad = ({
   val: any;
   total: number;
 }) => {
-  if (val <= 0) {
+  if (!val) {
     return (
       <>
-        <td />
+        <td>{username}</td>
         <td />
       </>
     );
