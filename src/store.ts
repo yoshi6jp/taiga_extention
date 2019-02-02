@@ -71,6 +71,7 @@ export interface IState {
   biz_days: string[]; //mid
   milestones: IMilestone[]; // pid
   tasks: ITask[]; //mid
+  task_status: ITaskStatus[];
   custom_value_map: ICustomValueMap; // pid
   reject_task_status_ids: string[]; // pid
   updated_time: number;
@@ -124,6 +125,7 @@ export const initialStateFn = (): IState => {
     biz_days,
     milestones: [],
     tasks: [],
+    task_status: [],
     custom_value_map: new WeakMap(),
     reject_task_status_ids,
     updated_time: 0,

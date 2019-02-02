@@ -5,7 +5,8 @@ import {
   IMilestone,
   ICustomAttr,
   ITask,
-  ICustomValueMap
+  ICustomValueMap,
+  ITaskStatus
 } from './store';
 import { reducer } from './reducer';
 import _ from 'lodash';
@@ -25,6 +26,7 @@ export const RootContext = createContext({
   addBizDay: (biz_day: string) => {},
   removeBizDay: (biz_day: string) => {},
   setTasks: (tasks: ITask[]) => {},
+  setTaskStatus: (tasks: ITaskStatus[]) => {},
   setCustomValueMap: (custom_value_map: ICustomValueMap) => {},
   toggeRejectTaskStatus: (task_status_id: string, is_reject: boolean) => {},
   openController: () => {},
@@ -105,6 +107,16 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
       },
       [dispatch]
     ),
+    setTaskStatus: useCallback(
+      (task_status: ITaskStatus[]) => {
+        dispatch({
+          type: ActionTypes.SET_TASK_STATUS,
+          payload: { task_status }
+        });
+      },
+      [dispatch]
+    ),
+
     setCustomValueMap: useCallback(
       (custom_value_map: ICustomValueMap) => {
         dispatch({

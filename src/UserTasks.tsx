@@ -11,7 +11,8 @@ import {
   Input,
   InputGroup,
   InputGroupAddon,
-  InputGroupText
+  InputGroupText,
+  Progress
 } from 'reactstrap';
 import _ from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -27,7 +28,9 @@ import {
 import styles from './UserTasks.module.css';
 import moment from 'moment';
 
+const barStyles = ['success', 'warning', 'info', 'danger'];
 const getTasksByUser = (items: ITask[]) => _.groupBy(items, 'assigned_to');
+const getClosedTasks = (items: ITask[]) => items.filter(item => item.is_closed);
 export const parseCustomVal = (val: string) =>
   _.chain(val)
     .replace(/[^0-9.+,]/g, '')
@@ -128,21 +131,32 @@ const Medal = ({ e, r }: { e: any; r: any }) => {
     return null;
   }
 };
-
+interface IProgressTotal {
+  status: number;
+  total: number;
+  style?: string;
+  label: string;
+}
 const UserRow = ({
   item,
   sums,
   isPast,
   total,
-  hpd
+  hpd,
+  closedTasks
 }: {
   item: IUser;
   sums: { [key: string]: { e: number; r: number } };
   isPast: boolean;
   total: number;
   hpd: number;
+  closedTasks: ITask[];
 }) => {
+  const {
+    state: { custom_value_map, custom_eid, reject_task_status_ids, task_status }
+  } = useContext(RootContext);
   const [customTotal, setTotal] = useState<number>(0);
+  const [progressTotal, setProgressTotal] = useState<IProgressTotal[]>([]);
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setTotal(Number(e.target.value) || 0);
@@ -154,6 +168,51 @@ const UserRow = ({
   const margedTotal = customTotal || total;
   const totalStr = String(margedTotal);
   const imgSrc = item.photo || `http://i.pravatar.cc/80?u=${Math.random()}`;
+  useEffect(
+    () => {
+      const closed_status = _.chain(task_status)
+        .filter(item => item.is_closed)
+        .reject(item => _.includes(reject_task_status_ids, String(item.id)))
+        .orderBy('id')
+        .reverse()
+        .map(item => item.id)
+        .value();
+      const closedTotals = _.chain(closedTasks)
+        .groupBy('status')
+        .mapValues(ts =>
+          _.reduce(
+            ts,
+            (result, t) => {
+              result.status = t.status;
+              result.total += getCustomVal(
+                custom_value_map,
+                t,
+                Number(custom_eid)
+              );
+              result.label = t.status_extra_info.name;
+              return result;
+            },
+            { status: 0, total: 0, label: '', style: '' }
+          )
+        )
+        .value();
+      const sortedTotals = _.orderBy(closedTotals, 'status')
+        .reverse()
+        .map(item => ({
+          ...item,
+          style: barStyles[closed_status.indexOf(item.status)]
+        }));
+      setProgressTotal(sortedTotals);
+    },
+    [
+      setProgressTotal,
+      custom_eid,
+      custom_value_map,
+      closedTasks,
+      task_status,
+      reject_task_status_ids
+    ]
+  );
   return (
     <tr key={item.id}>
       {total > 0 ? (
@@ -183,6 +242,23 @@ const UserRow = ({
           </td>
           <td className="text-right">{e}</td>
           <td className="text-right">{r}</td>
+          <td>
+            {_.isNumber(e) && (
+              <Progress multi>
+                {progressTotal.map((item, idx) => (
+                  <Progress
+                    bar
+                    key={idx}
+                    value={item.total}
+                    color={item.style}
+                    max={e}
+                  >
+                    {item.label}
+                  </Progress>
+                ))}
+              </Progress>
+            )}
+          </td>
         </>
       )}
 
@@ -285,6 +361,7 @@ export const UserTasks = () => {
         .local()
         .endOf('days')
     ) > 0;
+  const tasksByUser = getTasksByUser(getClosedTasks(tasks));
   return (
     <>
       <Navbar color="light" light>
@@ -328,7 +405,10 @@ export const UserTasks = () => {
                 <th>Total</th> <th>Custom</th>
               </>
             ) : (
-              <th>{customAttrR.name}</th>
+              <>
+                <th>{customAttrR.name}</th>
+                <th>Progress</th>
+              </>
             )}
             {isPast ? <th>Grade</th> : null}
           </tr>
@@ -342,11 +422,13 @@ export const UserTasks = () => {
               sums={taskSumByUser}
               total={total}
               hpd={hpd}
+              closedTasks={tasksByUser[item.id] || []}
             />
           ))}
           <tr key="null">
             <td>unassigned</td>
             <td className="text-right text-danger">{unassignedSum}</td>
+            <td />
             <td />
             {isPast || isPlanning ? <td /> : null}
           </tr>

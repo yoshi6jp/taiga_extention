@@ -40,7 +40,8 @@ const StatusItem = ({ item }: { item: ITaskStatus }) => {
 };
 export const TaskStatusSelector = () => {
   const {
-    state: { url, pid }
+    state: { url, pid },
+    setTaskStatus
   } = useContext(RootContext);
   const [items, setItems] = useState<ITaskStatus[]>([]);
   useEffect(
@@ -54,6 +55,7 @@ export const TaskStatusSelector = () => {
             }
           );
           setItems(items);
+          setTaskStatus(items);
         })();
       }
     },

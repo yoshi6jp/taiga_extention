@@ -93,6 +93,10 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       const { tasks } = action.payload;
       return { ...state, tasks } as IState;
     }
+    case ActionTypes.SET_TASK_STATUS: {
+      const { task_status } = action.payload;
+      return { ...state, task_status } as IState;
+    }
     case ActionTypes.SET_CUSTOM_VALUE_MAP: {
       const { custom_value_map } = action.payload;
       return { ...state, custom_value_map } as IState;
