@@ -1,11 +1,11 @@
 .gold {
-  color: goldenrod;
+  color: gold;
 }
 .silver {
   color: silver;
 }
 .bronze {
-  color: orange;
+  color: #cd7f32;
 }
 :global(.table) td.custom_input_td {
   padding: 0.5rem;
