@@ -69,16 +69,20 @@ const getGrade = (e: any, r: any): [string | null, number] => {
 const NameAndWorkLoad = ({
   username,
   val,
-  total
+  total,
+  imgSrc
 }: {
   username: string;
   val: any;
   total: number;
+  imgSrc: string;
 }) => {
   if (!val) {
     return (
       <>
-        <td>{username}</td>
+        <td>
+          <img className={styles.avator} src={imgSrc} /> {username}
+        </td>
         <td />
       </>
     );
@@ -103,7 +107,7 @@ const NameAndWorkLoad = ({
     <>
       <td className={tblCls}>
         <FontAwesomeIcon className="mx-1" icon={icon} />
-        {username}
+        <img className={styles.avator} src={imgSrc} /> {username}
       </td>
       <td className={classNames(tblCls, 'text-right')}>{val}</td>
     </>
@@ -149,6 +153,7 @@ const UserRow = ({
   const r = _.get(sums, `${item.id}.r`);
   const margedTotal = customTotal || total;
   const totalStr = String(margedTotal);
+  const imgSrc = item.photo || `http://i.pravatar.cc/80?u=${Math.random()}`;
   return (
     <tr key={item.id}>
       {total > 0 ? (
@@ -157,6 +162,7 @@ const UserRow = ({
             username={item.username}
             val={e}
             total={margedTotal}
+            imgSrc={imgSrc}
           />
           <td className="text-right">{total}</td>
           <td className={styles.custom_input_td}>
@@ -172,7 +178,9 @@ const UserRow = ({
         </>
       ) : (
         <>
-          <td>{item.username}</td>
+          <td>
+            <img className={styles.avator} src={imgSrc} /> {item.username}
+          </td>
           <td className="text-right">{e}</td>
           <td className="text-right">{r}</td>
         </>
