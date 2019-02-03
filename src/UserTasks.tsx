@@ -54,7 +54,7 @@ export const getCustomVal = (
     return 0;
   }
 };
-const getGrade = (e: any, r: any): [string | null, number] => {
+const getGrade = (e: number, r: number): [string | null, number] => {
   if (_.isNumber(e) && _.isNumber(r) && e > 0) {
     const diff = Math.abs(e - r) / e;
     if (diff <= 0.05) {
@@ -76,7 +76,7 @@ const NameAndWorkLoad = ({
   imgSrc
 }: {
   username: string;
-  val: any;
+  val: number;
   total: number;
   imgSrc: string;
 }) => {
@@ -109,15 +109,15 @@ const NameAndWorkLoad = ({
   return (
     <>
       <td className={tblCls}>
-        <FontAwesomeIcon className="mx-1" icon={icon} />
         <img className={styles.avator} src={imgSrc} /> {username}
+        <FontAwesomeIcon className="mx-1" icon={icon} />
       </td>
       <td className={classNames(tblCls, 'text-right')}>{val}</td>
     </>
   );
 };
 
-const Medal = ({ e, r }: { e: any; r: any }) => {
+const Medal = ({ e, r }: { e: number; r: number }) => {
   const [grade, num] = getGrade(e, r);
   if (grade) {
     return (
@@ -163,8 +163,9 @@ const UserRow = ({
     },
     [setTotal]
   );
-  const e = _.get(sums, `${item.id}.e`);
-  const r = _.get(sums, `${item.id}.r`);
+  const sumItem = _.get(sums, item.id);
+  const e = _.get(sumItem, 'e');
+  const r = _.get(sumItem, 'r');
   const margedTotal = customTotal || total;
   const totalStr = String(margedTotal);
   const imgSrc = item.photo || `http://i.pravatar.cc/80?u=${Math.random()}`;
