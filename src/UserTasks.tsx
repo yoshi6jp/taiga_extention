@@ -431,7 +431,7 @@ export const UserTasks = () => {
             <td className="text-right text-danger">{unassignedSum}</td>
             <td />
             <td />
-            {isPast || isPlanning ? <td /> : null}
+            {isPast ? <td /> : null}
           </tr>
         </tbody>
       </Table>
