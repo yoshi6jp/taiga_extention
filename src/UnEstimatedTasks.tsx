@@ -16,7 +16,7 @@ const TaskItem = ({ url, item }: { item: ITask; url: string }) => {
     </ListGroupItem>
   );
 };
-export const UnSettingTasks = () => {
+export const UnEstimatedTasks = () => {
   const {
     state: { url, tasks, custom_value_map, custom_eid }
   } = useContext(RootContext);
@@ -40,7 +40,7 @@ export const UnSettingTasks = () => {
   } else {
     return (
       <Card>
-        <CardHeader>Unset tasks</CardHeader>
+        <CardHeader>Un estimated tasks</CardHeader>
         <ListGroup>
           {items.map(item => (
             <TaskItem url={url} key={item.id} item={item} />
