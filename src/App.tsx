@@ -11,7 +11,7 @@ export const App = () => (
       <BrowserRouter>
         <div>
           <Route exact path="/" component={OverView} />
-          <Route exact path="/:name" component={PersonalPage} />
+          <Route exact path="/:uid" component={PersonalPage} />
         </div>
       </BrowserRouter>
     </Provider>
