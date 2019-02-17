@@ -87,10 +87,10 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
           const r = getCustomVal(custom_value_map, item, customAttrR.id);
           return (
             <tr key={item.id}>
-              <td>
+              <td className={item.is_closed ? "table-secondary" : undefined}>
                 <UserStoryLink url={url} item={item} />
               </td>
-              <td>
+              <td className={item.is_closed ? "table-secondary" : undefined}>
                 <TaskLink url={url} item={item} />
               </td>
               <td className={item.is_closed ? "table-secondary" : undefined}>
@@ -100,7 +100,7 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
               <td
                 className={classNames(
                   "text-right",
-                  r > e ? "table-danger" : undefined
+                  r > e ? "text-danger" : undefined
                 )}
               >
                 {r}
@@ -118,7 +118,7 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
           <td
             className={classNames(
               "text-right",
-              totalR > totalE ? "table-danger" : undefined
+              totalR > totalE ? "text-danger" : undefined
             )}
           >
             {totalR}
