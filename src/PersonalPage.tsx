@@ -7,6 +7,7 @@ import { PersonalInfo } from "./PersonalInfo";
 import { useContext, useEffect, useState } from "react";
 import { RootContext, baseUrl } from "./Provider";
 import { IUser } from "./store";
+import { PersonalChart } from "./PersonalChart";
 
 export const PersonalPage = (props: RouteComponentProps<{ uid: string }>) => {
   const {
@@ -37,6 +38,7 @@ export const PersonalPage = (props: RouteComponentProps<{ uid: string }>) => {
         <>
           <PersonalInfo userInfo={userInfo} />
           <PersonalTasks userInfo={userInfo} />
+          <PersonalChart />
         </>
       ) : (
         <Alert color="danger">This user does not exist.</Alert>
