@@ -23,13 +23,14 @@ interface IChartItem {
 }
 
 const getTaskFinished = (tasks: ITask[], date: string) =>
-  tasks.filter(task =>
-    task.finished_date
-      ? moment(date)
-          .local()
-          .endOf("days")
-          .diff(moment(task.finished_date)) > 0
-      : false
+  tasks.filter(
+    task =>
+      task.finished_date
+        ? moment(date)
+            .local()
+            .endOf("days")
+            .diff(moment(task.finished_date)) > 0
+        : false
   );
 
 const getTaskCreatedToday = (tasks: ITask[], date: string) =>
@@ -61,10 +62,10 @@ const getSumVal = (
     .sum()
     .value();
 };
-export const Chart = () => {
+export const Chart = ({ tasks }: { tasks: ITask[] }) => {
   const [data, setData] = useState<IChartItem[]>([]);
   const {
-    state: { tasks, biz_days, custom_value_map, custom_eid }
+    state: { biz_days, custom_value_map, custom_eid }
   } = useContext(RootContext);
   useEffect(() => {
     const days_len = biz_days.length;

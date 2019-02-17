@@ -1,16 +1,12 @@
 import * as React from "react";
 import { UserTasks } from "./UserTasks";
 import { UnEstimatedTasks } from "./UnEstimatedTasks";
-import { Chart } from "./Chart";
+import { OverviewChart } from "./OverviewChart";
 
-interface OwnProps {}
-
-const OverView = (props: OwnProps) => (
+export const OverView = () => (
   <>
     <UserTasks />
     <UnEstimatedTasks />
-    <Chart />
+    <OverviewChart />
   </>
 );
-
-export default OverView;

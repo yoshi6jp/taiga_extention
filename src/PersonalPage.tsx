@@ -38,7 +38,7 @@ export const PersonalPage = (props: RouteComponentProps<{ uid: string }>) => {
         <>
           <PersonalInfo userInfo={userInfo} />
           <PersonalTasks userInfo={userInfo} />
-          <PersonalChart />
+          <PersonalChart userInfo={userInfo} />
         </>
       ) : (
         <Alert color="danger">This user does not exist.</Alert>

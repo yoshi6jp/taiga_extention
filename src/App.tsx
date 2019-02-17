@@ -3,7 +3,7 @@ import { Controller } from "./Controller";
 import { Provider } from "./Provider";
 import { BrowserRouter, Route } from "react-router-dom";
 import { PersonalPage } from "./PersonalPage";
-import OverView from "./OverView";
+import { OverView } from "./OverView";
 export const App = () => (
   <div className="container">
     <Provider>
