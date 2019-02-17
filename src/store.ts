@@ -21,6 +21,12 @@ interface IStatusExtraInfo {
   name: string;
   is_closed: boolean;
 }
+interface IUserStoryExtraInfo {
+  id: number;
+  subject: string;
+  epics: any;
+  ref: number;
+}
 export interface ITask {
   id: number;
   assigned_to: number | null;
@@ -33,6 +39,8 @@ export interface ITask {
   project_extra_info: IProjectExtraInfo;
   status: number;
   status_extra_info: IStatusExtraInfo;
+  user_story: number;
+  user_story_extra_info: IUserStoryExtraInfo;
 }
 export interface ITaskStatus {
   id: number;

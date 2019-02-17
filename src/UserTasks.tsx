@@ -295,7 +295,7 @@ const getTaskSumByUser = (
   );
   return tasksByUser;
 };
-const getCustomAttr = (items: ICustomAttr[], id: number) =>
+export const getCustomAttr = (items: ICustomAttr[], id: number) =>
   items.find(item => item.id === id);
 export const UserTasks = () => {
   const {
