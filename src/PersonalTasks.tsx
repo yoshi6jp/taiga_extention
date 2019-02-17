@@ -7,12 +7,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 
+import styles from "./PersonalTasks.module.css";
+
 const UserStoryLink = ({ url, item }: { url: string; item: ITask }) => {
   const href = `${url}/project/${item.project_extra_info.slug}/us/${
     item.user_story_extra_info.ref
   }`;
   return (
-    <a href={href} target="_blank">
+    <a href={href} target="_blank" title={item.user_story_extra_info.subject}>
       <FontAwesomeIcon icon={faExternalLinkAlt} />{" "}
       {item.user_story_extra_info.subject}
     </a>
@@ -24,7 +26,7 @@ const TaskLink = ({ url, item }: { url: string; item: ITask }) => {
     item.ref
   }`;
   return (
-    <a href={href} target="_blank">
+    <a href={href} target="_blank" title={item.subject}>
       <FontAwesomeIcon icon={faExternalLinkAlt} /> {item.subject}
     </a>
   );
@@ -67,7 +69,7 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
   });
 
   return (
-    <Table bordered>
+    <Table bordered className={styles.overflow}>
       <thead>
         <tr>
           <th>User story</th>
