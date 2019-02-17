@@ -1,13 +1,11 @@
-import axios from "axios";
 import React, { useContext, useState, useEffect } from "react";
-import { RootContext, baseUrl } from "./Provider";
-import { Card, CardHeader, ListGroup, Table } from "reactstrap";
+import { RootContext } from "./Provider";
+import { Table } from "reactstrap";
 import { ITask, IUser } from "./store";
-import ListGroupItem from "reactstrap/lib/ListGroupItem";
-import { getCustomAttr, getCustomVal } from "./UserTasks";
+import { getCustomAttr, getCustomVal, Medal } from "./UserTasks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
-import { withRouter, RouteComponentProps } from "react-router-dom";
+import classNames from "classnames";
 
 const UserStoryLink = ({ url, item }: { url: string; item: ITask }) => {
   const href = `${url}/project/${item.project_extra_info.slug}/us/${
@@ -36,7 +34,6 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
   const {
     state: {
       url,
-      pid,
       tasks,
       custom_attrs,
       custom_value_map,
@@ -46,10 +43,12 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
     }
   } = useContext(RootContext);
   const [items, setItems] = useState<ITask[]>([]);
-  const activeLen = biz_days.length - 1;
   useEffect(
     () => {
-      setItems(tasks);
+      const userTasks = tasks
+        .filter(task => task.assigned_to === userInfo.id)
+        .sort((a, b) => a.user_story - b.user_story);
+      setItems(userTasks);
     },
     [tasks]
   );
@@ -60,6 +59,13 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
     return null;
   }
 
+  let totalE = 0;
+  let totalR = 0;
+  items.forEach(item => {
+    totalE = totalE + getCustomVal(custom_value_map, item, customAttrE.id);
+    totalR = totalR + getCustomVal(custom_value_map, item, customAttrR.id);
+  });
+
   return (
     <Table bordered>
       <thead>
@@ -69,32 +75,55 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
           <th>Status</th>
           <th>{customAttrE.name}</th>
           <th>{customAttrR.name}</th>
+          <th>Grade</th>
         </tr>
       </thead>
       <tbody>
         {/* tasks */}
-        {items.map(item => (
-          <tr key={item.id}>
-            <td>
-              <UserStoryLink url={url} item={item} />
-            </td>
-            <td>
-              <TaskLink url={url} item={item} />
-            </td>
-            <td>{item.status_extra_info.name}</td>
-            <td className="text-right">
-              {getCustomVal(custom_value_map, item, customAttrE.id)}
-            </td>
-            <td className="text-right">
-              {getCustomVal(custom_value_map, item, customAttrR.id)}
-            </td>
-          </tr>
-        ))}
+        {items.map(item => {
+          const e = getCustomVal(custom_value_map, item, customAttrE.id);
+          const r = getCustomVal(custom_value_map, item, customAttrR.id);
+          return (
+            <tr key={item.id}>
+              <td>
+                <UserStoryLink url={url} item={item} />
+              </td>
+              <td>
+                <TaskLink url={url} item={item} />
+              </td>
+              <td className={item.is_closed ? "table-secondary" : undefined}>
+                {item.status_extra_info.name}
+              </td>
+              <td className="text-right">{e}</td>
+              <td
+                className={classNames(
+                  "text-right",
+                  r > e ? "table-danger" : undefined
+                )}
+              >
+                {r}
+              </td>
+              <td>
+                <Medal e={e} r={r} />
+              </td>
+            </tr>
+          );
+        })}
         {/* total */}
         <tr>
           <td colSpan={3}>Total</td>
-          <td className="text-right">12</td>
-          <td className="text-right">3</td>
+          <td className="text-right">{totalE}</td>
+          <td
+            className={classNames(
+              "text-right",
+              totalR > totalE ? "table-danger" : undefined
+            )}
+          >
+            {totalR}
+          </td>
+          <td>
+            <Medal e={totalE} r={totalR} />
+          </td>
         </tr>
       </tbody>
     </Table>

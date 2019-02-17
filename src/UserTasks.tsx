@@ -118,7 +118,7 @@ const NameAndWorkLoad = ({
   );
 };
 
-const Medal = ({ e, r }: { e: number; r: number }) => {
+export const Medal = ({ e, r }: { e: number; r: number }) => {
   const [grade, num] = getGrade(e, r);
   if (grade) {
     return (
