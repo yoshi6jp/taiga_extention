@@ -40,7 +40,7 @@ export interface ITask {
   status: number;
   status_extra_info: IStatusExtraInfo;
   user_story: number;
-  user_story_extra_info: IUserStoryExtraInfo;
+  user_story_extra_info?: IUserStoryExtraInfo;
 }
 export interface ITaskStatus {
   id: number;
