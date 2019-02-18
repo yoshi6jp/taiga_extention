@@ -14,20 +14,28 @@ const UserStoryLink = ({ url, item }: { url: string; item: ITask }) => {
     user_story_extra_info,
     project_extra_info: { slug },
   } = item;
-  const usName = user_story_extra_info ? user_story_extra_info.subject : "(Unassigned tasks)";
+  const usName = user_story_extra_info
+    ? `#${user_story_extra_info.ref} ${user_story_extra_info.subject}`
+    : undefined;
   const href = user_story_extra_info ? `${url}/project/${slug}/us/${user_story_extra_info.ref}` : "#";
-  return (
-    <a href={href} target="_blank" title={usName}>
-      <FontAwesomeIcon icon={faExternalLinkAlt} /> {usName}
-    </a>
-  );
+
+  if (usName) {
+    return (
+      <a href={href} target="_blank" title={usName}>
+        <FontAwesomeIcon icon={faExternalLinkAlt} /> {usName}
+      </a>
+    );
+  } else {
+    return <>(Unassigned tasks)</>;
+  }
 };
 
 const TaskLink = ({ url, item }: { url: string; item: ITask }) => {
+  const taskName = `#${item.ref} ${item.subject}`;
   const href = `${url}/project/${item.project_extra_info.slug}/task/${item.ref}`;
   return (
-    <a href={href} target="_blank" title={item.subject}>
-      <FontAwesomeIcon icon={faExternalLinkAlt} /> {item.subject}
+    <a href={href} target="_blank" title={taskName}>
+      <FontAwesomeIcon icon={faExternalLinkAlt} /> {taskName}
     </a>
   );
 };
@@ -61,7 +69,7 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
   });
 
   return (
-    <Table bordered className={styles.overflow}>
+    <Table bordered size="sm" className={styles.overflow}>
       <thead>
         <tr>
           <th>User story</th>
