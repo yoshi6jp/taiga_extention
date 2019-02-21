@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useContext, useState } from 'react';
-import axios from 'axios';
-import { Input, InputGroup, InputGroupAddon } from 'reactstrap';
-import { ITask, ICustomValue, ICustomAttr } from './store';
-import { RootContext, baseUrl } from './Provider';
+import React, { useCallback, useEffect, useContext, useState } from "react";
+import axios from "axios";
+import { Input, InputGroup, InputGroupAddon } from "reactstrap";
+import { ITask, ICustomValue, ICustomAttr } from "./store";
+import { RootContext, baseUrl } from "./Provider";
 
 export const CustomValuesSelector = () => {
   const {
@@ -18,11 +18,11 @@ export const CustomValuesSelector = () => {
       const id = e.target.value;
       if (id) {
         switch (e.target.name) {
-          case 'eid': {
+          case "eid": {
             setCustomEid(id);
             break;
           }
-          case 'rid': {
+          case "rid": {
             setCustomRid(id);
             break;
           }
@@ -31,41 +31,35 @@ export const CustomValuesSelector = () => {
     },
     [setCustomEid, setCustomRid]
   );
-  useEffect(
-    () => {
-      if (url && pid) {
-        (async () => {
-          const { data: items } = await axios.get(
-            `${baseUrl(url)}/task-custom-attributes`,
-            { params: { project: pid } }
-          );
-          setItems(items);
-          setCustomAttrs(items);
-        })();
-      }
-    },
-    [url, pid, setItems, setCustomAttrs]
-  );
-  useEffect(
-    () => {
-      if (url && tasks.length && stateEid && stateRid) {
-        (async () => {
-          const wmap = new WeakMap(
-            await Promise.all(
-              tasks.map(async item => {
-                const { data: custom_attr_val } = await axios.get(
-                  `${baseUrl(url)}/tasks/custom-attributes-values/${item.id}`
-                );
-                return [item, custom_attr_val] as [ITask, ICustomValue];
-              })
-            )
-          );
-          setCustomValueMap(wmap);
-        })();
-      }
-    },
-    [url, tasks, stateEid, stateRid, setCustomValueMap]
-  );
+  useEffect(() => {
+    if (url && pid) {
+      (async () => {
+        const { data: items } = await axios.get(
+          `${baseUrl(url)}/task-custom-attributes`,
+          { params: { project: pid } }
+        );
+        setItems(items);
+        setCustomAttrs(items);
+      })();
+    }
+  }, [url, pid, setItems, setCustomAttrs]);
+  useEffect(() => {
+    if (url && tasks.length && stateEid && stateRid) {
+      (async () => {
+        const wmap = new WeakMap(
+          await Promise.all(
+            tasks.map(async item => {
+              const { data: custom_attr_val } = await axios.get(
+                `${baseUrl(url)}/tasks/custom-attributes-values/${item.id}`
+              );
+              return [item, custom_attr_val] as [ITask, ICustomValue];
+            })
+          )
+        );
+        setCustomValueMap(wmap);
+      })();
+    }
+  }, [url, tasks, stateEid, stateRid, setCustomValueMap]);
 
   return (
     <div className="row">

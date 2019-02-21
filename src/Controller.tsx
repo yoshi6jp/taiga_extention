@@ -1,7 +1,7 @@
-import React, { useContext, useState, useCallback } from 'react';
-import _ from 'lodash';
-import classNames from 'classnames';
-import { RootContext } from './Provider';
+import React, { useContext, useState, useCallback } from "react";
+import _ from "lodash";
+import classNames from "classnames";
+import { RootContext } from "./Provider";
 import {
   Card,
   CardHeader,
@@ -12,21 +12,21 @@ import {
   InputGroupAddon,
   Button,
   Badge
-} from 'reactstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+} from "reactstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronCircleRight,
   faExternalLinkAlt
-} from '@fortawesome/free-solid-svg-icons';
-import { ProjectSelector } from './ProjectSelector';
-import { MilestoneSelector } from './MilestoneSelector';
-import { CustomValuesSelector } from './CustomValuesSelector';
-import { DaysSelector, getMilestone } from './DaysSelector';
-import { TaskStatusSelector } from './TaskStatusSelector';
-import { IMilestone } from './store';
-import styles from './Controller.module.css';
+} from "@fortawesome/free-solid-svg-icons";
+import { ProjectSelector } from "./ProjectSelector";
+import { MilestoneSelector } from "./MilestoneSelector";
+import { CustomValuesSelector } from "./CustomValuesSelector";
+import { DaysSelector, getMilestone } from "./DaysSelector";
+import { TaskStatusSelector } from "./TaskStatusSelector";
+import { IMilestone } from "./store";
+import styles from "./Controller.module.css";
 const getSpName = (mid: string, items: IMilestone[]) =>
-  _.get(getMilestone(mid, items), 'name', '');
+  _.get(getMilestone(mid, items), "name", "");
 const getTaskboardUrl = (url: string, mid: string, items: IMilestone[]) => {
   const milestone = getMilestone(mid, items);
   if (url && milestone) {
@@ -34,7 +34,7 @@ const getTaskboardUrl = (url: string, mid: string, items: IMilestone[]) => {
       milestone.slug
     }`;
   } else {
-    return '';
+    return "";
   }
 };
 
@@ -42,7 +42,7 @@ const getRange = (biz_days: string[]) => {
   if (biz_days.length > 1) {
     return `[${_.head(biz_days)} - ${_.last(biz_days)}]`;
   } else {
-    return '';
+    return "";
   }
 };
 export const Controller = () => {
@@ -52,7 +52,7 @@ export const Controller = () => {
     openController,
     closeController
   } = useContext(RootContext);
-  const [url, setStateUrl] = useState('');
+  const [url, setStateUrl] = useState("");
   const handleUrl = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setStateUrl(e.target.value);
@@ -72,16 +72,13 @@ export const Controller = () => {
     e.stopPropagation();
   }, []);
   const rotation = isOpen ? 90 : undefined;
-  const toggle = useCallback(
-    () => {
-      if (isOpen) {
-        closeController();
-      } else {
-        openController();
-      }
-    },
-    [openController, closeController, isOpen]
-  );
+  const toggle = useCallback(() => {
+    if (isOpen) {
+      closeController();
+    } else {
+      openController();
+    }
+  }, [openController, closeController, isOpen]);
   const taskboardUrl = getTaskboardUrl(stateUrl, mid, milestones);
   return (
     <Card>

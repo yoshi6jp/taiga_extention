@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from "lodash";
 export interface ICustomAttr {
   id: number;
   name: string;
@@ -79,19 +79,19 @@ export interface IState {
 }
 
 export enum StorageKey {
-  URL = 'taiga_url',
-  PID = 'taiga_pid',
-  MID = 'taiga_mid',
-  CUSTOM_EID = 'taiga_custom_eid',
-  CUSTOM_RID = 'taiga_custom_rid',
-  BIZ_DAYS = 'taiga_biz_days',
-  REJECT_TASK_STATUS_IDS = 'reject_task_status_ids'
+  URL = "taiga_url",
+  PID = "taiga_pid",
+  MID = "taiga_mid",
+  CUSTOM_EID = "taiga_custom_eid",
+  CUSTOM_RID = "taiga_custom_rid",
+  BIZ_DAYS = "taiga_biz_days",
+  REJECT_TASK_STATUS_IDS = "reject_task_status_ids"
 }
 
-export const getFromStorage = (key: string) => localStorage.getItem(key) || '';
+export const getFromStorage = (key: string) => localStorage.getItem(key) || "";
 
 export const getFromStorageWithSubkey = (key: StorageKey, subkey: string) =>
-  subkey ? getFromStorage(`${subkey}/${key}`) : '';
+  subkey ? getFromStorage(`${subkey}/${key}`) : "";
 
 export const setToStorage = (key: string, item: string) => {
   localStorage.setItem(key, item);
@@ -110,9 +110,9 @@ export const initialStateFn = (): IState => {
   const custom_eid = getFromStorageWithSubkey(StorageKey.CUSTOM_EID, pid);
   const custom_rid = getFromStorageWithSubkey(StorageKey.CUSTOM_RID, pid);
   const biz_days_str = getFromStorageWithSubkey(StorageKey.BIZ_DAYS, mid);
-  const biz_days = _.compact(biz_days_str.split(',')).sort();
+  const biz_days = _.compact(biz_days_str.split(",")).sort();
   const reject_task_status_ids = _.compact(
-    getFromStorageWithSubkey(StorageKey.REJECT_TASK_STATUS_IDS, pid).split(',')
+    getFromStorageWithSubkey(StorageKey.REJECT_TASK_STATUS_IDS, pid).split(",")
   );
   const isOpen = !(url && pid && mid && custom_eid && custom_rid);
   return {

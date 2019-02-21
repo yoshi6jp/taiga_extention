@@ -1,11 +1,11 @@
-import _ from 'lodash';
-import { initialStateFn, IState, StorageKey } from './store';
-import { ActionTypes, IAction } from './actions';
+import _ from "lodash";
+import { initialStateFn, IState, StorageKey } from "./store";
+import { ActionTypes, IAction } from "./actions";
 import {
   setToStorage,
   setToStorageWithSubkey,
   getFromStorageWithSubkey
-} from './store';
+} from "./store";
 export const reducer = (state = initialStateFn(), action: IAction) => {
   switch (action.type) {
     case ActionTypes.SET_URL: {
@@ -19,7 +19,7 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       return {
         ...state,
         pid,
-        mid: '',
+        mid: "",
         custom_eid: getFromStorageWithSubkey(StorageKey.CUSTOM_EID, pid),
         custom_rid: getFromStorageWithSubkey(StorageKey.CUSTOM_RID, pid),
         custom_attrs: [],
@@ -35,7 +35,7 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
         mid,
         tasks: [],
         biz_days: _.compact(
-          getFromStorageWithSubkey(StorageKey.BIZ_DAYS, mid).split(',')
+          getFromStorageWithSubkey(StorageKey.BIZ_DAYS, mid).split(",")
         ).sort()
       } as IState;
     }
@@ -62,7 +62,7 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       setToStorageWithSubkey(
         StorageKey.BIZ_DAYS,
         state.mid,
-        biz_days.join(',')
+        biz_days.join(",")
       );
       return { ...state, biz_days } as IState;
     }
@@ -75,7 +75,7 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       setToStorageWithSubkey(
         StorageKey.BIZ_DAYS,
         state.mid,
-        biz_days.join(',')
+        biz_days.join(",")
       );
       return { ...state, biz_days } as IState;
     }
@@ -85,7 +85,7 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       setToStorageWithSubkey(
         StorageKey.BIZ_DAYS,
         state.mid,
-        biz_days.join(',')
+        biz_days.join(",")
       );
       return { ...state, biz_days } as IState;
     }
@@ -106,7 +106,7 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       setToStorageWithSubkey(
         StorageKey.REJECT_TASK_STATUS_IDS,
         state.pid,
-        reject_task_status_ids.join(',')
+        reject_task_status_ids.join(",")
       );
       return { ...state, reject_task_status_ids } as IState;
     }
@@ -122,7 +122,7 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       setToStorageWithSubkey(
         StorageKey.REJECT_TASK_STATUS_IDS,
         state.pid,
-        reject_task_status_ids.join(',')
+        reject_task_status_ids.join(",")
       );
       return { ...state, reject_task_status_ids } as IState;
     }
@@ -135,7 +135,7 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       setToStorageWithSubkey(
         StorageKey.REJECT_TASK_STATUS_IDS,
         state.pid,
-        reject_task_status_ids.join(',')
+        reject_task_status_ids.join(",")
       );
       return { ...state, reject_task_status_ids } as IState;
     }

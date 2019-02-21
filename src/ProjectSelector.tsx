@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useContext, useState } from 'react';
-import axios from 'axios';
-import { Input, InputGroup, InputGroupAddon } from 'reactstrap';
-import { RootContext, baseUrl } from './Provider';
-import { IProject } from './store';
+import React, { useCallback, useEffect, useContext, useState } from "react";
+import axios from "axios";
+import { Input, InputGroup, InputGroupAddon } from "reactstrap";
+import { RootContext, baseUrl } from "./Provider";
+import { IProject } from "./store";
 export const ProjectSelector = () => {
   const {
     state: { url, pid: statePid },
@@ -18,17 +18,14 @@ export const ProjectSelector = () => {
     },
     [setPid]
   );
-  useEffect(
-    () => {
-      if (url) {
-        (async () => {
-          const { data: items } = await axios.get(`${baseUrl(url)}/projects`);
-          setItems(items);
-        })();
-      }
-    },
-    [url, setItems]
-  );
+  useEffect(() => {
+    if (url) {
+      (async () => {
+        const { data: items } = await axios.get(`${baseUrl(url)}/projects`);
+        setItems(items);
+      })();
+    }
+  }, [url, setItems]);
 
   return (
     <InputGroup className="col">

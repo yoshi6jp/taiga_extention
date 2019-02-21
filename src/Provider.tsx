@@ -1,5 +1,5 @@
-import React, { createContext, useReducer, useCallback } from 'react';
-import { ActionTypes } from './actions';
+import React, { createContext, useReducer, useCallback } from "react";
+import { ActionTypes } from "./actions";
 import {
   initialStateFn,
   IMilestone,
@@ -7,10 +7,10 @@ import {
   ITask,
   ICustomValueMap,
   ITaskStatus
-} from './store';
-import { reducer } from './reducer';
-import _ from 'lodash';
-export const baseUrl = (url: string) => `${url.replace(/[¥/]$/, '')}/api/v1`;
+} from "./store";
+import { reducer } from "./reducer";
+import _ from "lodash";
+export const baseUrl = (url: string) => `${url.replace(/[¥/]$/, "")}/api/v1`;
 
 const initialState = initialStateFn();
 export const RootContext = createContext({
@@ -138,26 +138,17 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
       },
       [dispatch]
     ),
-    openController: useCallback(
-      () => {
-        dispatch({ type: ActionTypes.OPEN_CONTROLLER });
-      },
-      [dispatch]
-    ),
-    closeController: useCallback(
-      () => {
-        dispatch({ type: ActionTypes.CLOSE_CONTROLLER });
-      },
-      [dispatch]
-    ),
-    updateData: useCallback(
-      () => {
-        dispatch({
-          type: ActionTypes.UPDATE_DATA
-        });
-      },
-      [dispatch]
-    )
+    openController: useCallback(() => {
+      dispatch({ type: ActionTypes.OPEN_CONTROLLER });
+    }, [dispatch]),
+    closeController: useCallback(() => {
+      dispatch({ type: ActionTypes.CLOSE_CONTROLLER });
+    }, [dispatch]),
+    updateData: useCallback(() => {
+      dispatch({
+        type: ActionTypes.UPDATE_DATA
+      });
+    }, [dispatch])
   };
   return <RootContext.Provider value={value}>{children}</RootContext.Provider>;
 };

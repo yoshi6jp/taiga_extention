@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react';
-import classNames from 'classnames';
+import React, { useEffect, useState, useContext, useCallback } from "react";
+import classNames from "classnames";
 import {
   UncontrolledTooltip,
   Table,
@@ -9,26 +9,26 @@ import {
   Label,
   FormGroup,
   Badge
-} from 'reactstrap';
-import { IMilestone } from './store';
-import { RootContext } from './Provider';
-import moment, { Moment } from 'moment';
-import biz from 'moment-business';
-import _ from 'lodash';
+} from "reactstrap";
+import { IMilestone } from "./store";
+import { RootContext } from "./Provider";
+import moment, { Moment } from "moment";
+import biz from "moment-business";
+import _ from "lodash";
 export const isToday = (date: string) => {
   moment()
     .local()
-    .format('YYYY-MM-DD') ===
+    .format("YYYY-MM-DD") ===
     moment(date)
       .local()
-      .format('YYYY-MM-DD');
+      .format("YYYY-MM-DD");
 };
 export const dayNameFromIdx = (date: string, idx: number) => {
   if (idx === -1) {
-    return '';
+    return "";
   }
   if (idx === 0) {
-    return 'Planning';
+    return "Planning";
   }
   return `Day ${idx}`;
 };
@@ -42,17 +42,17 @@ export const getMilestone = (mid: string, items: IMilestone[]) =>
 const getDays = (item: IMilestone) => {
   const startM = moment(item.estimated_start).local();
   const finishM = moment(item.estimated_finish).local();
-  const daysInSprint = finishM.diff(startM, 'days');
-  return _.times(daysInSprint).map(i => startM.clone().add(i, 'days'));
+  const daysInSprint = finishM.diff(startM, "days");
+  return _.times(daysInSprint).map(i => startM.clone().add(i, "days"));
 };
 const getDefaultBizDays = (items: Moment[]) =>
   items
     .filter(item => biz.isWeekDay(item))
-    .map(item => item.format('YYYY-MM-DD'));
+    .map(item => item.format("YYYY-MM-DD"));
 
 const weekClassName = (day: number) => ({
-  'text-danger': day === 0,
-  'text-info': day === 6
+  "text-danger": day === 0,
+  "text-info": day === 6
 });
 
 const DayItem = ({
@@ -72,7 +72,7 @@ const DayItem = ({
     );
   }
   const { addBizDay, removeBizDay } = useContext(RootContext);
-  const value = item.format('YYYY-MM-DD');
+  const value = item.format("YYYY-MM-DD");
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const bizDay = e.target.value;
@@ -85,7 +85,7 @@ const DayItem = ({
   return (
     <>
       <td
-        className={classNames(weekClassName(idx), { 'table-info': isPlanning })}
+        className={classNames(weekClassName(idx), { "table-info": isPlanning })}
         id={eleId}
       >
         {biz.isWeekDay(item) ? (
@@ -121,19 +121,16 @@ export const DaysSelector = () => {
     setBizDays
   } = useContext(RootContext);
   const [items, setItems] = useState<Moment[]>([]);
-  useEffect(
-    () => {
-      const milestone = getMilestone(mid, milestones);
-      if (milestone) {
-        const items = getDays(milestone);
-        setItems(items);
-        if (biz_days.length <= 1) {
-          setBizDays(getDefaultBizDays(items));
-        }
+  useEffect(() => {
+    const milestone = getMilestone(mid, milestones);
+    if (milestone) {
+      const items = getDays(milestone);
+      setItems(items);
+      if (biz_days.length <= 1) {
+        setBizDays(getDefaultBizDays(items));
       }
-    },
-    [mid, milestones, biz_days]
-  );
+    }
+  }, [mid, milestones, biz_days]);
   if (items.length === 0) {
     return null;
   } else {
@@ -150,7 +147,7 @@ export const DaysSelector = () => {
               {moment.weekdays().map((item, idx) => (
                 <th
                   key={idx}
-                  className={classNames('text-center', weekClassName(idx))}
+                  className={classNames("text-center", weekClassName(idx))}
                 >
                   {item}
                 </th>

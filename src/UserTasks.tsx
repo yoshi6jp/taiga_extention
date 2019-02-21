@@ -1,8 +1,8 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import axios from 'axios';
-import { ICustomValueMap, IProject, IUser, ITask, ICustomAttr } from './store';
-import { RootContext, baseUrl } from './Provider';
-import classNames from 'classnames';
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import axios from "axios";
+import { ICustomValueMap, IProject, IUser, ITask, ICustomAttr } from "./store";
+import { RootContext, baseUrl } from "./Provider";
+import classNames from "classnames";
 import {
   Table,
   Button,
@@ -13,9 +13,9 @@ import {
   InputGroupAddon,
   InputGroupText,
   Progress
-} from 'reactstrap';
-import _ from 'lodash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+} from "reactstrap";
+import _ from "lodash";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSyncAlt,
   faMedal,
@@ -24,18 +24,18 @@ import {
   faGrinBeam,
   faGrinBeamSweat,
   faDizzy
-} from '@fortawesome/free-solid-svg-icons';
-import styles from './UserTasks.module.css';
-import moment from 'moment';
+} from "@fortawesome/free-solid-svg-icons";
+import styles from "./UserTasks.module.css";
+import moment from "moment";
 
-const barStyles = ['success', 'warning', 'info', 'danger'];
-const getTasksByUser = (items: ITask[]) => _.groupBy(items, 'assigned_to');
+const barStyles = ["success", "warning", "info", "danger"];
+const getTasksByUser = (items: ITask[]) => _.groupBy(items, "assigned_to");
 const getClosedTasks = (items: ITask[]) => items.filter(item => item.is_closed);
 export const parseCustomVal = (val: string) =>
   _.chain(val)
-    .replace(/[^0-9.+,]/g, '')
-    .replace(/[+]/g, ',')
-    .split(',')
+    .replace(/[^0-9.+,]/g, "")
+    .replace(/[+]/g, ",")
+    .split(",")
     .compact()
     .map(Number)
     .sum()
@@ -48,7 +48,7 @@ export const getCustomVal = (
 ) => {
   if (custom_value_map.has(task)) {
     return parseCustomVal(
-      _.get(custom_value_map.get(task), `attributes_values.${id}`, '0')
+      _.get(custom_value_map.get(task), `attributes_values.${id}`, "0")
     );
   } else {
     return 0;
@@ -58,13 +58,13 @@ const getGrade = (e: number, r: number): [string | null, number] => {
   if (_.isNumber(e) && _.isNumber(r) && e > 0) {
     const diff = Math.abs(e - r) / e;
     if (diff <= 0.05) {
-      return ['gold', 3];
+      return ["gold", 3];
     }
     if (diff <= 0.1) {
-      return ['silver', 2];
+      return ["silver", 2];
     }
     if (diff < 0.2) {
-      return ['bronze', 1];
+      return ["bronze", 1];
     }
   }
   return [null, 0];
@@ -95,15 +95,15 @@ const NameAndWorkLoad = ({
   let tblCls;
   if (diff < -0.1) {
     icon = faGrinBeam;
-    tblCls = '';
+    tblCls = "";
   } else if (diff <= 0.1) {
-    tblCls = 'table-success';
+    tblCls = "table-success";
     icon = faGrinBeam;
   } else if (diff <= 0.2) {
-    tblCls = 'table-warning';
+    tblCls = "table-warning";
     icon = faGrinBeamSweat;
   } else {
-    tblCls = 'table-danger';
+    tblCls = "table-danger";
     icon = faDizzy;
   }
   return (
@@ -112,7 +112,7 @@ const NameAndWorkLoad = ({
         <img className={styles.avator} src={imgSrc} /> {username}
         <FontAwesomeIcon className="mx-1" icon={icon} />
       </td>
-      <td className={classNames(tblCls, 'text-right')}>{val}</td>
+      <td className={classNames(tblCls, "text-right")}>{val}</td>
     </>
   );
 };
@@ -164,56 +164,53 @@ const UserRow = ({
     [setTotal]
   );
   const sumItem = _.get(sums, item.id);
-  const e = _.get(sumItem, 'e');
-  const r = _.get(sumItem, 'r');
+  const e = _.get(sumItem, "e");
+  const r = _.get(sumItem, "r");
   const margedTotal = customTotal || total;
   const totalStr = String(margedTotal);
   const imgSrc = item.photo || `http://i.pravatar.cc/80?u=${Math.random()}`;
-  useEffect(
-    () => {
-      const closed_status = _.chain(task_status)
-        .filter(item => item.is_closed)
-        .reject(item => _.includes(reject_task_status_ids, String(item.id)))
-        .orderBy('id')
-        .reverse()
-        .map(item => item.id)
-        .value();
-      const closedTotals = _.chain(closedTasks)
-        .groupBy('status')
-        .mapValues(ts =>
-          _.reduce(
-            ts,
-            (result, t) => {
-              result.status = t.status;
-              result.total += getCustomVal(
-                custom_value_map,
-                t,
-                Number(custom_eid)
-              );
-              result.label = t.status_extra_info.name;
-              return result;
-            },
-            { status: 0, total: 0, label: '', style: '' }
-          )
+  useEffect(() => {
+    const closed_status = _.chain(task_status)
+      .filter(item => item.is_closed)
+      .reject(item => _.includes(reject_task_status_ids, String(item.id)))
+      .orderBy("id")
+      .reverse()
+      .map(item => item.id)
+      .value();
+    const closedTotals = _.chain(closedTasks)
+      .groupBy("status")
+      .mapValues(ts =>
+        _.reduce(
+          ts,
+          (result, t) => {
+            result.status = t.status;
+            result.total += getCustomVal(
+              custom_value_map,
+              t,
+              Number(custom_eid)
+            );
+            result.label = t.status_extra_info.name;
+            return result;
+          },
+          { status: 0, total: 0, label: "", style: "" }
         )
-        .value();
-      const sortedTotals = _.orderBy(closedTotals, 'status')
-        .reverse()
-        .map(item => ({
-          ...item,
-          style: barStyles[closed_status.indexOf(item.status)]
-        }));
-      setProgressTotal(sortedTotals);
-    },
-    [
-      setProgressTotal,
-      custom_eid,
-      custom_value_map,
-      closedTasks,
-      task_status,
-      reject_task_status_ids
-    ]
-  );
+      )
+      .value();
+    const sortedTotals = _.orderBy(closedTotals, "status")
+      .reverse()
+      .map(item => ({
+        ...item,
+        style: barStyles[closed_status.indexOf(item.status)]
+      }));
+    setProgressTotal(sortedTotals);
+  }, [
+    setProgressTotal,
+    custom_eid,
+    custom_value_map,
+    closedTasks,
+    task_status,
+    reject_task_status_ids
+  ]);
   return (
     <tr key={item.id}>
       {total > 0 ? (
@@ -313,19 +310,16 @@ export const UserTasks = () => {
   const [hpd, setHpd] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const activeLen = biz_days.length - 1;
-  useEffect(
-    () => {
-      if (url && pid) {
-        (async () => {
-          const {
-            data: { members }
-          } = await axios.get<IProject>(`${baseUrl(url)}/projects/${pid}`);
-          setItems(members);
-        })();
-      }
-    },
-    [url, pid, setItems]
-  );
+  useEffect(() => {
+    if (url && pid) {
+      (async () => {
+        const {
+          data: { members }
+        } = await axios.get<IProject>(`${baseUrl(url)}/projects/${pid}`);
+        setItems(members);
+      })();
+    }
+  }, [url, pid, setItems]);
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setHpd(Number(e.target.value) || 0);
@@ -336,12 +330,9 @@ export const UserTasks = () => {
     e.preventDefault();
     e.stopPropagation();
   }, []);
-  useEffect(
-    () => {
-      setTotal(hpd * activeLen);
-    },
-    [hpd, activeLen, setTotal]
-  );
+  useEffect(() => {
+    setTotal(hpd * activeLen);
+  }, [hpd, activeLen, setTotal]);
   const taskSumByUser = getTaskSumByUser(
     tasks,
     custom_value_map,
@@ -353,14 +344,14 @@ export const UserTasks = () => {
   if (!customAttrE || !customAttrR || biz_days.length <= 1) {
     return null;
   }
-  const unassignedSum = _.get(taskSumByUser, 'null.e', 0);
+  const unassignedSum = _.get(taskSumByUser, "null.e", 0);
   const isPlanning = total > 0;
   const isPast =
     !isPlanning &&
     moment().diff(
       moment(_.last(biz_days))
         .local()
-        .endOf('days')
+        .endOf("days")
     ) > 0;
   const tasksByUser = getTasksByUser(getClosedTasks(tasks));
   return (

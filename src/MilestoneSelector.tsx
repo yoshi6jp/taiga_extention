@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useContext, useState } from 'react';
-import axios from 'axios';
-import { Input, InputGroup, InputGroupAddon } from 'reactstrap';
-import { RootContext, baseUrl } from './Provider';
-import { IMilestone, ITask } from './store';
-import _ from 'lodash';
+import React, { useCallback, useEffect, useContext, useState } from "react";
+import axios from "axios";
+import { Input, InputGroup, InputGroupAddon } from "reactstrap";
+import { RootContext, baseUrl } from "./Provider";
+import { IMilestone, ITask } from "./store";
+import _ from "lodash";
 
 export const MilestoneSelector = () => {
   const {
@@ -22,45 +22,38 @@ export const MilestoneSelector = () => {
     },
     [setMid, items]
   );
-  useEffect(
-    () => {
-      if (url && pid) {
-        (async () => {
-          const { data: items } = await axios.get(
-            `${baseUrl(url)}/milestones`,
-            { params: { project: pid } }
-          );
-          setItems(items);
-          setMilestones(items);
-        })();
-      }
-    },
-    [url, pid]
-  );
-  useEffect(
-    () => {
-      if (url && stateMid) {
-        (async () => {
-          const { data: items } = await axios.get<ITask[]>(
-            `${baseUrl(url)}/tasks`,
-            {
-              headers: {
-                'x-disable-pagination': true
-              },
-              params: {
-                milestone: stateMid
-              }
+  useEffect(() => {
+    if (url && pid) {
+      (async () => {
+        const { data: items } = await axios.get(`${baseUrl(url)}/milestones`, {
+          params: { project: pid }
+        });
+        setItems(items);
+        setMilestones(items);
+      })();
+    }
+  }, [url, pid]);
+  useEffect(() => {
+    if (url && stateMid) {
+      (async () => {
+        const { data: items } = await axios.get<ITask[]>(
+          `${baseUrl(url)}/tasks`,
+          {
+            headers: {
+              "x-disable-pagination": true
+            },
+            params: {
+              milestone: stateMid
             }
-          );
-          const tasks = items.filter(
-            item => !_.includes(reject_task_status_ids, String(item.status))
-          );
-          setTasks(tasks);
-        })();
-      }
-    },
-    [url, stateMid, updated_time, reject_task_status_ids]
-  );
+          }
+        );
+        const tasks = items.filter(
+          item => !_.includes(reject_task_status_ids, String(item.status))
+        );
+        setTasks(tasks);
+      })();
+    }
+  }, [url, stateMid, updated_time, reject_task_status_ids]);
 
   return (
     <InputGroup className="col">
