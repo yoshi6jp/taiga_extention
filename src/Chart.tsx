@@ -23,14 +23,13 @@ interface IChartItem {
 }
 
 const getTaskFinished = (tasks: ITask[], date: string) =>
-  tasks.filter(
-    task =>
-      task.finished_date
-        ? moment(date)
-            .local()
-            .endOf("days")
-            .diff(moment(task.finished_date)) > 0
-        : false
+  tasks.filter(task =>
+    task.finished_date
+      ? moment(date)
+          .local()
+          .endOf("days")
+          .diff(moment(task.finished_date)) > 0
+      : false
   );
 
 const getTaskCreatedToday = (tasks: ITask[], date: string) =>

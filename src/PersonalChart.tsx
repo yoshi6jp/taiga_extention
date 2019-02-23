@@ -9,15 +9,12 @@ export const PersonalChart = ({ userInfo }: { userInfo: IUser }) => {
   const {
     state: { tasks }
   } = useContext(RootContext);
-  useEffect(
-    () => {
-      const userTasks = tasks
-        .filter(task => task.assigned_to === userInfo.id)
-        .sort((a, b) => a.user_story - b.user_story);
-      setUserTasks(userTasks);
-    },
-    [tasks]
-  );
+  useEffect(() => {
+    const userTasks = tasks
+      .filter(task => task.assigned_to === userInfo.id)
+      .sort((a, b) => a.user_story - b.user_story);
+    setUserTasks(userTasks);
+  }, [tasks]);
 
   return <Chart tasks={userTasks} />;
 };

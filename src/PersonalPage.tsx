@@ -20,19 +20,16 @@ export const PersonalPage = (props: RouteComponentProps<{ uid: string }>) => {
     updateData
   } = useContext(RootContext);
   const [userInfo, setUserInfo] = useState<IUser | undefined>(undefined);
-  useEffect(
-    () => {
-      if (url) {
-        (async () => {
-          const { data } = await axios.get<IUser>(
-            `${baseUrl(url)}/users/${props.match.params.uid}`
-          );
-          setUserInfo(data);
-        })();
-      }
-    },
-    [url, setUserInfo]
-  );
+  useEffect(() => {
+    if (url) {
+      (async () => {
+        const { data } = await axios.get<IUser>(
+          `${baseUrl(url)}/users/${props.match.params.uid}`
+        );
+        setUserInfo(data);
+      })();
+    }
+  }, [url, setUserInfo]);
   const goBack = () => {
     props.history.goBack();
   };
