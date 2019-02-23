@@ -61,10 +61,10 @@ const getSumVal = (
     .sum()
     .value();
 };
-export const Chart = () => {
+export const Chart = ({ tasks }: { tasks: ITask[] }) => {
   const [data, setData] = useState<IChartItem[]>([]);
   const {
-    state: { tasks, biz_days, custom_value_map, custom_eid }
+    state: { biz_days, custom_value_map, custom_eid }
   } = useContext(RootContext);
   useEffect(() => {
     const days_len = biz_days.length;

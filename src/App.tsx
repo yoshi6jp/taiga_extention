@@ -1,16 +1,19 @@
 import React from "react";
-import { Chart } from "./Chart";
 import { Controller } from "./Controller";
-import { UserTasks } from "./UserTasks";
-import { UnEstimatedTasks } from "./UnEstimatedTasks";
 import { Provider } from "./Provider";
+import { BrowserRouter, Route } from "react-router-dom";
+import { PersonalPage } from "./PersonalPage";
+import { OverView } from "./OverView";
 export const App = () => (
   <div className="container">
     <Provider>
       <Controller />
-      <UserTasks />
-      <UnEstimatedTasks />
-      <Chart />
+      <BrowserRouter>
+        <div>
+          <Route exact path="/" component={OverView} />
+          <Route exact path="/:uid" component={PersonalPage} />
+        </div>
+      </BrowserRouter>
     </Provider>
   </div>
 );

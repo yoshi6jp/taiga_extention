@@ -27,6 +27,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import styles from "./UserTasks.module.css";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 const barStyles = ["success", "warning", "info", "danger"];
 const getTasksByUser = (items: ITask[]) => _.groupBy(items, "assigned_to");
@@ -117,7 +118,7 @@ const NameAndWorkLoad = ({
   );
 };
 
-const Medal = ({ e, r }: { e: number; r: number }) => {
+export const Medal = ({ e, r }: { e: number; r: number }) => {
   const [grade, num] = getGrade(e, r);
   if (grade) {
     return (
@@ -236,7 +237,8 @@ const UserRow = ({
       ) : (
         <>
           <td>
-            <img className={styles.avator} src={imgSrc} /> {item.username}
+            <img className={styles.avator} src={imgSrc} />{" "}
+            <Link to={`/${item.id}`}>{item.username}</Link>
           </td>
           <td className="text-right">{e}</td>
           <td className="text-right">{r}</td>
@@ -290,7 +292,7 @@ const getTaskSumByUser = (
   );
   return tasksByUser;
 };
-const getCustomAttr = (items: ICustomAttr[], id: number) =>
+export const getCustomAttr = (items: ICustomAttr[], id: number) =>
   items.find(item => item.id === id);
 export const UserTasks = () => {
   const {
