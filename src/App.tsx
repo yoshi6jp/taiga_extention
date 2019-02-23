@@ -1,20 +1,18 @@
 import React from "react";
 import { Controller } from "./Controller";
 import { Provider } from "./Provider";
-import { BrowserRouter, Route } from "react-router-dom";
-import { PersonalPage } from "./PersonalPage";
+import { HashRouter, Route } from "react-router-dom";
 import { OverView } from "./OverView";
+import { PersonalPage } from "./PersonalPage";
 export const App = () => (
   <div className="container">
-    <Provider>
-      <Controller />
-      <BrowserRouter>
-        <div>
-          <Route exact path="/" component={OverView} />
-          <Route exact path="/:uid" component={PersonalPage} />
-        </div>
-      </BrowserRouter>
-    </Provider>
+    <HashRouter>
+      <Provider>
+        <Controller />
+        <Route exact path="/" component={OverView} />
+        <Route exact path="/:uid" component={PersonalPage} />
+      </Provider>
+    </HashRouter>
   </div>
 );
 export default App;
