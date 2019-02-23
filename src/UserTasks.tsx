@@ -237,7 +237,7 @@ const UserRow = ({
       ) : (
         <>
           <td>
-            <img className={styles.avator} src={imgSrc} />
+            <img className={styles.avator} src={imgSrc} />{" "}
             <Link to={`/${item.id}`}>{item.username}</Link>
           </td>
           <td className="text-right">{e}</td>
