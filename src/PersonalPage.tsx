@@ -13,6 +13,7 @@ import {
   faSyncAlt,
   faArrowCircleLeft
 } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 export const PersonalPage = (props: RouteComponentProps<{ uid: string }>) => {
   const {
@@ -30,14 +31,11 @@ export const PersonalPage = (props: RouteComponentProps<{ uid: string }>) => {
       })();
     }
   }, [url, setUserInfo]);
-  const goBack = () => {
-    props.history.goBack();
-  };
 
   return (
     <>
       <Navbar color="light" light>
-        <Button onClick={goBack}>
+        <Button tag={Link} to="/">
           <FontAwesomeIcon icon={faArrowCircleLeft} /> Go back
         </Button>
         <Button onClick={updateData}>
