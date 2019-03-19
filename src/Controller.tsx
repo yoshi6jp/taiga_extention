@@ -25,6 +25,7 @@ import { DaysSelector, getMilestone } from "./DaysSelector";
 import { TaskStatusSelector } from "./TaskStatusSelector";
 import { IMilestone } from "./store";
 import styles from "./Controller.module.css";
+import { ActionTypes } from "./actions";
 const getSpName = (mid: string, items: IMilestone[]) =>
   _.get(getMilestone(mid, items), "name", "");
 const getTaskboardUrl = (url: string, mid: string, items: IMilestone[]) => {
@@ -48,9 +49,9 @@ const getRange = (biz_days: string[]) => {
 export const Controller = () => {
   const {
     state: { url: stateUrl, isOpen, mid, milestones, biz_days },
-    setUrl,
     openController,
-    closeController
+    closeController,
+    dispatch
   } = useContext(RootContext);
   const [url, setStateUrl] = useState("");
   const handleUrl = useCallback(
@@ -62,11 +63,11 @@ export const Controller = () => {
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       if (url) {
-        setUrl(url);
+        dispatch({ type: ActionTypes.SET_URL, payload: { url } });
       }
       e.preventDefault();
     },
-    [url, setUrl]
+    [url, dispatch]
   );
   const handleHref = useCallback((e: React.FormEvent) => {
     e.stopPropagation();

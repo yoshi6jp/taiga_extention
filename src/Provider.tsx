@@ -9,12 +9,14 @@ import {
   ITaskStatus
 } from "./store";
 import { reducer } from "./reducer";
+import _ from "lodash";
+import { Actions } from "./actions";
 export const baseUrl = (url: string) => `${url.replace(/[¥/]$/, "")}/api/v1`;
 
 const initialState = initialStateFn();
 export const RootContext = createContext({
   state: initialState,
-  setUrl: (url: string) => {},
+  dispatch: (action: Actions) => {},
   setPid: (pid: string) => {},
   setMid: (mid: string) => {},
   setMilestones: (milestones: IMilestone[]) => {},
@@ -37,6 +39,7 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const value = {
     state,
+    dispatch,
     setUrl: useCallback(
       (url: string) => {
         dispatch({ type: ActionTypes.SET_URL, payload: { url } });

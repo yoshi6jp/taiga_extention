@@ -25,3 +25,10 @@ export interface IAction {
   payload?: any;
   meta?: { [key: string]: any };
 }
+
+export interface SET_URL extends IAction {
+  type: ActionTypes.SET_URL;
+  payload: { url: string };
+}
+
+export type Actions = SET_URL;
