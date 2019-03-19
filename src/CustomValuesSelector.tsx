@@ -44,7 +44,7 @@ export const CustomValuesSelector = () => {
         setCustomAttrs(items);
       })();
     }
-  }, [url, pid, setItems, setCustomAttrs]);
+  }, [url, pid]);
   useEffect(() => {
     if (url && tasks.length && stateEid && stateRid) {
       (async () => {
@@ -61,7 +61,7 @@ export const CustomValuesSelector = () => {
         setCustomValueMap(wmap);
       })();
     }
-  }, [url, tasks, stateEid, stateRid, setCustomValueMap]);
+  }, [url, tasks]);
 
   return (
     <div className="row">

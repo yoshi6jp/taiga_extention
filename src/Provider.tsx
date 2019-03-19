@@ -11,6 +11,8 @@ import {
 import { reducer } from "./reducer";
 import _ from "lodash";
 import { Actions } from "./actions";
+import { useSideEffector } from "./util/useSideEffector";
+import { rootSideEffector } from "./sideEffectors";
 export const baseUrl = (url: string) => `${url.replace(/[¥/]$/, "")}/api/v1`;
 
 const initialState = initialStateFn();
@@ -36,7 +38,10 @@ export const RootContext = createContext({
 });
 
 export const Provider = ({ children }: { children: React.ReactNode }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useSideEffector(
+    useReducer(reducer, initialState),
+    rootSideEffector
+  );
   const value = {
     state,
     dispatch,
@@ -112,8 +117,8 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
     setTaskStatus: useCallback(
       (task_status: ITaskStatus[]) => {
         dispatch({
-          type: ActionTypes.SET_TASK_STATUS,
-          payload: { task_status }
+          type: ActionTypes.SET_TASK_STATUSES,
+          payload: { task_statuses: task_status }
         });
       },
       [dispatch]
@@ -130,13 +135,24 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
     ),
     toggeRejectTaskStatus: useCallback(
       (reject_task_status_id: string, is_reject: boolean) => {
-        const type = is_reject
-          ? ActionTypes.ADD_REJECT_TASK_STATUS_ID
-          : ActionTypes.REMOVE_REJECT_TASK_STATUS_ID;
-        dispatch({
-          type,
-          payload: { reject_task_status_id }
-        });
+        if (is_reject) {
+          dispatch({
+            type: ActionTypes.ADD_REJECT_TASK_STATUS_ID,
+            payload: { reject_task_status_id }
+          });
+        } else {
+          dispatch({
+            type: ActionTypes.REMOVE_REJECT_TASK_STATUS_ID,
+            payload: { reject_task_status_id }
+          });
+        }
+        // const type = is_reject
+        //   ? ActionTypes.ADD_REJECT_TASK_STATUS_ID
+        //   : ActionTypes.REMOVE_REJECT_TASK_STATUS_ID;
+        // dispatch({
+        //   type,
+        //   payload: { reject_task_status_id }
+        // });
       },
       [dispatch]
     ),
