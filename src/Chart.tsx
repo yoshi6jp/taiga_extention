@@ -97,17 +97,6 @@ export const Chart = ({ tasks }: { tasks: ITask[] }) => {
             .endOf("days")
             .diff(moment(day)) > 0
         ) {
-          const result =
-            getSumVal(
-              custom_value_map,
-              getTaskCreatedBetween(tasks, biz_days[0], day),
-              custom_eid
-            ) -
-            getSumVal(
-              custom_value_map,
-              getTaskFinished(tasks, day),
-              custom_eid
-            );
           const add =
             idx === 0
               ? 0
@@ -116,6 +105,18 @@ export const Chart = ({ tasks }: { tasks: ITask[] }) => {
                   getTaskCreatedToday(tasks, day),
                   custom_eid
                 );
+          const result =
+            getSumVal(
+              custom_value_map,
+              getTaskCreatedBetween(tasks, biz_days[0], day),
+              custom_eid
+            ) -
+            add -
+            getSumVal(
+              custom_value_map,
+              getTaskFinished(tasks, day),
+              custom_eid
+            );
           return { label, estimate, result, add };
         } else {
           return { label, estimate };
