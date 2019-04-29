@@ -13,6 +13,13 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       setToStorage(StorageKey.URL, url);
       return { ...state, url } as IState;
     }
+    case ActionTypes.SET_PROJECTS: {
+      const { projects } = action.payload;
+      return {
+        ...state,
+        projects
+      } as IState;
+    }
     case ActionTypes.SET_PID: {
       const { pid } = action.payload;
       setToStorage(StorageKey.PID, pid);

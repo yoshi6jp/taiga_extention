@@ -71,6 +71,7 @@ export interface IProject {
 export type ICustomValueMap = WeakMap<ITask, ICustomValue>;
 export interface IState {
   url: string;
+  projects: IProject[];
   pid: string; // url
   mid: string; // url
   custom_eid: string; //  pid
@@ -123,6 +124,7 @@ export const initialStateFn = (): IState => {
   const isOpen = !(url && pid && mid && custom_eid && custom_rid);
   return {
     url,
+    projects: [],
     pid,
     mid,
     custom_eid,

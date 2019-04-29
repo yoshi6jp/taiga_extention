@@ -1,4 +1,9 @@
-import React, { createContext, useReducer, useCallback } from "react";
+import React, {
+  createContext,
+  useReducer,
+  useCallback,
+  useEffect
+} from "react";
 import { ActionTypes } from "./actions";
 import {
   initialStateFn,
@@ -19,7 +24,8 @@ const initialState = initialStateFn();
 export const RootContext = createContext({
   state: initialState,
   dispatch: (action: Actions) => {},
-  setPid: (pid: string) => {},
+
+  // setPid: (pid: string) => {},
   setMid: (mid: string) => {},
   setMilestones: (milestones: IMilestone[]) => {},
   setCustomEid: (custom_eid: string) => {},
@@ -45,18 +51,12 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
   const value = {
     state,
     dispatch,
-    setUrl: useCallback(
-      (url: string) => {
-        dispatch({ type: ActionTypes.SET_URL, payload: { url } });
-      },
-      [dispatch]
-    ),
-    setPid: useCallback(
-      (pid: string) => {
-        dispatch({ type: ActionTypes.SET_PID, payload: { pid } });
-      },
-      [dispatch]
-    ),
+    // setPid: useCallback(
+    //   (pid: string) => {
+    //     dispatch({ type: ActionTypes.SET_PID, payload: { pid } });
+    //   },
+    //   [dispatch]
+    // ),
     setMid: useCallback(
       (mid: string) => {
         dispatch({ type: ActionTypes.SET_MID, payload: { mid } });
@@ -168,5 +168,26 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
       });
     }, [dispatch])
   };
+  useEffect(() => {
+    if (state.url) {
+      dispatch({ type: ActionTypes.FETCH_PROJECTS });
+    }
+  }, [state.url]);
+  useEffect(() => {
+    if (state.url && state.pid) {
+      dispatch({
+        type: ActionTypes.FETCH_MILESTONES,
+        payload: { project: state.pid }
+      });
+    }
+  }, [state.url, state.pid]);
+  useEffect(() => {
+    if (state.url && state.mid) {
+      dispatch({
+        type: ActionTypes.FETCH_TASKS,
+        payload: { milestone: state.mid }
+      });
+    }
+  }, [state.url, state.mid, state.updated_time, state.reject_task_status_ids]);
   return <RootContext.Provider value={value}>{children}</RootContext.Provider>;
 };

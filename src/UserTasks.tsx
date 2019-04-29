@@ -175,7 +175,8 @@ const UserRow = ({
   const r = _.get(sumItem, "r");
   const margedTotal = customTotal || total;
   const totalStr = String(margedTotal);
-  const imgSrc = item.photo || `http://i.pravatar.cc/80?u=${Math.random()}`;
+  // const imgSrc = item.photo || `http://i.pravatar.cc/80?u=${Math.random()}`;
+  const imgSrc = item.photo || "";
   useEffect(() => {
     const closed_status = _.chain(task_statuses)
       .filter(item => item.is_closed)

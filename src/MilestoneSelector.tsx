@@ -4,13 +4,22 @@ import { Input, InputGroup, InputGroupAddon } from "reactstrap";
 import { RootContext, baseUrl } from "./Provider";
 import { IMilestone, ITask } from "./store";
 import _ from "lodash";
+import { ActionTypes } from "./actions";
 
 export const MilestoneSelector = () => {
   const {
-    state: { url, pid, mid: stateMid, updated_time, reject_task_status_ids },
+    state: {
+      url,
+      milestones,
+      pid,
+      mid: stateMid,
+      updated_time,
+      reject_task_status_ids
+    },
     setMid,
     setMilestones,
-    setTasks
+    setTasks,
+    dispatch
   } = useContext(RootContext);
   const [items, setItems] = useState<IMilestone[]>([]);
   const handleChange = useCallback(
@@ -22,17 +31,21 @@ export const MilestoneSelector = () => {
     },
     [setMid]
   );
-  useEffect(() => {
-    if (url && pid) {
-      (async () => {
-        const { data: items } = await axios.get(`${baseUrl(url)}/milestones`, {
-          params: { project: pid }
-        });
-        setItems(items);
-        setMilestones(items);
-      })();
-    }
-  }, [url, pid, setMilestones]);
+  // useEffect(() => {
+  //   if (url && pid) {
+  //     (async () => {
+  //       const { data: items } = await axios.get(`${baseUrl(url)}/milestones`, {
+  //         params: { project: pid }
+  //       });
+  //       setItems(items);
+  //       // setMilestones(items);
+  //       dispatch({
+  //         type: ActionTypes.SET_MILESTONES,
+  //         payload: { milestones: items }
+  //       });
+  //     })();
+  //   }
+  // }, [url, pid]);
   useEffect(() => {
     if (url && stateMid) {
       (async () => {
@@ -50,17 +63,18 @@ export const MilestoneSelector = () => {
         const tasks = items.filter(
           item => !_.includes(reject_task_status_ids, String(item.status))
         );
-        setTasks(tasks);
+        // setTasks(tasks);
+        dispatch({ type: ActionTypes.SET_TASKS, payload: { tasks } });
       })();
     }
-  }, [url, stateMid, updated_time, reject_task_status_ids, setTasks]);
+  }, [url, stateMid, updated_time, reject_task_status_ids, setTasks, dispatch]);
 
   return (
     <InputGroup className="col">
       <InputGroupAddon addonType="prepend">Sprint</InputGroupAddon>
       <Input type="select" value={stateMid} onChange={handleChange}>
         <option value=""> --- </option>
-        {items.map(item => (
+        {milestones.map(item => (
           <option key={item.id} value={item.id}>
             {item.name}
           </option>

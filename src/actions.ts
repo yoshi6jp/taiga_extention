@@ -12,6 +12,7 @@ export enum ActionTypes {
   FETCH_PROJECTS = "FETCH_PROJECTS",
   SET_PROJECTS = "SET_PROJECTS",
   SET_PID = "SET_PID",
+  FETCH_MILESTONES = "FETCH_MILESTONES",
   SET_MID = "SET_MID",
   SET_MILESTONES = "SET_MILESTONES",
   SET_CUSTOM_EID = "SET_CUSTOM_EID",
@@ -20,6 +21,7 @@ export enum ActionTypes {
   SET_BIZ_DAYS = "SET_BIZ_DAYS",
   ADD_BIZ_DAY = "ADD_BIZ_DAY",
   REMOVE_BIZ_DAY = "REMOVE_BIZ_DAY",
+  FETCH_TASKS = "FETCH_TASKS",
   SET_TASKS = "SET_TASKS",
   SET_TASK_STATUSES = "SET_TASK_STATUSES",
   SET_CUSTOM_VALUE_MAP = "SET_CUSTOM_VALUE_MAP",
@@ -53,6 +55,10 @@ export interface SET_PID extends IAction {
   payload: { pid: string };
 }
 
+export interface FETCH_MILESTONES extends IAction {
+  type: ActionTypes.FETCH_MILESTONES;
+  payload: { project: string };
+}
 export interface SET_MILESTONES extends IAction {
   type: ActionTypes.SET_MILESTONES;
   payload: { milestones: IMilestone[] };
@@ -93,6 +99,10 @@ export interface REMOVE_BIZ_DAY extends IAction {
   payload: { biz_day: string };
 }
 
+export interface FETCH_TASKS extends IAction {
+  type: ActionTypes.FETCH_TASKS;
+  payload: { milestone: string };
+}
 export interface SET_TASKS extends IAction {
   type: ActionTypes.SET_TASKS;
   payload: { tasks: ITask[] };
@@ -133,6 +143,7 @@ export type Actions =
   | FETCH_PROJECTS
   | SET_PROJECTS
   | SET_PID
+  | FETCH_MILESTONES
   | SET_MILESTONES
   | SET_MID
   | SET_CUSTOM_EID
@@ -142,6 +153,7 @@ export type Actions =
   | SET_BIZ_DAYS
   | ADD_BIZ_DAY
   | REMOVE_BIZ_DAY
+  | FETCH_TASKS
   | SET_TASKS
   | SET_CUSTOM_VALUE_MAP
   | SET_TASK_STATUSES

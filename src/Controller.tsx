@@ -53,12 +53,12 @@ export const Controller = () => {
     closeController,
     dispatch
   } = useContext(RootContext);
-  const [url, setStateUrl] = useState("");
+  const [url, setUrl] = useState("");
   const handleUrl = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setStateUrl(e.target.value);
+      setUrl(e.target.value);
     },
-    [setStateUrl]
+    [setUrl]
   );
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
