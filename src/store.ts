@@ -108,9 +108,7 @@ export const setToStorageWithSubkey = (
   key: StorageKey,
   subkey: string,
   item: string
-) => {
-  subkey ? setToStorage(`${subkey}/${key}`, item) : null;
-};
+) => (subkey ? setToStorage(`${subkey}/${key}`, item) : null);
 export const initialStateFn = (): IState => {
   const url = getFromStorage(StorageKey.URL);
   const pid = getFromStorage(StorageKey.PID);

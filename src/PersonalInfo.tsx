@@ -9,7 +9,7 @@ export const PersonalInfo = ({ userInfo }: { userInfo: IUser }) => {
   return (
     <Card>
       <CardHeader>
-        <img className={styles.avator} src={imgSrc} />
+        <img className={styles.avator} src={imgSrc} alt={userInfo.username} />
         {` ${userInfo.username}'s tasks`}
       </CardHeader>
     </Card>

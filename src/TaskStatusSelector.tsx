@@ -6,7 +6,6 @@ import {
   Card,
   CardHeader,
   CardBody,
-  Form,
   Input,
   FormGroup,
   Label
@@ -57,7 +56,7 @@ export const TaskStatusSelector = () => {
         setTaskStatus(items);
       })();
     }
-  }, [url, pid]);
+  }, [url, pid, setTaskStatus]);
   if (items.length === 0) {
     return null;
   }

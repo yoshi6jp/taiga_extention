@@ -20,7 +20,7 @@ export const MilestoneSelector = () => {
         setMid(id);
       }
     },
-    [setMid, items]
+    [setMid]
   );
   useEffect(() => {
     if (url && pid) {
@@ -32,7 +32,7 @@ export const MilestoneSelector = () => {
         setMilestones(items);
       })();
     }
-  }, [url, pid]);
+  }, [url, pid, setMilestones]);
   useEffect(() => {
     if (url && stateMid) {
       (async () => {
@@ -53,7 +53,7 @@ export const MilestoneSelector = () => {
         setTasks(tasks);
       })();
     }
-  }, [url, stateMid, updated_time, reject_task_status_ids]);
+  }, [url, stateMid, updated_time, reject_task_status_ids, setTasks]);
 
   return (
     <InputGroup className="col">

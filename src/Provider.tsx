@@ -9,7 +9,6 @@ import {
   ITaskStatus
 } from "./store";
 import { reducer } from "./reducer";
-import _ from "lodash";
 export const baseUrl = (url: string) => `${url.replace(/[¥/]$/, "")}/api/v1`;
 
 const initialState = initialStateFn();

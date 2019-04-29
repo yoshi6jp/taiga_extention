@@ -30,7 +30,7 @@ export const PersonalPage = (props: RouteComponentProps<{ uid: string }>) => {
         setUserInfo(data);
       })();
     }
-  }, [url, setUserInfo]);
+  }, [url, setUserInfo, props.match.params.uid]);
 
   return (
     <>

@@ -26,6 +26,8 @@ export const CustomValuesSelector = () => {
             setCustomRid(id);
             break;
           }
+          default:
+            console.log("other id");
         }
       }
     },

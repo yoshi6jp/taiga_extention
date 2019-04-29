@@ -85,7 +85,8 @@ const NameAndWorkLoad = ({
     return (
       <>
         <td>
-          <img className={styles.avator} src={imgSrc} /> {username}
+          <img className={styles.avator} src={imgSrc} alt={username} />{" "}
+          {username}
         </td>
         <td />
       </>
@@ -110,7 +111,7 @@ const NameAndWorkLoad = ({
   return (
     <>
       <td className={tblCls}>
-        <img className={styles.avator} src={imgSrc} /> {username}
+        <img className={styles.avator} src={imgSrc} alt={username} /> {username}
         <FontAwesomeIcon className="mx-1" icon={icon} />
       </td>
       <td className={classNames(tblCls, "text-right")}>{val}</td>
@@ -237,7 +238,7 @@ const UserRow = ({
       ) : (
         <>
           <td>
-            <img className={styles.avator} src={imgSrc} />{" "}
+            <img className={styles.avator} src={imgSrc} alt={item.username} />{" "}
             <Link to={`/${item.id}`}>{item.username}</Link>
           </td>
           <td className="text-right">{e}</td>

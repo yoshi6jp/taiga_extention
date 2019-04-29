@@ -96,6 +96,7 @@ export const Controller = () => {
             onClick={handleHref}
             className="float-right"
             href={taskboardUrl}
+            rel="noopener noreferrer"
           >
             <FontAwesomeIcon className="mr-1" icon={faExternalLinkAlt} />
             Taskboard

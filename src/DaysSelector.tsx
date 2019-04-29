@@ -7,22 +7,21 @@ import {
   CardHeader,
   Input,
   Label,
-  FormGroup,
-  Badge
+  FormGroup
 } from "reactstrap";
 import { IMilestone } from "./store";
 import { RootContext } from "./Provider";
 import moment, { Moment } from "moment";
 import biz from "moment-business";
 import _ from "lodash";
-export const isToday = (date: string) => {
+export const isToday = (date: string) =>
   moment()
     .local()
     .format("YYYY-MM-DD") ===
-    moment(date)
-      .local()
-      .format("YYYY-MM-DD");
-};
+  moment(date)
+    .local()
+    .format("YYYY-MM-DD");
+
 export const dayNameFromIdx = (date: string, idx: number) => {
   if (idx === -1) {
     return "";
@@ -64,15 +63,7 @@ const DayItem = ({
   biz_days: string[];
   idx: number;
 }) => {
-  if (!item) {
-    return (
-      <td>
-        <br />
-      </td>
-    );
-  }
   const { addBizDay, removeBizDay } = useContext(RootContext);
-  const value = item.format("YYYY-MM-DD");
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const bizDay = e.target.value;
@@ -80,6 +71,14 @@ const DayItem = ({
     },
     [addBizDay, removeBizDay]
   );
+  if (!item) {
+    return (
+      <td>
+        <br />
+      </td>
+    );
+  }
+  const value = item.format("YYYY-MM-DD");
   const isPlanning = value === biz_days[0];
   const eleId = `biz-day-${value}`;
   return (
@@ -130,7 +129,7 @@ export const DaysSelector = () => {
         setBizDays(getDefaultBizDays(items));
       }
     }
-  }, [mid, milestones, biz_days]);
+  }, [mid, milestones, biz_days, setBizDays]);
   if (items.length === 0) {
     return null;
   } else {
