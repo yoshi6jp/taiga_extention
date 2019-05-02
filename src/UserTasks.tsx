@@ -28,6 +28,7 @@ import {
 import styles from "./UserTasks.module.css";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { ActionTypes } from "./actions";
 
 const barStyles = ["success", "warning", "info", "danger"];
 const getTasksByUser = (items: ITask[]) => _.groupBy(items, "assigned_to");
@@ -175,8 +176,7 @@ const UserRow = ({
   const r = _.get(sumItem, "r");
   const margedTotal = customTotal || total;
   const totalStr = String(margedTotal);
-  // const imgSrc = item.photo || `http://i.pravatar.cc/80?u=${Math.random()}`;
-  const imgSrc = item.photo || "";
+  const imgSrc = item.photo || `http://i.pravatar.cc/80?u=${Math.random()}`;
   useEffect(() => {
     const closed_status = _.chain(task_statuses)
       .filter(item => item.is_closed)
@@ -313,12 +313,16 @@ export const UserTasks = () => {
       custom_rid,
       biz_days
     },
-    updateData
+    dispatch
   } = useContext(RootContext);
   const [items, setItems] = useState<IUser[]>([]);
   const [hpd, setHpd] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const activeLen = biz_days.length - 1;
+  const updateData = useCallback(() => {
+    dispatch({ type: ActionTypes.UPDATE_DATA });
+  }, [dispatch]);
+
   useEffect(() => {
     if (url && pid) {
       (async () => {

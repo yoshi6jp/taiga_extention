@@ -7,13 +7,13 @@ export const fetchMilestones: ISideEffector = async (
   state
 ) => {
   try {
-    const { url } = state;
+    const { url } = state();
     const { project } = action.payload;
     if (url && project) {
       const { data: milestones } = await fetchData<IMilestone[]>(
         url,
         "milestones",
-        { project }
+        { params: { project } }
       );
       dispatch({ type: ActionTypes.SET_MILESTONES, payload: { milestones } });
     }

@@ -14,6 +14,7 @@ import { RootContext } from "./Provider";
 import moment, { Moment } from "moment";
 import biz from "moment-business";
 import _ from "lodash";
+import { ActionTypes } from "./actions";
 export const isToday = (date: string) =>
   moment()
     .local()
@@ -63,13 +64,17 @@ const DayItem = ({
   biz_days: string[];
   idx: number;
 }) => {
-  const { addBizDay, removeBizDay } = useContext(RootContext);
+  const { dispatch } = useContext(RootContext);
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const bizDay = e.target.value;
-      e.target.checked ? addBizDay(bizDay) : removeBizDay(bizDay);
+      const biz_day = e.target.value;
+      if (e.target.checked) {
+        dispatch({ type: ActionTypes.ADD_BIZ_DAY, payload: { biz_day } });
+      } else {
+        dispatch({ type: ActionTypes.REMOVE_BIZ_DAY, payload: { biz_day } });
+      }
     },
-    [addBizDay, removeBizDay]
+    [dispatch]
   );
   if (!item) {
     return (
@@ -117,7 +122,7 @@ const DayItem = ({
 export const DaysSelector = () => {
   const {
     state: { mid, milestones, biz_days },
-    setBizDays
+    dispatch
   } = useContext(RootContext);
   const [items, setItems] = useState<Moment[]>([]);
   useEffect(() => {
@@ -126,10 +131,13 @@ export const DaysSelector = () => {
       const items = getDays(milestone);
       setItems(items);
       if (biz_days.length <= 1) {
-        setBizDays(getDefaultBizDays(items));
+        dispatch({
+          type: ActionTypes.SET_BIZ_DAYS,
+          payload: { biz_days: getDefaultBizDays(items) }
+        });
       }
     }
-  }, [mid, milestones, biz_days, setBizDays]);
+  }, [mid, milestones, biz_days, dispatch]);
   if (items.length === 0) {
     return null;
   } else {

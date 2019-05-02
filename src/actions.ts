@@ -17,13 +17,16 @@ export enum ActionTypes {
   SET_MILESTONES = "SET_MILESTONES",
   SET_CUSTOM_EID = "SET_CUSTOM_EID",
   SET_CUSTOM_RID = "SET_CUSTOM_RID",
+  FETCH_CUSTOM_ATTRS = "FETCH_CUSTOM_ATTRS",
   SET_CUSTOM_ATTRS = "SET_CUSTOM_ATTRS",
   SET_BIZ_DAYS = "SET_BIZ_DAYS",
   ADD_BIZ_DAY = "ADD_BIZ_DAY",
   REMOVE_BIZ_DAY = "REMOVE_BIZ_DAY",
   FETCH_TASKS = "FETCH_TASKS",
   SET_TASKS = "SET_TASKS",
+  FETCH_TASK_STATUSES = "FETCH_TASK_STATUSES",
   SET_TASK_STATUSES = "SET_TASK_STATUSES",
+  FETCH_CUSTOM_VALUE_MAP = "FETCH_CUSTOM_VALUE_MAP",
   SET_CUSTOM_VALUE_MAP = "SET_CUSTOM_VALUE_MAP",
   ADD_REJECT_TASK_STATUS_ID = "ADD_REJECT_TASK_STATUS",
   REMOVE_REJECT_TASK_STATUS_ID = "REMOVE_REJECT_TASK_STATUS",
@@ -79,6 +82,10 @@ export interface SET_CUSTOM_RID extends IAction {
   payload: { custom_rid: string };
 }
 
+export interface FETCH_CUSTOM_ATTRS extends IAction {
+  type: ActionTypes.FETCH_CUSTOM_ATTRS;
+  payload: { project: string };
+}
 export interface SET_CUSTOM_ATTRS extends IAction {
   type: ActionTypes.SET_CUSTOM_ATTRS;
   payload: { custom_attrs: ICustomAttr[] };
@@ -101,10 +108,14 @@ export interface REMOVE_BIZ_DAY extends IAction {
 
 export interface FETCH_TASKS extends IAction {
   type: ActionTypes.FETCH_TASKS;
-  payload: { milestone: string };
+  payload: { milestone: string; reject_task_status_ids: string[] };
 }
 export interface SET_TASKS extends IAction {
   type: ActionTypes.SET_TASKS;
+  payload: { tasks: ITask[] };
+}
+export interface FETCH_CUSTOM_VALUE_MAP extends IAction {
+  type: ActionTypes.FETCH_CUSTOM_VALUE_MAP;
   payload: { tasks: ITask[] };
 }
 export interface SET_CUSTOM_VALUE_MAP extends IAction {
@@ -112,6 +123,10 @@ export interface SET_CUSTOM_VALUE_MAP extends IAction {
   payload: { custom_value_map: ICustomValueMap };
 }
 
+export interface FETCH_TASK_STATUSES extends IAction {
+  type: ActionTypes.FETCH_TASK_STATUSES;
+  payload: { project: string };
+}
 export interface SET_TASK_STATUSES extends IAction {
   type: ActionTypes.SET_TASK_STATUSES;
   payload: { task_statuses: ITaskStatus[] };
@@ -148,6 +163,7 @@ export type Actions =
   | SET_MID
   | SET_CUSTOM_EID
   | SET_CUSTOM_RID
+  | FETCH_CUSTOM_ATTRS
   | SET_CUSTOM_ATTRS
   | SET_BIZ_DAYS
   | SET_BIZ_DAYS
@@ -155,7 +171,9 @@ export type Actions =
   | REMOVE_BIZ_DAY
   | FETCH_TASKS
   | SET_TASKS
+  | FETCH_CUSTOM_VALUE_MAP
   | SET_CUSTOM_VALUE_MAP
+  | FETCH_TASK_STATUSES
   | SET_TASK_STATUSES
   | ADD_REJECT_TASK_STATUS_ID
   | REMOVE_REJECT_TASK_STATUS_ID

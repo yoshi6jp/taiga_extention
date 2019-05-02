@@ -49,8 +49,6 @@ const getRange = (biz_days: string[]) => {
 export const Controller = () => {
   const {
     state: { url: stateUrl, isOpen, mid, milestones, biz_days },
-    openController,
-    closeController,
     dispatch
   } = useContext(RootContext);
   const [url, setUrl] = useState("");
@@ -75,11 +73,11 @@ export const Controller = () => {
   const rotation = isOpen ? 90 : undefined;
   const toggle = useCallback(() => {
     if (isOpen) {
-      closeController();
+      dispatch({ type: ActionTypes.CLOSE_CONTROLLER });
     } else {
-      openController();
+      dispatch({ type: ActionTypes.OPEN_CONTROLLER });
     }
-  }, [openController, closeController, isOpen]);
+  }, [dispatch, isOpen]);
   const taskboardUrl = getTaskboardUrl(stateUrl, mid, milestones);
   return (
     <Card>

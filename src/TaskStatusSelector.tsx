@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useContext, useState } from "react";
-import axios from "axios";
+import React, { useCallback, useContext } from "react";
 import _ from "lodash";
-import { RootContext, baseUrl } from "./Provider";
+import { RootContext } from "./Provider";
 import {
   Card,
   CardHeader,
@@ -11,17 +10,28 @@ import {
   Label
 } from "reactstrap";
 import { ITaskStatus } from "./store";
+import { ActionTypes } from "./actions";
 const StatusItem = ({ item }: { item: ITaskStatus }) => {
   const {
     state: { reject_task_status_ids },
-    toggeRejectTaskStatus
+    dispatch
   } = useContext(RootContext);
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const id = e.target.value;
-      toggeRejectTaskStatus(String(id), !e.target.checked);
+      const reject_task_status_id = e.target.value;
+      if (e.target.checked) {
+        dispatch({
+          type: ActionTypes.REMOVE_REJECT_TASK_STATUS_ID,
+          payload: { reject_task_status_id }
+        });
+      } else {
+        dispatch({
+          type: ActionTypes.ADD_REJECT_TASK_STATUS_ID,
+          payload: { reject_task_status_id }
+        });
+      }
     },
-    [toggeRejectTaskStatus]
+    [dispatch]
   );
   return (
     <FormGroup check inline>
@@ -39,32 +49,16 @@ const StatusItem = ({ item }: { item: ITaskStatus }) => {
 };
 export const TaskStatusSelector = () => {
   const {
-    state: { url, pid },
-    setTaskStatus
+    state: { task_statuses }
   } = useContext(RootContext);
-  const [items, setItems] = useState<ITaskStatus[]>([]);
-  useEffect(() => {
-    if (url && pid) {
-      (async () => {
-        const { data: items } = await axios.get(
-          `${baseUrl(url)}/task-statuses`,
-          {
-            params: { project: pid }
-          }
-        );
-        setItems(items);
-        setTaskStatus(items);
-      })();
-    }
-  }, [url, pid, setTaskStatus]);
-  if (items.length === 0) {
+  if (task_statuses.length === 0) {
     return null;
   }
   return (
     <Card>
       <CardHeader>Task status</CardHeader>
       <CardBody>
-        {items.map(item => (
+        {task_statuses.map(item => (
           <StatusItem key={item.id} item={item} />
         ))}
       </CardBody>
