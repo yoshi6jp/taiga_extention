@@ -43,20 +43,6 @@ const getTaskCreatedToday = (tasks: ITask[], date: string) =>
         .format("YYYY-MM-DD")
   );
 
-const getTaskCreatedBetween = (
-  tasks: ITask[],
-  fromDate: string,
-  toDate: string
-) => {
-  const from = moment(fromDate)
-    .local()
-    .startOf("days");
-  const to = moment(toDate)
-    .local()
-    .endOf("days");
-  return tasks.filter(task => moment(task.created_date).isBetween(from, to));
-};
-
 const getTaskCreated = (tasks: ITask[], date: string) =>
   tasks.filter(
     task =>
@@ -108,7 +94,7 @@ export const Chart = ({ tasks }: { tasks: ITask[] }) => {
           const result =
             getSumVal(
               custom_value_map,
-              getTaskCreatedBetween(tasks, biz_days[0], day),
+              getTaskCreated(tasks, day),
               custom_eid
             ) -
             add -
