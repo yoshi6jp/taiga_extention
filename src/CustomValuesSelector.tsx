@@ -1,78 +1,51 @@
-import React, { useCallback, useEffect, useContext, useState } from "react";
-import axios from "axios";
+import React, { useCallback, useContext } from "react";
 import { Input, InputGroup, InputGroupAddon } from "reactstrap";
-import { ITask, ICustomValue, ICustomAttr } from "./store";
-import { RootContext, baseUrl } from "./Provider";
+import { RootContext } from "./Provider";
+import { ActionTypes } from "./actions";
 
 export const CustomValuesSelector = () => {
   const {
-    state: { url, pid, custom_eid: stateEid, custom_rid: stateRid, tasks },
-    setCustomEid,
-    setCustomRid,
-    setCustomAttrs,
-    setCustomValueMap
+    state: { custom_attrs, custom_eid, custom_rid },
+    dispatch
   } = useContext(RootContext);
-  const [items, setItems] = useState<ICustomAttr[]>([]);
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const id = e.target.value;
       if (id) {
         switch (e.target.name) {
           case "eid": {
-            setCustomEid(id);
+            dispatch({
+              type: ActionTypes.SET_CUSTOM_EID,
+              payload: { custom_eid: id }
+            });
             break;
           }
           case "rid": {
-            setCustomRid(id);
+            dispatch({
+              type: ActionTypes.SET_CUSTOM_RID,
+              payload: { custom_rid: id }
+            });
             break;
           }
+          default:
+            console.log("other id");
         }
       }
     },
-    [setCustomEid, setCustomRid]
+    [dispatch]
   );
-  useEffect(() => {
-    if (url && pid) {
-      (async () => {
-        const { data: items } = await axios.get(
-          `${baseUrl(url)}/task-custom-attributes`,
-          { params: { project: pid } }
-        );
-        setItems(items);
-        setCustomAttrs(items);
-      })();
-    }
-  }, [url, pid, setItems, setCustomAttrs]);
-  useEffect(() => {
-    if (url && tasks.length && stateEid && stateRid) {
-      (async () => {
-        const wmap = new WeakMap(
-          await Promise.all(
-            tasks.map(async item => {
-              const { data: custom_attr_val } = await axios.get(
-                `${baseUrl(url)}/tasks/custom-attributes-values/${item.id}`
-              );
-              return [item, custom_attr_val] as [ITask, ICustomValue];
-            })
-          )
-        );
-        setCustomValueMap(wmap);
-      })();
-    }
-  }, [url, tasks, stateEid, stateRid, setCustomValueMap]);
-
   return (
     <div className="row">
       <InputGroup className="col">
         <InputGroupAddon addonType="prepend">Estimate</InputGroupAddon>
         <Input
-          value={stateEid}
+          value={custom_eid}
           name="eid"
           type="select"
           onChange={handleChange}
         >
           <option value=""> --- </option>
-          {items.map(item => (
+          {custom_attrs.map(item => (
             <option key={item.id} value={item.id}>
               {item.name}
             </option>
@@ -82,13 +55,13 @@ export const CustomValuesSelector = () => {
       <InputGroup className="col">
         <InputGroupAddon addonType="prepend">Result</InputGroupAddon>
         <Input
-          value={stateRid}
+          value={custom_rid}
           name="rid"
           type="select"
           onChange={handleChange}
         >
           <option> --- </option>
-          {items.map(item => (
+          {custom_attrs.map(item => (
             <option key={item.id} value={item.id}>
               {item.name}
             </option>

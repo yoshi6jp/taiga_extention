@@ -71,6 +71,7 @@ export interface IProject {
 export type ICustomValueMap = WeakMap<ITask, ICustomValue>;
 export interface IState {
   url: string;
+  projects: IProject[];
   pid: string; // url
   mid: string; // url
   custom_eid: string; //  pid
@@ -79,7 +80,7 @@ export interface IState {
   biz_days: string[]; //mid
   milestones: IMilestone[]; // pid
   tasks: ITask[]; //mid
-  task_status: ITaskStatus[];
+  task_statuses: ITaskStatus[];
   custom_value_map: ICustomValueMap; // pid
   reject_task_status_ids: string[]; // pid
   updated_time: number;
@@ -108,9 +109,7 @@ export const setToStorageWithSubkey = (
   key: StorageKey,
   subkey: string,
   item: string
-) => {
-  subkey ? setToStorage(`${subkey}/${key}`, item) : null;
-};
+) => (subkey ? setToStorage(`${subkey}/${key}`, item) : null);
 export const initialStateFn = (): IState => {
   const url = getFromStorage(StorageKey.URL);
   const pid = getFromStorage(StorageKey.PID);
@@ -125,6 +124,7 @@ export const initialStateFn = (): IState => {
   const isOpen = !(url && pid && mid && custom_eid && custom_rid);
   return {
     url,
+    projects: [],
     pid,
     mid,
     custom_eid,
@@ -133,7 +133,7 @@ export const initialStateFn = (): IState => {
     biz_days,
     milestones: [],
     tasks: [],
-    task_status: [],
+    task_statuses: [],
     custom_value_map: new WeakMap(),
     reject_task_status_ids,
     updated_time: 0,

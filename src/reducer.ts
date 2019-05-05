@@ -13,6 +13,13 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       setToStorage(StorageKey.URL, url);
       return { ...state, url } as IState;
     }
+    case ActionTypes.SET_PROJECTS: {
+      const { projects } = action.payload;
+      return {
+        ...state,
+        projects
+      } as IState;
+    }
     case ActionTypes.SET_PID: {
       const { pid } = action.payload;
       setToStorage(StorageKey.PID, pid);
@@ -93,22 +100,13 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       const { tasks } = action.payload;
       return { ...state, tasks } as IState;
     }
-    case ActionTypes.SET_TASK_STATUS: {
-      const { task_status } = action.payload;
-      return { ...state, task_status } as IState;
+    case ActionTypes.SET_TASK_STATUSES: {
+      const { task_statuses } = action.payload;
+      return { ...state, task_statuses } as IState;
     }
     case ActionTypes.SET_CUSTOM_VALUE_MAP: {
       const { custom_value_map } = action.payload;
       return { ...state, custom_value_map } as IState;
-    }
-    case ActionTypes.SET_REJECT_TASK_STATUS_IDS: {
-      const { reject_task_status_ids } = action.payload;
-      setToStorageWithSubkey(
-        StorageKey.REJECT_TASK_STATUS_IDS,
-        state.pid,
-        reject_task_status_ids.join(",")
-      );
-      return { ...state, reject_task_status_ids } as IState;
     }
     case ActionTypes.ADD_REJECT_TASK_STATUS_ID: {
       const { reject_task_status_id } = action.payload;

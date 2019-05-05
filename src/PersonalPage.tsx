@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useCallback } from "react";
 import axios from "axios";
 import { RouteComponentProps } from "react-router";
 import { Button, Alert, Navbar } from "reactstrap";
@@ -14,13 +14,17 @@ import {
   faArrowCircleLeft
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import { ActionTypes } from "./actions";
 
 export const PersonalPage = (props: RouteComponentProps<{ uid: string }>) => {
   const {
     state: { url },
-    updateData
+    dispatch
   } = useContext(RootContext);
   const [userInfo, setUserInfo] = useState<IUser | undefined>(undefined);
+  const updateData = useCallback(() => {
+    dispatch({ type: ActionTypes.UPDATE_DATA });
+  }, [dispatch]);
   useEffect(() => {
     if (url) {
       (async () => {
@@ -30,7 +34,7 @@ export const PersonalPage = (props: RouteComponentProps<{ uid: string }>) => {
         setUserInfo(data);
       })();
     }
-  }, [url, setUserInfo]);
+  }, [url, setUserInfo, props.match.params.uid]);
 
   return (
     <>

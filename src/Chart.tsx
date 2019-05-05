@@ -1,13 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import {
-  ComposedChart,
-  Tooltip,
-  Legend,
-  Line,
-  XAxis,
-  YAxis,
-  Bar
-} from "recharts";
+import { ComposedChart, Tooltip, Line, XAxis, YAxis, Bar } from "recharts";
 import { ITask, ICustomValueMap } from "./store";
 import _ from "lodash";
 import moment from "moment";

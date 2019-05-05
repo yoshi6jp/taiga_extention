@@ -25,6 +25,7 @@ import { DaysSelector, getMilestone } from "./DaysSelector";
 import { TaskStatusSelector } from "./TaskStatusSelector";
 import { IMilestone } from "./store";
 import styles from "./Controller.module.css";
+import { ActionTypes } from "./actions";
 const getSpName = (mid: string, items: IMilestone[]) =>
   _.get(getMilestone(mid, items), "name", "");
 const getTaskboardUrl = (url: string, mid: string, items: IMilestone[]) => {
@@ -48,25 +49,23 @@ const getRange = (biz_days: string[]) => {
 export const Controller = () => {
   const {
     state: { url: stateUrl, isOpen, mid, milestones, biz_days },
-    setUrl,
-    openController,
-    closeController
+    dispatch
   } = useContext(RootContext);
-  const [url, setStateUrl] = useState("");
+  const [url, setUrl] = useState("");
   const handleUrl = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setStateUrl(e.target.value);
+      setUrl(e.target.value);
     },
-    [setStateUrl]
+    [setUrl]
   );
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       if (url) {
-        setUrl(url);
+        dispatch({ type: ActionTypes.SET_URL, payload: { url } });
       }
       e.preventDefault();
     },
-    [url, setUrl]
+    [url, dispatch]
   );
   const handleHref = useCallback((e: React.FormEvent) => {
     e.stopPropagation();
@@ -74,11 +73,11 @@ export const Controller = () => {
   const rotation = isOpen ? 90 : undefined;
   const toggle = useCallback(() => {
     if (isOpen) {
-      closeController();
+      dispatch({ type: ActionTypes.CLOSE_CONTROLLER });
     } else {
-      openController();
+      dispatch({ type: ActionTypes.OPEN_CONTROLLER });
     }
-  }, [openController, closeController, isOpen]);
+  }, [dispatch, isOpen]);
   const taskboardUrl = getTaskboardUrl(stateUrl, mid, milestones);
   return (
     <Card>
@@ -96,6 +95,7 @@ export const Controller = () => {
             onClick={handleHref}
             className="float-right"
             href={taskboardUrl}
+            rel="noopener noreferrer"
           >
             <FontAwesomeIcon className="mr-1" icon={faExternalLinkAlt} />
             Taskboard

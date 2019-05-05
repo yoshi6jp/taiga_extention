@@ -23,7 +23,7 @@ const UserStoryLink = ({ url, item }: { url: string; item: ITask }) => {
 
   if (usName) {
     return (
-      <a href={href} target="_blank" title={usName}>
+      <a href={href} target="_blank" rel="noopener noreferrer" title={usName}>
         <FontAwesomeIcon icon={faExternalLinkAlt} /> {usName}
       </a>
     );
@@ -38,7 +38,7 @@ const TaskLink = ({ url, item }: { url: string; item: ITask }) => {
     item.ref
   }`;
   return (
-    <a href={href} target="_blank" title={taskName}>
+    <a href={href} target="_blank" rel="noopener noreferrer" title={taskName}>
       <FontAwesomeIcon icon={faExternalLinkAlt} /> {taskName}
     </a>
   );
@@ -62,7 +62,7 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
       .filter(task => task.assigned_to === userInfo.id)
       .sort((a, b) => a.user_story - b.user_story);
     setItems(userTasks);
-  }, [tasks]);
+  }, [tasks, userInfo.id]);
 
   const customAttrE = getCustomAttr(custom_attrs, Number(custom_eid));
   const customAttrR = getCustomAttr(custom_attrs, Number(custom_rid));

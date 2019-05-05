@@ -28,6 +28,7 @@ import {
 import styles from "./UserTasks.module.css";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { ActionTypes } from "./actions";
 
 const barStyles = ["success", "warning", "info", "danger"];
 const getTasksByUser = (items: ITask[]) => _.groupBy(items, "assigned_to");
@@ -85,7 +86,8 @@ const NameAndWorkLoad = ({
     return (
       <>
         <td>
-          <img className={styles.avator} src={imgSrc} /> {username}
+          <img className={styles.avator} src={imgSrc} alt={username} />{" "}
+          {username}
         </td>
         <td />
       </>
@@ -110,7 +112,7 @@ const NameAndWorkLoad = ({
   return (
     <>
       <td className={tblCls}>
-        <img className={styles.avator} src={imgSrc} /> {username}
+        <img className={styles.avator} src={imgSrc} alt={username} /> {username}
         <FontAwesomeIcon className="mx-1" icon={icon} />
       </td>
       <td className={classNames(tblCls, "text-right")}>{val}</td>
@@ -154,7 +156,12 @@ const UserRow = ({
   closedTasks: ITask[];
 }) => {
   const {
-    state: { custom_value_map, custom_eid, reject_task_status_ids, task_status }
+    state: {
+      custom_value_map,
+      custom_eid,
+      reject_task_status_ids,
+      task_statuses
+    }
   } = useContext(RootContext);
   const [customTotal, setTotal] = useState<number>(0);
   const [progressTotal, setProgressTotal] = useState<IProgressTotal[]>([]);
@@ -171,7 +178,7 @@ const UserRow = ({
   const totalStr = String(margedTotal);
   const imgSrc = item.photo || `http://i.pravatar.cc/80?u=${Math.random()}`;
   useEffect(() => {
-    const closed_status = _.chain(task_status)
+    const closed_status = _.chain(task_statuses)
       .filter(item => item.is_closed)
       .reject(item => _.includes(reject_task_status_ids, String(item.id)))
       .orderBy("id")
@@ -209,7 +216,7 @@ const UserRow = ({
     custom_eid,
     custom_value_map,
     closedTasks,
-    task_status,
+    task_statuses,
     reject_task_status_ids
   ]);
   return (
@@ -237,7 +244,7 @@ const UserRow = ({
       ) : (
         <>
           <td>
-            <img className={styles.avator} src={imgSrc} />{" "}
+            <img className={styles.avator} src={imgSrc} alt={item.username} />{" "}
             <Link to={`/${item.id}`}>{item.username}</Link>
           </td>
           <td className="text-right">{e}</td>
@@ -306,12 +313,16 @@ export const UserTasks = () => {
       custom_rid,
       biz_days
     },
-    updateData
+    dispatch
   } = useContext(RootContext);
   const [items, setItems] = useState<IUser[]>([]);
   const [hpd, setHpd] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const activeLen = biz_days.length - 1;
+  const updateData = useCallback(() => {
+    dispatch({ type: ActionTypes.UPDATE_DATA });
+  }, [dispatch]);
+
   useEffect(() => {
     if (url && pid) {
       (async () => {

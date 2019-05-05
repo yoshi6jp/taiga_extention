@@ -7,22 +7,22 @@ import {
   CardHeader,
   Input,
   Label,
-  FormGroup,
-  Badge
+  FormGroup
 } from "reactstrap";
 import { IMilestone } from "./store";
 import { RootContext } from "./Provider";
 import moment, { Moment } from "moment";
 import biz from "moment-business";
 import _ from "lodash";
-export const isToday = (date: string) => {
+import { ActionTypes } from "./actions";
+export const isToday = (date: string) =>
   moment()
     .local()
     .format("YYYY-MM-DD") ===
-    moment(date)
-      .local()
-      .format("YYYY-MM-DD");
-};
+  moment(date)
+    .local()
+    .format("YYYY-MM-DD");
+
 export const dayNameFromIdx = (date: string, idx: number) => {
   if (idx === -1) {
     return "";
@@ -64,6 +64,18 @@ const DayItem = ({
   biz_days: string[];
   idx: number;
 }) => {
+  const { dispatch } = useContext(RootContext);
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const biz_day = e.target.value;
+      if (e.target.checked) {
+        dispatch({ type: ActionTypes.ADD_BIZ_DAY, payload: { biz_day } });
+      } else {
+        dispatch({ type: ActionTypes.REMOVE_BIZ_DAY, payload: { biz_day } });
+      }
+    },
+    [dispatch]
+  );
   if (!item) {
     return (
       <td>
@@ -71,15 +83,7 @@ const DayItem = ({
       </td>
     );
   }
-  const { addBizDay, removeBizDay } = useContext(RootContext);
   const value = item.format("YYYY-MM-DD");
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const bizDay = e.target.value;
-      e.target.checked ? addBizDay(bizDay) : removeBizDay(bizDay);
-    },
-    [addBizDay, removeBizDay]
-  );
   const isPlanning = value === biz_days[0];
   const eleId = `biz-day-${value}`;
   return (
@@ -118,7 +122,7 @@ const DayItem = ({
 export const DaysSelector = () => {
   const {
     state: { mid, milestones, biz_days },
-    setBizDays
+    dispatch
   } = useContext(RootContext);
   const [items, setItems] = useState<Moment[]>([]);
   useEffect(() => {
@@ -127,10 +131,13 @@ export const DaysSelector = () => {
       const items = getDays(milestone);
       setItems(items);
       if (biz_days.length <= 1) {
-        setBizDays(getDefaultBizDays(items));
+        dispatch({
+          type: ActionTypes.SET_BIZ_DAYS,
+          payload: { biz_days: getDefaultBizDays(items) }
+        });
       }
     }
-  }, [mid, milestones, biz_days]);
+  }, [mid, milestones, biz_days, dispatch]);
   if (items.length === 0) {
     return null;
   } else {
