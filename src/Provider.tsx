@@ -41,6 +41,10 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
         type: ActionTypes.FETCH_TASK_STATUSES,
         payload: { project: state.pid }
       });
+      dispatch({
+        type: ActionTypes.FETCH_PROJECT,
+        payload: { pid: state.pid }
+      });
     }
   }, [state.url, state.pid, dispatch]);
   useEffect(() => {

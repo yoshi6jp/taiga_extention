@@ -73,6 +73,7 @@ export interface IState {
   url: string;
   projects: IProject[];
   pid: string; // url
+  project: IProject;
   mid: string; // url
   custom_eid: string; //  pid
   custom_rid: string; // pid
@@ -126,6 +127,7 @@ export const initialStateFn = (): IState => {
     url,
     projects: [],
     pid,
+    project: {} as IProject,
     mid,
     custom_eid,
     custom_rid,

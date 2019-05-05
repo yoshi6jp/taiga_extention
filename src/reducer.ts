@@ -1,24 +1,24 @@
 import _ from "lodash";
-import { initialStateFn, IState, StorageKey } from "./store";
-import { ActionTypes, IAction } from "./actions";
+import { initialStateFn, StorageKey, IProject, ICustomValueMap } from "./store";
+import { ActionTypes, Actions } from "./actions";
 import {
   setToStorage,
   setToStorageWithSubkey,
   getFromStorageWithSubkey
 } from "./store";
-export const reducer = (state = initialStateFn(), action: IAction) => {
+export const reducer = (state = initialStateFn(), action: Actions) => {
   switch (action.type) {
     case ActionTypes.SET_URL: {
       const { url } = action.payload;
       setToStorage(StorageKey.URL, url);
-      return { ...state, url } as IState;
+      return { ...state, url };
     }
     case ActionTypes.SET_PROJECTS: {
       const { projects } = action.payload;
       return {
         ...state,
         projects
-      } as IState;
+      };
     }
     case ActionTypes.SET_PID: {
       const { pid } = action.payload;
@@ -26,13 +26,21 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
       return {
         ...state,
         pid,
+        project: {} as IProject,
         mid: "",
         custom_eid: getFromStorageWithSubkey(StorageKey.CUSTOM_EID, pid),
         custom_rid: getFromStorageWithSubkey(StorageKey.CUSTOM_RID, pid),
         custom_attrs: [],
         milestones: [],
-        custom_value_map: new WeakMap()
-      } as IState;
+        custom_value_map: new WeakMap() as ICustomValueMap
+      };
+    }
+    case ActionTypes.SET_PROJECT: {
+      const { project } = action.payload;
+      return {
+        ...state,
+        project
+      };
     }
     case ActionTypes.SET_MID: {
       const { mid } = action.payload;
@@ -44,25 +52,25 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
         biz_days: _.compact(
           getFromStorageWithSubkey(StorageKey.BIZ_DAYS, mid).split(",")
         ).sort()
-      } as IState;
+      };
     }
     case ActionTypes.SET_MILESTONES: {
       const { milestones } = action.payload;
-      return { ...state, milestones } as IState;
+      return { ...state, milestones };
     }
     case ActionTypes.SET_CUSTOM_EID: {
       const { custom_eid } = action.payload;
       setToStorageWithSubkey(StorageKey.CUSTOM_EID, state.pid, custom_eid);
-      return { ...state, custom_eid } as IState;
+      return { ...state, custom_eid };
     }
     case ActionTypes.SET_CUSTOM_ATTRS: {
       const { custom_attrs } = action.payload;
-      return { ...state, custom_attrs } as IState;
+      return { ...state, custom_attrs };
     }
     case ActionTypes.SET_CUSTOM_RID: {
       const { custom_rid } = action.payload;
       setToStorageWithSubkey(StorageKey.CUSTOM_RID, state.pid, custom_rid);
-      return { ...state, custom_rid } as IState;
+      return { ...state, custom_rid };
     }
     case ActionTypes.SET_BIZ_DAYS: {
       const { biz_days } = action.payload;
@@ -71,7 +79,7 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
         state.mid,
         biz_days.join(",")
       );
-      return { ...state, biz_days } as IState;
+      return { ...state, biz_days };
     }
     case ActionTypes.ADD_BIZ_DAY: {
       const { biz_day } = action.payload;
@@ -84,7 +92,7 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
         state.mid,
         biz_days.join(",")
       );
-      return { ...state, biz_days } as IState;
+      return { ...state, biz_days };
     }
     case ActionTypes.REMOVE_BIZ_DAY: {
       const { biz_day } = action.payload;
@@ -94,19 +102,19 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
         state.mid,
         biz_days.join(",")
       );
-      return { ...state, biz_days } as IState;
+      return { ...state, biz_days };
     }
     case ActionTypes.SET_TASKS: {
       const { tasks } = action.payload;
-      return { ...state, tasks } as IState;
+      return { ...state, tasks };
     }
     case ActionTypes.SET_TASK_STATUSES: {
       const { task_statuses } = action.payload;
-      return { ...state, task_statuses } as IState;
+      return { ...state, task_statuses };
     }
     case ActionTypes.SET_CUSTOM_VALUE_MAP: {
       const { custom_value_map } = action.payload;
-      return { ...state, custom_value_map } as IState;
+      return { ...state, custom_value_map };
     }
     case ActionTypes.ADD_REJECT_TASK_STATUS_ID: {
       const { reject_task_status_id } = action.payload;
@@ -122,7 +130,7 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
         state.pid,
         reject_task_status_ids.join(",")
       );
-      return { ...state, reject_task_status_ids } as IState;
+      return { ...state, reject_task_status_ids };
     }
     case ActionTypes.REMOVE_REJECT_TASK_STATUS_ID: {
       const { reject_task_status_id } = action.payload;
@@ -135,16 +143,16 @@ export const reducer = (state = initialStateFn(), action: IAction) => {
         state.pid,
         reject_task_status_ids.join(",")
       );
-      return { ...state, reject_task_status_ids } as IState;
+      return { ...state, reject_task_status_ids };
     }
     case ActionTypes.OPEN_CONTROLLER: {
-      return { ...state, isOpen: true } as IState;
+      return { ...state, isOpen: true };
     }
     case ActionTypes.CLOSE_CONTROLLER: {
-      return { ...state, isOpen: false } as IState;
+      return { ...state, isOpen: false };
     }
     case ActionTypes.UPDATE_DATA: {
-      return { ...state, updated_time: Date.now() } as IState;
+      return { ...state, updated_time: Date.now() };
     }
     default: {
       return state;

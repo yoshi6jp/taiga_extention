@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import axios from "axios";
-import { ICustomValueMap, IProject, IUser, ITask, ICustomAttr } from "../store";
-import { RootContext, baseUrl } from "../Provider";
+import { ICustomValueMap, IUser, ITask, ICustomAttr } from "../store";
+import { RootContext } from "../Provider";
 import classNames from "classnames";
 import {
   Table,
@@ -304,35 +303,22 @@ export const getCustomAttr = (items: ICustomAttr[], id: number) =>
 export const UserTasks = () => {
   const {
     state: {
-      url,
-      pid,
       tasks,
       custom_value_map,
       custom_attrs,
       custom_eid,
       custom_rid,
-      biz_days
+      biz_days,
+      project: { members }
     },
     dispatch
   } = useContext(RootContext);
-  const [items, setItems] = useState<IUser[]>([]);
   const [hpd, setHpd] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const activeLen = biz_days.length - 1;
   const updateData = useCallback(() => {
     dispatch({ type: ActionTypes.UPDATE_DATA });
   }, [dispatch]);
-
-  useEffect(() => {
-    if (url && pid) {
-      (async () => {
-        const {
-          data: { members }
-        } = await axios.get<IProject>(`${baseUrl(url)}/projects/${pid}`);
-        setItems(members);
-      })();
-    }
-  }, [url, pid, setItems]);
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setHpd(Number(e.target.value) || 0);
@@ -419,7 +405,7 @@ export const UserTasks = () => {
           </tr>
         </thead>
         <tbody>
-          {items.map(item => (
+          {(members || []).map(item => (
             <UserRow
               key={item.id}
               isPast={isPast}

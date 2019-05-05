@@ -3,6 +3,7 @@ import { Actions, ActionTypes } from "../actions";
 import { IState } from "../store";
 import { baseUrl } from "../Provider";
 import { fetchProjecs } from "./fetchProjects";
+import { fetchProject } from "./fetchProject";
 import { fetchMilestones } from "./fetchMilestones";
 import { fetchTasks } from "./fetchTasks";
 import { fetchTaskStatuses } from "./fetchTaskStatuses";
@@ -27,6 +28,10 @@ export const rootSideEffector = (
   switch (action.type) {
     case ActionTypes.FETCH_PROJECTS: {
       fetchProjecs(action, dispatch, state);
+      return;
+    }
+    case ActionTypes.FETCH_PROJECT: {
+      fetchProject(action, dispatch, state);
       return;
     }
     case ActionTypes.FETCH_MILESTONES: {

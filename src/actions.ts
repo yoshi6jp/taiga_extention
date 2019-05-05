@@ -12,6 +12,8 @@ export enum ActionTypes {
   FETCH_PROJECTS = "FETCH_PROJECTS",
   SET_PROJECTS = "SET_PROJECTS",
   SET_PID = "SET_PID",
+  FETCH_PROJECT = "FETCH_PROJECT",
+  SET_PROJECT = "SET_PROJECT",
   FETCH_MILESTONES = "FETCH_MILESTONES",
   SET_MID = "SET_MID",
   SET_MILESTONES = "SET_MILESTONES",
@@ -57,7 +59,14 @@ export interface SET_PID extends IAction {
   type: ActionTypes.SET_PID;
   payload: { pid: string };
 }
-
+export interface FETCH_PROJECT extends IAction {
+  type: ActionTypes.FETCH_PROJECT;
+  payload: { pid: string };
+}
+export interface SET_PROJECT extends IAction {
+  type: ActionTypes.SET_PROJECT;
+  payload: { project: IProject };
+}
 export interface FETCH_MILESTONES extends IAction {
   type: ActionTypes.FETCH_MILESTONES;
   payload: { project: string };
@@ -158,6 +167,8 @@ export type Actions =
   | FETCH_PROJECTS
   | SET_PROJECTS
   | SET_PID
+  | FETCH_PROJECT
+  | SET_PROJECT
   | FETCH_MILESTONES
   | SET_MILESTONES
   | SET_MID
