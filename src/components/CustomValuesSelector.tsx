@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from "react";
 import { Input, InputGroup, InputGroupAddon } from "reactstrap";
-import { RootContext } from "./Provider";
-import { ActionTypes } from "./actions";
+import { RootContext } from "../Provider";
+import { ActionTypes } from "../actions";
 
 export const CustomValuesSelector = () => {
   const {

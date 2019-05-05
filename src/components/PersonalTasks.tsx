@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
-import { RootContext } from "./Provider";
+import { RootContext } from "../Provider";
 import { Table } from "reactstrap";
-import { ITask, IUser } from "./store";
+import { ITask, IUser } from "../store";
 import { getCustomAttr, getCustomVal, Medal } from "./UserTasks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";

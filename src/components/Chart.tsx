@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { ComposedChart, Tooltip, Line, XAxis, YAxis, Bar } from "recharts";
-import { ITask, ICustomValueMap } from "./store";
+import { ITask, ICustomValueMap } from "../store";
 import _ from "lodash";
 import moment from "moment";
-import { RootContext } from "./Provider";
+import { RootContext } from "../Provider";
 import { dayNameFromIdx } from "./DaysSelector";
 import { getCustomVal } from "./UserTasks";
 import { Card, CardHeader } from "reactstrap";

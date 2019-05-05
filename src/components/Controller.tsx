@@ -1,7 +1,7 @@
 import React, { useContext, useState, useCallback } from "react";
 import _ from "lodash";
 import classNames from "classnames";
-import { RootContext } from "./Provider";
+import { RootContext } from "../Provider";
 import {
   Card,
   CardHeader,
@@ -23,9 +23,9 @@ import { MilestoneSelector } from "./MilestoneSelector";
 import { CustomValuesSelector } from "./CustomValuesSelector";
 import { DaysSelector, getMilestone } from "./DaysSelector";
 import { TaskStatusSelector } from "./TaskStatusSelector";
-import { IMilestone } from "./store";
+import { IMilestone } from "../store";
 import styles from "./Controller.module.css";
-import { ActionTypes } from "./actions";
+import { ActionTypes } from "../actions";
 const getSpName = (mid: string, items: IMilestone[]) =>
   _.get(getMilestone(mid, items), "name", "");
 const getTaskboardUrl = (url: string, mid: string, items: IMilestone[]) => {

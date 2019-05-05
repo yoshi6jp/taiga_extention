@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { RootContext } from "./Provider";
+import { RootContext } from "../Provider";
 import { Chart } from "./Chart";
 
 export const OverviewChart = () => {

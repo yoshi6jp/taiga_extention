@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardHeader } from "reactstrap";
-import { IUser } from "./store";
+import { IUser } from "../store";
 
 import styles from "./PersonalInfo.module.css";
 

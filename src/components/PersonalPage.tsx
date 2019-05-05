@@ -5,8 +5,8 @@ import { Button, Alert, Navbar } from "reactstrap";
 import { PersonalTasks } from "./PersonalTasks";
 import { PersonalInfo } from "./PersonalInfo";
 import { useContext, useEffect, useState } from "react";
-import { RootContext, baseUrl } from "./Provider";
-import { IUser } from "./store";
+import { RootContext, baseUrl } from "../Provider";
+import { IUser } from "../store";
 import { PersonalChart } from "./PersonalChart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -14,7 +14,7 @@ import {
   faArrowCircleLeft
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import { ActionTypes } from "./actions";
+import { ActionTypes } from "../actions";
 
 export const PersonalPage = (props: RouteComponentProps<{ uid: string }>) => {
   const {

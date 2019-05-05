@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
-import { ITask, IUser } from "./store";
-import { RootContext } from "./Provider";
+import { ITask, IUser } from "../store";
+import { RootContext } from "../Provider";
 import { Chart } from "./Chart";
 
 export const PersonalChart = ({ userInfo }: { userInfo: IUser }) => {

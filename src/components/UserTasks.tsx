@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { ICustomValueMap, IProject, IUser, ITask, ICustomAttr } from "./store";
-import { RootContext, baseUrl } from "./Provider";
+import { ICustomValueMap, IProject, IUser, ITask, ICustomAttr } from "../store";
+import { RootContext, baseUrl } from "../Provider";
 import classNames from "classnames";
 import {
   Table,
@@ -28,7 +28,7 @@ import {
 import styles from "./UserTasks.module.css";
 import moment from "moment";
 import { Link } from "react-router-dom";
-import { ActionTypes } from "./actions";
+import { ActionTypes } from "../actions";
 
 const barStyles = ["success", "warning", "info", "danger"];
 const getTasksByUser = (items: ITask[]) => _.groupBy(items, "assigned_to");

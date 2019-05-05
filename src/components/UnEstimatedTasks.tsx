@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
-import { RootContext } from "./Provider";
-import { ITask } from "./store";
+import { RootContext } from "../Provider";
+import { ITask } from "../store";
 import { ListGroup, ListGroupItem, Card, CardHeader } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";

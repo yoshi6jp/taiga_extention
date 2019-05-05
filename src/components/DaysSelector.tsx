@@ -9,12 +9,12 @@ import {
   Label,
   FormGroup
 } from "reactstrap";
-import { IMilestone } from "./store";
-import { RootContext } from "./Provider";
+import { IMilestone } from "../store";
+import { RootContext } from "../Provider";
 import moment, { Moment } from "moment";
 import biz from "moment-business";
 import _ from "lodash";
-import { ActionTypes } from "./actions";
+import { ActionTypes } from "../actions";
 export const isToday = (date: string) =>
   moment()
     .local()

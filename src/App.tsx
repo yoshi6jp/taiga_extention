@@ -1,9 +1,9 @@
 import React from "react";
-import { Controller } from "./Controller";
+import { Controller } from "./components/Controller";
 import { Provider } from "./Provider";
 import { HashRouter, Route } from "react-router-dom";
-import { OverView } from "./OverView";
-import { PersonalPage } from "./PersonalPage";
+import { OverView } from "./components/OverView";
+import { PersonalPage } from "./components/PersonalPage";
 export const App = () => (
   <div className="container">
     <HashRouter>

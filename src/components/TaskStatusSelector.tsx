@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from "react";
 import _ from "lodash";
-import { RootContext } from "./Provider";
+import { RootContext } from "../Provider";
 import {
   Card,
   CardHeader,
@@ -9,8 +9,8 @@ import {
   FormGroup,
   Label
 } from "reactstrap";
-import { ITaskStatus } from "./store";
-import { ActionTypes } from "./actions";
+import { ITaskStatus } from "../store";
+import { ActionTypes } from "../actions";
 const StatusItem = ({ item }: { item: ITaskStatus }) => {
   const {
     state: { reject_task_status_ids },
