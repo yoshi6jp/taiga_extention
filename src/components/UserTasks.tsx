@@ -26,7 +26,6 @@ import { UpdateButton } from "./UpdateButton";
 import styles from "./UserTasks.module.css";
 import moment from "moment";
 import { Link } from "react-router-dom";
-import { ActionTypes } from "../actions";
 
 const barStyles = ["success", "warning", "info", "danger"];
 const getTasksByUser = (items: ITask[]) => _.groupBy(items, "assigned_to");
@@ -322,15 +321,11 @@ export const UserTasks = () => {
       custom_rid,
       biz_days,
       project: { members }
-    },
-    dispatch
+    }
   } = useContext(RootContext);
   const [hpd, setHpd] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const activeLen = biz_days.length - 1;
-  const updateData = useCallback(() => {
-    dispatch({ type: ActionTypes.UPDATE_DATA });
-  }, [dispatch]);
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setHpd(Number(e.target.value) || 0);

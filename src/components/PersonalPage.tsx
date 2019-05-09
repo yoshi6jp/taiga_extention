@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { RouteComponentProps } from "react-router";
 import {
   Button,
   Alert,
@@ -139,7 +138,7 @@ const SignInForm: React.FC = () => {
     </>
   );
 };
-export const PersonalPage = (props: RouteComponentProps<{ uid: string }>) => {
+export const PersonalPage: React.FC = () => {
   const {
     state: { user },
     dispatch
@@ -149,9 +148,6 @@ export const PersonalPage = (props: RouteComponentProps<{ uid: string }>) => {
       params: { uid }
     }
   } = useRouter();
-  const updateData = useCallback(() => {
-    dispatch({ type: ActionTypes.UPDATE_DATA });
-  }, [dispatch]);
   useEffect(() => {
     if (uid) {
       dispatch({ type: ActionTypes.FETCH_USER, payload: { uid } });
