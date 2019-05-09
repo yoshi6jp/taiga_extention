@@ -4,7 +4,6 @@ import { RootContext } from "../Provider";
 import classNames from "classnames";
 import {
   Table,
-  Button,
   Navbar,
   Form,
   Input,
@@ -16,7 +15,6 @@ import {
 import _ from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faSyncAlt,
   faMedal,
   faTimes,
   faEquals,
@@ -24,6 +22,7 @@ import {
   faGrinBeamSweat,
   faDizzy
 } from "@fortawesome/free-solid-svg-icons";
+import { UpdateButton } from "./UpdateButton";
 import styles from "./UserTasks.module.css";
 import moment from "moment";
 import { Link } from "react-router-dom";
@@ -395,9 +394,7 @@ export const UserTasks = () => {
             </InputGroupAddon>
           </InputGroup>
         </Form>
-        <Button onClick={updateData}>
-          <FontAwesomeIcon icon={faSyncAlt} />
-        </Button>
+        <UpdateButton />
       </Navbar>
       <Table bordered>
         <thead>

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router";
 import {
   Button,
@@ -13,12 +13,10 @@ import {
 } from "reactstrap";
 import { PersonalTasks } from "./PersonalTasks";
 import { PersonalInfo } from "./PersonalInfo";
-import { useContext, useEffect, useState } from "react";
 import { RootContext } from "../Provider";
 import { PersonalChart } from "./PersonalChart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faSyncAlt,
   faArrowCircleLeft,
   faUser,
   faKey,
@@ -27,6 +25,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { ActionTypes } from "../actions";
+import { UpdateButton } from "./UpdateButton";
 import useRouter from "use-react-router";
 const SignInForm: React.FC = () => {
   const {
@@ -168,9 +167,7 @@ export const PersonalPage = (props: RouteComponentProps<{ uid: string }>) => {
           <FontAwesomeIcon icon={faArrowCircleLeft} /> Go back
         </Button>
         <SignInForm />
-        <Button onClick={updateData}>
-          <FontAwesomeIcon icon={faSyncAlt} />
-        </Button>
+        <UpdateButton />
       </Navbar>
       {user ? (
         <>
