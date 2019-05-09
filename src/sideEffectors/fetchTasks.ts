@@ -13,7 +13,7 @@ export const fetchTasks: ISideEffector = async (action, dispatch, state) => {
           params: { milestone }
         });
         const tasks = data.filter(
-          item => !_.includes(reject_task_status_ids, String(item))
+          item => !_.includes(reject_task_status_ids, String(item.status))
         );
         dispatch({ type: ActionTypes.SET_TASKS, payload: { tasks } });
       }
