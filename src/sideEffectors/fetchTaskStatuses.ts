@@ -1,6 +1,5 @@
-import { ActionTypes } from "../actions";
 import { ITaskStatus } from "../store";
-import { ISideEffector, fetchData } from ".";
+import { ISideEffector, fetchData, ActionTypes } from ".";
 export const fetchTaskStatuses: ISideEffector = async (
   action,
   dispatch,

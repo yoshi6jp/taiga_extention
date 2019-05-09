@@ -4,15 +4,20 @@ import {
   Card,
   CardHeader,
   Collapse,
-  Badge,
   Row,
   Col,
   Input,
   InputGroup,
-  InputGroupAddon
+  InputGroupAddon,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownItem,
+  DropdownMenu,
+  Spinner
 } from "reactstrap";
 import classNames from "classnames";
-import { ITasksByUserStory, ITask } from "../store";
+import _ from "lodash";
+import { ITasksByUserStory, ITask, ITaskStatus } from "../store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faExternalLinkAlt,
@@ -179,6 +184,80 @@ export const Grade: React.FC<GradeProps> = ({ e, r }) => {
   );
 };
 
+interface TaskStatusItemProps {
+  item: ITaskStatus;
+  task: ITask;
+  onSelect?: (id: number) => void;
+}
+const TaskStatusItem: React.FC<TaskStatusItemProps> = ({
+  item,
+  task,
+  onSelect
+}) => {
+  const { dispatch } = useContext(RootContext);
+  const handleClick = useCallback(() => {
+    dispatch({
+      type: ActionTypes.PATCH_TASK,
+      payload: {
+        key: "status",
+        value: item.id,
+        id: task.id
+      }
+    });
+    onSelect && onSelect(item.id);
+  }, [dispatch, item.id, task.id, onSelect]);
+  return <DropdownItem onClick={handleClick}>{item.name}</DropdownItem>;
+};
+interface TaskStatusSelectorProps {
+  task: ITask;
+  disabled?: boolean;
+}
+const TaskStatusSelector: React.FC<TaskStatusSelectorProps> = ({
+  task,
+  disabled
+}) => {
+  const [items, setItems] = useState<ITaskStatus[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const {
+    state: { task_statuses, reject_task_status_ids }
+  } = useContext(RootContext);
+  useEffect(() => {
+    const list = task_statuses.filter(
+      item => !_.includes(reject_task_status_ids, String(item.id))
+    );
+    setItems(list);
+  }, [setItems, task_statuses, reject_task_status_ids]);
+  const handleSelect = useCallback(() => {
+    setLoading(true);
+  }, [setLoading]);
+  useEffect(() => {
+    setLoading(false);
+  }, [task.version, setLoading]);
+  return (
+    <>
+      {loading ? (
+        <Spinner type="grow" color="info" />
+      ) : (
+        <UncontrolledDropdown>
+          <DropdownToggle disabled={disabled} caret={!disabled}>
+            {task.status_extra_info.name}
+          </DropdownToggle>
+          <DropdownMenu>
+            {items.map(item => (
+              <TaskStatusItem
+                item={item}
+                key={item.id}
+                task={task}
+                onSelect={handleSelect}
+              />
+            ))}
+          </DropdownMenu>
+        </UncontrolledDropdown>
+      )}
+    </>
+  );
+};
+
 export const TaskItem = ({ item }: { item: ITask }) => {
   const {
     state: {
@@ -243,9 +322,7 @@ export const TaskItem = ({ item }: { item: ITask }) => {
         <div className="mr-auto text-truncate">
           <TaskLink url={url} item={item} />
         </div>
-        <h5>
-          <Badge>{item.status_extra_info.name}</Badge>
-        </h5>
+        <TaskStatusSelector task={item} disabled={disabled} />
       </div>
       <Row>
         <Col>

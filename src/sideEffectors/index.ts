@@ -11,8 +11,10 @@ import { fetchCustomAttrs } from "./fetchCustomAttrs";
 import { fetchCustomValueMap } from "./fetchCustomValueMap";
 import { fetchUser } from "./fetchUser";
 import { patchCustomValue } from "./patchCustomValue";
+import { patchTask } from "./patchTask";
 import { signIn } from "./signIn";
 import axios, { AxiosRequestConfig } from "axios";
+export { ActionTypes };
 export type ISideEffector = (
   action: Actions,
   dispatch: Dispatch<Actions>,
@@ -75,12 +77,14 @@ export const rootSideEffector = (
     }
     case ActionTypes.PATCH_CUSTOM_VALUE: {
       patchCustomValue(action, dispatch, state);
-      console.log("patch", action);
       return;
     }
     case ActionTypes.SIGN_IN: {
       signIn(action, dispatch, state);
-      console.log("signin", action);
+      return;
+    }
+    case ActionTypes.PATCH_TASK: {
+      patchTask(action, dispatch, state);
       return;
     }
     default: {

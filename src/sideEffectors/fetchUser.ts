@@ -1,6 +1,5 @@
-import { ActionTypes } from "../actions";
 import { IUser } from "../store";
-import { ISideEffector, fetchData } from ".";
+import { ISideEffector, fetchData, ActionTypes } from ".";
 export const fetchUser: ISideEffector = async (action, dispatch, state) => {
   if (action.type === ActionTypes.FETCH_USER) {
     try {

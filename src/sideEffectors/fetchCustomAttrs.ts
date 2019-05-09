@@ -1,6 +1,5 @@
-import { ActionTypes } from "../actions";
 import { ICustomAttr } from "../store";
-import { ISideEffector, fetchData } from ".";
+import { ISideEffector, fetchData, ActionTypes } from ".";
 export const fetchCustomAttrs: ISideEffector = async (
   action,
   dispatch,

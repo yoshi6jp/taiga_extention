@@ -1,6 +1,5 @@
-import { ActionTypes } from "../actions";
 import { IAuthToken } from "../store";
-import { ISideEffector, postData } from ".";
+import { ISideEffector, postData, ActionTypes } from ".";
 export const signIn: ISideEffector = async (action, dispatch, state) => {
   if (action.type === ActionTypes.SIGN_IN) {
     try {

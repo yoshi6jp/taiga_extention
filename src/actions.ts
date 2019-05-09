@@ -31,6 +31,7 @@ export enum ActionTypes {
   REMOVE_BIZ_DAY = "REMOVE_BIZ_DAY",
   FETCH_TASKS = "FETCH_TASKS",
   SET_TASKS = "SET_TASKS",
+  PATCH_TASK = "PATCH_TASK",
   FETCH_TASK_STATUSES = "FETCH_TASK_STATUSES",
   SET_TASK_STATUSES = "SET_TASK_STATUSES",
   FETCH_CUSTOM_VALUE_MAP = "FETCH_CUSTOM_VALUE_MAP",
@@ -146,6 +147,10 @@ export interface SET_TASKS extends IAction {
   type: ActionTypes.SET_TASKS;
   payload: { tasks: ITask[] };
 }
+export interface PATCH_TASK extends IAction {
+  type: ActionTypes.PATCH_TASK;
+  payload: { key: string; value: string | number; id: number };
+}
 export interface FETCH_CUSTOM_VALUE_MAP extends IAction {
   type: ActionTypes.FETCH_CUSTOM_VALUE_MAP;
   payload: { tasks: ITask[] };
@@ -229,6 +234,7 @@ export type Actions =
   | REMOVE_BIZ_DAY
   | FETCH_TASKS
   | SET_TASKS
+  | PATCH_TASK
   | FETCH_CUSTOM_VALUE_MAP
   | SET_CUSTOM_VALUE_MAP
   | FETCH_TASK_STATUSES

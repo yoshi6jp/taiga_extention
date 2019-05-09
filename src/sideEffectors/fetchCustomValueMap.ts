@@ -1,6 +1,5 @@
-import { ActionTypes } from "../actions";
 import { ITask, ICustomValue } from "../store";
-import { ISideEffector, fetchData } from ".";
+import { ISideEffector, fetchData, ActionTypes } from ".";
 export const fetchCustomValueMap: ISideEffector = async (
   action,
   dispatch,

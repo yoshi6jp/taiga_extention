@@ -1,6 +1,5 @@
-import { ActionTypes } from "../actions";
 import { IProject } from "../store";
-import { ISideEffector, fetchData } from ".";
+import { ISideEffector, fetchData, ActionTypes } from ".";
 export const fetchProjecs: ISideEffector = async (action, dispatch, state) => {
   try {
     const { url } = state();

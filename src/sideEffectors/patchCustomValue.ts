@@ -1,5 +1,4 @@
-import { ActionTypes } from "../actions";
-import { ISideEffector, patchData } from ".";
+import { ISideEffector, patchData, ActionTypes } from ".";
 export const patchCustomValue: ISideEffector = async (
   action,
   dispatch,

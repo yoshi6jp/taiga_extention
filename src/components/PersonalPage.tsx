@@ -85,7 +85,7 @@ const SignInForm: React.FC = () => {
                 <FontAwesomeIcon icon={faUser} />
               </InputGroupText>
             </InputGroupAddon>
-            <Input readOnly valid={true} value={sign_in_username} />
+            <Input readOnly valid={true} placeholder={sign_in_username} />
             <InputGroupAddon addonType="append">
               <Button onClick={handleSignOut}>
                 <FontAwesomeIcon icon={faSignOutAlt} />

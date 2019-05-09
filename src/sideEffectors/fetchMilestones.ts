@@ -1,6 +1,5 @@
-import { ActionTypes } from "../actions";
 import { IMilestone } from "../store";
-import { ISideEffector, fetchData } from ".";
+import { ISideEffector, fetchData, ActionTypes } from ".";
 export const fetchMilestones: ISideEffector = async (
   action,
   dispatch,

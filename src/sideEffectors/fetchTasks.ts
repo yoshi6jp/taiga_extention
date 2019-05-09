@@ -1,6 +1,5 @@
-import { ActionTypes } from "../actions";
 import { ITask } from "../store";
-import { ISideEffector, fetchData } from ".";
+import { ISideEffector, fetchData, ActionTypes } from ".";
 import _ from "lodash";
 export const fetchTasks: ISideEffector = async (action, dispatch, state) => {
   if (action.type === ActionTypes.FETCH_TASKS) {

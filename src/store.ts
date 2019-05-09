@@ -44,6 +44,7 @@ export interface ITask {
   status_extra_info: IStatusExtraInfo;
   user_story: number;
   user_story_extra_info?: IUserStoryExtraInfo;
+  version: number;
 }
 export interface ITasksByUserStory {
   user_story: number;
