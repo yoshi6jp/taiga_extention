@@ -1,53 +1,30 @@
 import React, { useContext, useState, useEffect } from "react";
 import { RootContext } from "../Provider";
-import { Table } from "reactstrap";
-import { ITask, IUser } from "../store";
-import { getCustomAttr, getCustomVal, Medal } from "./UserTasks";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  Row,
+  Col
+} from "reactstrap";
 import classNames from "classnames";
-
-import styles from "./PersonalTasks.module.css";
-
-const UserStoryLink = ({ url, item }: { url: string; item: ITask }) => {
-  const {
-    user_story_extra_info,
-    project_extra_info: { slug }
-  } = item;
-  const usName = user_story_extra_info
-    ? `#${user_story_extra_info.ref} ${user_story_extra_info.subject}`
-    : undefined;
-  const href = user_story_extra_info
-    ? `${url}/project/${slug}/us/${user_story_extra_info.ref}`
-    : "#";
-
-  if (usName) {
-    return (
-      <a href={href} target="_blank" rel="noopener noreferrer" title={usName}>
-        <FontAwesomeIcon icon={faExternalLinkAlt} /> {usName}
-      </a>
-    );
-  } else {
-    return <>(Unassigned tasks)</>;
-  }
-};
-
-const TaskLink = ({ url, item }: { url: string; item: ITask }) => {
-  const taskName = `#${item.ref} ${item.subject}`;
-  const href = `${url}/project/${item.project_extra_info.slug}/task/${
-    item.ref
-  }`;
-  return (
-    <a href={href} target="_blank" rel="noopener noreferrer" title={taskName}>
-      <FontAwesomeIcon icon={faExternalLinkAlt} /> {taskName}
-    </a>
-  );
-};
-
+import { ITask, IUser, ITasksByUserStory } from "../store";
+import { InputGroupSpinner } from "./InputGroupSpinner";
+import {
+  getCustomAttr,
+  getCustomVal,
+  getCustomValVersion,
+  isCustomValInvalid,
+  isCustomValValid
+} from "./UserTasks";
+import _ from "lodash";
+import { UserStory, Grade } from "./UserStory";
 export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
   const {
     state: {
-      url,
       tasks,
       custom_attrs,
       custom_value_map,
@@ -57,11 +34,23 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
     }
   } = useContext(RootContext);
   const [items, setItems] = useState<ITask[]>([]);
+  const [userStories, setUserStories] = useState<ITasksByUserStory[]>([]);
   useEffect(() => {
     const userTasks = tasks
       .filter(task => task.assigned_to === userInfo.id)
       .sort((a, b) => a.user_story - b.user_story);
     setItems(userTasks);
+    const userStories = _.chain(tasks)
+      .filter({ assigned_to: userInfo.id })
+      .groupBy("user_story")
+      .map((items, key) => ({
+        user_story: Number(key),
+        user_story_extra_info: items[0].user_story_extra_info,
+        tasks: items,
+        is_closed: items.every(task => task.is_closed)
+      }))
+      .value();
+    setUserStories(userStories);
   }, [tasks, userInfo.id]);
 
   const customAttrE = getCustomAttr(custom_attrs, Number(custom_eid));
@@ -70,73 +59,62 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
     return null;
   }
 
-  let totalE = 0;
-  let totalR = 0;
-  items.forEach(item => {
-    totalE = totalE + getCustomVal(custom_value_map, item, customAttrE.id);
-    totalR = totalR + getCustomVal(custom_value_map, item, customAttrR.id);
-  });
+  const [e, r] = items.reduce(
+    (result, item) => {
+      return [
+        result[0] + getCustomVal(custom_value_map, item, customAttrE.id),
+        result[1] + getCustomVal(custom_value_map, item, customAttrR.id)
+      ];
+    },
+    [0, 0]
+  );
+  const valid = isCustomValValid(
+    e,
+    r,
+    userStories.every(item => item.is_closed)
+  );
+  const invalid = isCustomValInvalid(e, r);
+  const loading = items.some(
+    item => !getCustomValVersion(custom_value_map, item)
+  );
 
   return (
-    <Table bordered size="sm" className={styles.overflow}>
-      <thead>
-        <tr>
-          <th>User story</th>
-          <th>Task name</th>
-          <th>Status</th>
-          <th>{customAttrE.name}</th>
-          <th>{customAttrR.name}</th>
-          <th>Grade</th>
-        </tr>
-      </thead>
-      <tbody>
-        {/* tasks */}
-        {items.map(item => {
-          const e = getCustomVal(custom_value_map, item, customAttrE.id);
-          const r = getCustomVal(custom_value_map, item, customAttrR.id);
-          return (
-            <tr key={item.id}>
-              <td className={item.is_closed ? "table-secondary" : undefined}>
-                <UserStoryLink url={url} item={item} />
-              </td>
-              <td className={item.is_closed ? "table-secondary" : undefined}>
-                <TaskLink url={url} item={item} />
-              </td>
-              <td className={item.is_closed ? "table-secondary" : undefined}>
-                {item.status_extra_info.name}
-              </td>
-              <td className="text-right">{e}</td>
-              <td
-                className={classNames(
-                  "text-right",
-                  r > e ? "text-danger" : undefined
+    <>
+      {userStories.map(item => (
+        <UserStory item={item} key={item.user_story} />
+      ))}
+      <Card>
+        <CardHeader className={classNames("bg-info", "text-light")}>
+          Total
+        </CardHeader>
+        <CardBody>
+          <Row>
+            <Col>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  {customAttrE.name}
+                </InputGroupAddon>
+                {loading ? <InputGroupSpinner /> : <Input readOnly value={e} />}
+              </InputGroup>
+            </Col>
+            <Col>
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  {customAttrR.name}
+                </InputGroupAddon>
+                {loading ? (
+                  <InputGroupSpinner />
+                ) : (
+                  <Input readOnly value={r} invalid={invalid} valid={valid} />
                 )}
-              >
-                {r}
-              </td>
-              <td>
-                <Medal e={e} r={r} />
-              </td>
-            </tr>
-          );
-        })}
-        {/* total */}
-        <tr>
-          <td colSpan={3}>Total</td>
-          <td className="text-right">{totalE}</td>
-          <td
-            className={classNames(
-              "text-right",
-              totalR > totalE ? "text-danger" : undefined
-            )}
-          >
-            {totalR}
-          </td>
-          <td>
-            <Medal e={totalE} r={totalR} />
-          </td>
-        </tr>
-      </tbody>
-    </Table>
+              </InputGroup>
+            </Col>
+            <Col>
+              <Grade e={e} r={r} />
+            </Col>
+          </Row>
+        </CardBody>
+      </Card>
+    </>
   );
 };

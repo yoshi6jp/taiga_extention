@@ -1,56 +1,184 @@
 import React, { useCallback } from "react";
-import axios from "axios";
 import { RouteComponentProps } from "react-router";
-import { Button, Alert, Navbar } from "reactstrap";
+import {
+  Button,
+  Alert,
+  Navbar,
+  Form,
+  InputGroup,
+  Input,
+  InputGroupAddon,
+  InputGroupText,
+  Spinner
+} from "reactstrap";
 import { PersonalTasks } from "./PersonalTasks";
 import { PersonalInfo } from "./PersonalInfo";
 import { useContext, useEffect, useState } from "react";
-import { RootContext, baseUrl } from "../Provider";
-import { IUser } from "../store";
+import { RootContext } from "../Provider";
 import { PersonalChart } from "./PersonalChart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSyncAlt,
-  faArrowCircleLeft
+  faArrowCircleLeft,
+  faUser,
+  faKey,
+  faSignInAlt,
+  faSignOutAlt
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { ActionTypes } from "../actions";
-
-export const PersonalPage = (props: RouteComponentProps<{ uid: string }>) => {
+import useRouter from "use-react-router";
+const SignInForm: React.FC = () => {
   const {
-    state: { url },
+    state: { auth_token, auth_error, username: sign_in_username },
     dispatch
   } = useContext(RootContext);
-  const [userInfo, setUserInfo] = useState<IUser | undefined>(undefined);
+
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      if (username && password) {
+        setLoading(true);
+        dispatch({
+          type: ActionTypes.SIGN_IN,
+          payload: {
+            username,
+            password
+          }
+        });
+      }
+      e.preventDefault();
+    },
+    [password, username, dispatch, setLoading]
+  );
+  const handleUsername = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setUsername(e.target.value);
+    },
+    [setUsername]
+  );
+  const handlePassword = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setPassword(e.target.value);
+    },
+    [setPassword]
+  );
+  const disableSubmit = useCallback((e: React.FormEvent) => {
+    e.preventDefault();
+  }, []);
+  const handleSignOut = useCallback(() => {
+    dispatch({ type: ActionTypes.SIGN_OUT });
+  }, [dispatch]);
+  useEffect(() => {
+    if (auth_error || auth_token) {
+      setLoading(false);
+    }
+  }, [auth_error, auth_token, setLoading]);
+  return (
+    <>
+      {auth_token ? (
+        <Form inline onSubmit={disableSubmit}>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>
+                <FontAwesomeIcon icon={faUser} />
+              </InputGroupText>
+            </InputGroupAddon>
+            <Input readOnly valid={true} value={sign_in_username} />
+            <InputGroupAddon addonType="append">
+              <Button onClick={handleSignOut}>
+                <FontAwesomeIcon icon={faSignOutAlt} />
+              </Button>
+            </InputGroupAddon>
+          </InputGroup>
+        </Form>
+      ) : (
+        <Form inline onSubmit={handleSubmit}>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>
+                <FontAwesomeIcon icon={faUser} />
+              </InputGroupText>
+            </InputGroupAddon>
+            <Input
+              disabled={loading}
+              onInput={handleUsername}
+              onChange={handleUsername}
+              name="username"
+              placeholder="username"
+              invalid={auth_error}
+            />
+          </InputGroup>
+          <InputGroup>
+            <InputGroupAddon addonType="prepend">
+              <InputGroupText>
+                <FontAwesomeIcon icon={faKey} />
+              </InputGroupText>
+            </InputGroupAddon>
+            <Input
+              disabled={loading}
+              onInput={handlePassword}
+              onChange={handlePassword}
+              name="password"
+              placeholder="password"
+              type="password"
+              invalid={auth_error}
+            />
+          </InputGroup>
+          <Button color="primary">
+            {loading ? (
+              <Spinner size="sm" type="grow" />
+            ) : (
+              <FontAwesomeIcon icon={faSignInAlt} />
+            )}
+          </Button>
+        </Form>
+      )}
+    </>
+  );
+};
+export const PersonalPage = (props: RouteComponentProps<{ uid: string }>) => {
+  const {
+    state: { user },
+    dispatch
+  } = useContext(RootContext);
+  const {
+    match: {
+      params: { uid }
+    }
+  } = useRouter();
   const updateData = useCallback(() => {
     dispatch({ type: ActionTypes.UPDATE_DATA });
   }, [dispatch]);
   useEffect(() => {
-    if (url) {
-      (async () => {
-        const { data } = await axios.get<IUser>(
-          `${baseUrl(url)}/users/${props.match.params.uid}`
-        );
-        setUserInfo(data);
-      })();
+    if (uid) {
+      dispatch({ type: ActionTypes.FETCH_USER, payload: { uid } });
     }
-  }, [url, setUserInfo, props.match.params.uid]);
-
+    return () => {
+      dispatch({ type: ActionTypes.RESET_USER });
+    };
+  }, [dispatch, uid]);
   return (
     <>
       <Navbar color="light" light>
         <Button tag={Link} to="/">
           <FontAwesomeIcon icon={faArrowCircleLeft} /> Go back
         </Button>
+        <SignInForm />
         <Button onClick={updateData}>
           <FontAwesomeIcon icon={faSyncAlt} />
         </Button>
       </Navbar>
-      {userInfo ? (
+      {user ? (
         <>
-          <PersonalInfo userInfo={userInfo} />
-          <PersonalTasks userInfo={userInfo} />
-          <PersonalChart userInfo={userInfo} />
+          <PersonalInfo userInfo={user} />
+          <br />
+          <PersonalTasks userInfo={user} />
+          <br />
+          <PersonalChart userInfo={user} />
         </>
       ) : (
         <Alert color="danger">This user does not exist.</Alert>

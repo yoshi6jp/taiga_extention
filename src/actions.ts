@@ -4,11 +4,16 @@ import {
   ICustomAttr,
   ITask,
   ICustomValueMap,
-  ITaskStatus
+  ITaskStatus,
+  IUser
 } from "./store";
 
 export enum ActionTypes {
   SET_URL = "SET_URL",
+  SIGN_IN = "SIGN_IN",
+  SET_AUTH_TOKEN = "SET_AUTH_TOKEN",
+  SET_AUTH_ERROR = "SET_AUTH_ERROR",
+  SIGN_OUT = "SIGN_OUT",
   FETCH_PROJECTS = "FETCH_PROJECTS",
   SET_PROJECTS = "SET_PROJECTS",
   SET_PID = "SET_PID",
@@ -30,6 +35,10 @@ export enum ActionTypes {
   SET_TASK_STATUSES = "SET_TASK_STATUSES",
   FETCH_CUSTOM_VALUE_MAP = "FETCH_CUSTOM_VALUE_MAP",
   SET_CUSTOM_VALUE_MAP = "SET_CUSTOM_VALUE_MAP",
+  PATCH_CUSTOM_VALUE = "PATCH_CUSTOM_VALUE",
+  FETCH_USER = "FETCH_USER",
+  SET_USER = "SET_USER",
+  RESET_USER = "RESET_USER",
   ADD_REJECT_TASK_STATUS_ID = "ADD_REJECT_TASK_STATUS",
   REMOVE_REJECT_TASK_STATUS_ID = "REMOVE_REJECT_TASK_STATUS",
   OPEN_CONTROLLER = "OPEN_CONTROLLER",
@@ -46,6 +55,20 @@ export interface IAction {
 export interface SET_URL extends IAction {
   type: ActionTypes.SET_URL;
   payload: { url: string };
+}
+export interface SIGN_IN extends IAction {
+  type: ActionTypes.SIGN_IN;
+  payload: { username: string; password: string };
+}
+export interface SET_AUTH_TOKEN extends IAction {
+  type: ActionTypes.SET_AUTH_TOKEN;
+  payload: { auth_token: string };
+}
+export interface SET_AUTH_ERROR extends IAction {
+  type: ActionTypes.SET_AUTH_ERROR;
+}
+export interface SIGN_OUT extends IAction {
+  type: ActionTypes.SIGN_OUT;
 }
 export interface FETCH_PROJECTS extends IAction {
   type: ActionTypes.FETCH_PROJECTS;
@@ -131,7 +154,15 @@ export interface SET_CUSTOM_VALUE_MAP extends IAction {
   type: ActionTypes.SET_CUSTOM_VALUE_MAP;
   payload: { custom_value_map: ICustomValueMap };
 }
-
+export interface PATCH_CUSTOM_VALUE extends IAction {
+  type: ActionTypes.PATCH_CUSTOM_VALUE;
+  payload: {
+    id: string | number;
+    key: string;
+    value: string | number;
+    version: number;
+  };
+}
 export interface FETCH_TASK_STATUSES extends IAction {
   type: ActionTypes.FETCH_TASK_STATUSES;
   payload: { project: string };
@@ -139,6 +170,17 @@ export interface FETCH_TASK_STATUSES extends IAction {
 export interface SET_TASK_STATUSES extends IAction {
   type: ActionTypes.SET_TASK_STATUSES;
   payload: { task_statuses: ITaskStatus[] };
+}
+export interface FETCH_USER extends IAction {
+  type: ActionTypes.FETCH_USER;
+  payload: { uid: string };
+}
+export interface SET_USER extends IAction {
+  type: ActionTypes.SET_USER;
+  payload: { user: IUser };
+}
+export interface RESET_USER extends IAction {
+  type: ActionTypes.RESET_USER;
 }
 export interface ADD_REJECT_TASK_STATUS_ID extends IAction {
   type: ActionTypes.ADD_REJECT_TASK_STATUS_ID;
@@ -164,6 +206,10 @@ export interface UPDATE_DATA extends IAction {
 
 export type Actions =
   | SET_URL
+  | SIGN_IN
+  | SET_AUTH_TOKEN
+  | SET_AUTH_ERROR
+  | SIGN_OUT
   | FETCH_PROJECTS
   | SET_PROJECTS
   | SET_PID
@@ -176,6 +222,7 @@ export type Actions =
   | SET_CUSTOM_RID
   | FETCH_CUSTOM_ATTRS
   | SET_CUSTOM_ATTRS
+  | PATCH_CUSTOM_VALUE
   | SET_BIZ_DAYS
   | SET_BIZ_DAYS
   | ADD_BIZ_DAY
@@ -186,6 +233,9 @@ export type Actions =
   | SET_CUSTOM_VALUE_MAP
   | FETCH_TASK_STATUSES
   | SET_TASK_STATUSES
+  | FETCH_USER
+  | SET_USER
+  | RESET_USER
   | ADD_REJECT_TASK_STATUS_ID
   | REMOVE_REJECT_TASK_STATUS_ID
   | OPEN_CONTROLLER

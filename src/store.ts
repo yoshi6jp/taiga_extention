@@ -3,6 +3,9 @@ export interface ICustomAttr {
   id: number;
   name: string;
 }
+export interface IAuthToken {
+  auth_token: string;
+}
 export interface IMilestone {
   id: number;
   name: string;
@@ -42,6 +45,12 @@ export interface ITask {
   user_story: number;
   user_story_extra_info?: IUserStoryExtraInfo;
 }
+export interface ITasksByUserStory {
+  user_story: number;
+  user_story_extra_info?: IUserStoryExtraInfo;
+  tasks: ITask[];
+  is_closed: boolean;
+}
 export interface ITaskStatus {
   id: number;
   name: string;
@@ -55,6 +64,7 @@ export interface ICustomValue {
   attributes_values: {
     [key: number]: string;
   };
+  version: number;
 }
 export interface IUser {
   id: number;
@@ -71,6 +81,11 @@ export interface IProject {
 export type ICustomValueMap = WeakMap<ITask, ICustomValue>;
 export interface IState {
   url: string;
+  auth_token: string;
+  auth_error: boolean;
+  username: string;
+  password: string;
+  user: IUser | null;
   projects: IProject[];
   pid: string; // url
   project: IProject;
@@ -125,6 +140,11 @@ export const initialStateFn = (): IState => {
   const isOpen = !(url && pid && mid && custom_eid && custom_rid);
   return {
     url,
+    auth_token: "",
+    auth_error: false,
+    username: "",
+    password: "",
+    user: null,
     projects: [],
     pid,
     project: {} as IProject,

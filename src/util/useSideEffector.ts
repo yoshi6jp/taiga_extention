@@ -5,19 +5,21 @@ export type SideEffector<S, A> = (
   dispatch: Dispatch<A>,
   state: () => S
 ) => void;
-
+let ss: any;
 export const useSideEffector = <S, A>(
   [state, dispatch]: [S, Dispatch<A>],
   sideEffector: SideEffector<S, A>
 ): [S, Dispatch<A>] => {
   let dispatchSE: Dispatch<A> | null = null;
+
   const dispatchSECaller = useCallback(
     (action: A) => {
       dispatchSE && dispatchSE(action);
     },
     [dispatchSE]
   );
-  const getState = () => state;
+  ss = state;
+  const getState = () => ss;
   dispatchSE = useCallback(
     dispatchSideEffector<S, A>(
       getState,

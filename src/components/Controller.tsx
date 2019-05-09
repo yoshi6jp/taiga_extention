@@ -46,6 +46,16 @@ const getRange = (biz_days: string[]) => {
     return "";
   }
 };
+export const ToggleIcon = ({ isOpen }: { isOpen: boolean }) => {
+  const rotation = isOpen ? 90 : undefined;
+  return (
+    <FontAwesomeIcon
+      className="text-muted mr-2"
+      rotation={rotation}
+      icon={faChevronCircleRight}
+    />
+  );
+};
 export const Controller = () => {
   const {
     state: { url: stateUrl, isOpen, mid, milestones, biz_days },
@@ -70,7 +80,6 @@ export const Controller = () => {
   const handleHref = useCallback((e: React.FormEvent) => {
     e.stopPropagation();
   }, []);
-  const rotation = isOpen ? 90 : undefined;
   const toggle = useCallback(() => {
     if (isOpen) {
       dispatch({ type: ActionTypes.CLOSE_CONTROLLER });
@@ -82,7 +91,7 @@ export const Controller = () => {
   return (
     <Card>
       <CardHeader className={classNames(styles.header)} onClick={toggle}>
-        <FontAwesomeIcon rotation={rotation} icon={faChevronCircleRight} />
+        <ToggleIcon isOpen={isOpen} />
         <Badge color="primary" pill className="p-1 m-1">
           <span>{getSpName(mid, milestones)}</span>
         </Badge>

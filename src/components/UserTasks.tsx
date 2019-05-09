@@ -55,6 +55,19 @@ export const getCustomVal = (
     return 0;
   }
 };
+export const getCustomValVersion = (
+  custon_value_map: ICustomValueMap,
+  task: ITask
+) => {
+  if (custon_value_map.has(task)) {
+    return _.get(custon_value_map.get(task), "version");
+  } else {
+    return undefined;
+  }
+};
+export const isCustomValValid = (e: number, r: number, is_closed: boolean) =>
+  is_closed && r === e;
+export const isCustomValInvalid = (e: number, r: number) => r > e;
 const getGrade = (e: number, r: number): [string | null, number] => {
   if (_.isNumber(e) && _.isNumber(r) && e > 0) {
     const diff = Math.abs(e - r) / e;

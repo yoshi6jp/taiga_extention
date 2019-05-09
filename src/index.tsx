@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "@material/switch/dist/mdc.switch.css";
+import "@material/form-field/dist/mdc.form-field.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 

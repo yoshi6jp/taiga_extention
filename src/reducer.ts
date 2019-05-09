@@ -1,4 +1,5 @@
 import _ from "lodash";
+import axios from "axios";
 import { initialStateFn, StorageKey, IProject, ICustomValueMap } from "./store";
 import { ActionTypes, Actions } from "./actions";
 import {
@@ -116,6 +117,13 @@ export const reducer = (state = initialStateFn(), action: Actions) => {
       const { custom_value_map } = action.payload;
       return { ...state, custom_value_map };
     }
+    case ActionTypes.SET_USER: {
+      const { user } = action.payload;
+      return { ...state, user };
+    }
+    case ActionTypes.RESET_USER: {
+      return { ...state, user: null };
+    }
     case ActionTypes.ADD_REJECT_TASK_STATUS_ID: {
       const { reject_task_status_id } = action.payload;
       const reject_task_status_ids = _.chain([
@@ -153,6 +161,24 @@ export const reducer = (state = initialStateFn(), action: Actions) => {
     }
     case ActionTypes.UPDATE_DATA: {
       return { ...state, updated_time: Date.now() };
+    }
+    case ActionTypes.SIGN_IN: {
+      const { username, password } = action.payload;
+      return { ...state, username, password, auth_error: false };
+    }
+    case ActionTypes.SET_AUTH_TOKEN: {
+      const { auth_token } = action.payload;
+      axios.defaults.headers.common["Authorization"] = `Bearer ${auth_token}`;
+      return { ...state, auth_token };
+    }
+    case ActionTypes.SET_AUTH_ERROR: {
+      return { ...state, auth_error: true };
+    }
+    case ActionTypes.SIGN_OUT: {
+      if (axios.defaults.headers.common["Authorization"]) {
+        delete axios.defaults.headers.common["Authorization"];
+      }
+      return { ...state, auth_token: "", username: "", password: "" };
     }
     default: {
       return state;
