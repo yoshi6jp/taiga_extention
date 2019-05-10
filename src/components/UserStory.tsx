@@ -13,7 +13,8 @@ import {
   DropdownToggle,
   DropdownItem,
   DropdownMenu,
-  Spinner
+  Spinner,
+  Form
 } from "reactstrap";
 import classNames from "classnames";
 import { ITasksByUserStory, ITask, ITaskStatus } from "../store";
@@ -108,13 +109,17 @@ const ToggleNumberInput: React.FC<ToggleNumberInputProps> = ({
     },
     [setVal]
   );
-  const handeSubmit = useCallback(() => {
-    const num = Number(val);
-    if (val !== "" && num >= 0 && onSubmit) {
-      onSubmit(num);
-      setChecked(false);
-    }
-  }, [val, onSubmit, setChecked]);
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      const num = Number(val);
+      if (checked && val !== "" && num >= 0 && onSubmit) {
+        onSubmit(num);
+        setChecked(false);
+      }
+      e.preventDefault();
+    },
+    [checked, val, onSubmit, setChecked]
+  );
   useEffect(() => {
     if (disabled) {
       setChecked(false);
@@ -122,50 +127,52 @@ const ToggleNumberInput: React.FC<ToggleNumberInputProps> = ({
   }, [setChecked, disabled]);
   const title = disabled ? "Need sign in!" : "";
   return (
-    <InputGroup className={styles.toggle_input}>
-      <InputGroupAddon addonType="prepend">{label}</InputGroupAddon>
-      {loading ? (
-        <InputGroupSpinner />
-      ) : (
-        <>
-          {checked ? (
-            <>
-              <InputGroupAddon addonType="prepend">
-                <InputGroupText>{value}</InputGroupText>
-              </InputGroupAddon>
-              <InputGroupAddon addonType="prepend">
-                <InputGroupText>
-                  <FontAwesomeIcon
-                    className="text-info"
-                    icon={faHandPointRight}
-                  />
-                </InputGroupText>
-              </InputGroupAddon>
-              <Input
-                onInput={handleVal}
-                onChange={handleVal}
-                defaultValue={String(value)}
-                type="number"
-                step="0.5"
-                min="0"
-              />
-              <InputGroupAddon addonType="append">
-                <Button color="info" onClick={handeSubmit}>
-                  <FontAwesomeIcon icon={faCloudUploadAlt} />
-                </Button>
-              </InputGroupAddon>
-            </>
-          ) : (
-            <Input valid={valid} invalid={invalid} readOnly value={value} />
-          )}
-          <InputGroupAddon addonType="append" title={title}>
-            <Switch disabled={disabled} checked={checked} onChange={onChange}>
-              <FontAwesomeIcon className="text-info" icon={faEdit} />
-            </Switch>
-          </InputGroupAddon>
-        </>
-      )}
-    </InputGroup>
+    <Form inline onSubmit={handleSubmit}>
+      <InputGroup className={styles.toggle_input}>
+        <InputGroupAddon addonType="prepend">{label}</InputGroupAddon>
+        {loading ? (
+          <InputGroupSpinner />
+        ) : (
+          <>
+            {checked ? (
+              <>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>{value}</InputGroupText>
+                </InputGroupAddon>
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <FontAwesomeIcon
+                      className="text-info"
+                      icon={faHandPointRight}
+                    />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  onInput={handleVal}
+                  onChange={handleVal}
+                  defaultValue={String(value)}
+                  type="number"
+                  step="0.5"
+                  min="0"
+                />
+                <InputGroupAddon addonType="append">
+                  <Button color="info">
+                    <FontAwesomeIcon icon={faCloudUploadAlt} />
+                  </Button>
+                </InputGroupAddon>
+              </>
+            ) : (
+              <Input valid={valid} invalid={invalid} readOnly value={value} />
+            )}
+            <InputGroupAddon addonType="append" title={title}>
+              <Switch disabled={disabled} checked={checked} onChange={onChange}>
+                <FontAwesomeIcon className="text-info" icon={faEdit} />
+              </Switch>
+            </InputGroupAddon>
+          </>
+        )}
+      </InputGroup>
+    </Form>
   );
 };
 interface GradeProps {
