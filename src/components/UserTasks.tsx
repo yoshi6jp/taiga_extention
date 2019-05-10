@@ -26,6 +26,7 @@ import { UpdateButton } from "./UpdateButton";
 import styles from "./UserTasks.module.css";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { preventDefault } from "../util/handler";
 
 const barStyles = ["success", "warning", "info", "danger"];
 const getTasksByUser = (items: ITask[]) => _.groupBy(items, "assigned_to");
@@ -53,6 +54,16 @@ export const getCustomVal = (
     return 0;
   }
 };
+export const getSumCustomVal = (
+  custom_value_map: ICustomValueMap,
+  tasks: ITask[],
+  id: number
+) =>
+  _.chain(tasks)
+    .map(task => getCustomVal(custom_value_map, task, id))
+    .sum()
+    .value();
+
 export const getCustomValVersion = (
   custon_value_map: ICustomValueMap,
   task: ITask
@@ -150,31 +161,70 @@ interface IProgressTotal {
   style?: string;
   label: string;
 }
+interface TaskProgressProps {
+  tasks: ITask[];
+}
+
+export const TaskProgress: React.FC<TaskProgressProps> = ({ tasks }) => {
+  const {
+    state: { active_task_statuses, custom_eid, custom_value_map }
+  } = useContext(RootContext);
+  const [items, setItems] = useState<IProgressTotal[]>([]);
+  const [allSum, setAllSum] = useState<number>(0);
+  const eid = Number(custom_eid);
+  useEffect(() => {
+    const val = _.chain(active_task_statuses)
+      .filter({ is_closed: true })
+      .reverse()
+      .map((item, idx) => ({
+        status: item.id,
+        total: getSumCustomVal(
+          custom_value_map,
+          _.filter(tasks, { status: item.id }),
+          eid
+        ),
+        style: barStyles[idx],
+        label: item.name
+      }))
+      .value();
+    setItems(val);
+  }, [active_task_statuses, eid, custom_value_map, setItems, tasks]);
+  useEffect(() => {
+    const val = getSumCustomVal(custom_value_map, tasks, eid);
+    setAllSum(val);
+  }, [eid, custom_value_map, setAllSum, tasks]);
+  return (
+    <Progress multi>
+      {items.map(item => (
+        <Progress
+          key={item.label}
+          bar
+          max={allSum}
+          value={item.total}
+          color={item.style}
+        >
+          {item.label}
+        </Progress>
+      ))}
+    </Progress>
+  );
+};
 const UserRow = ({
   item,
   sums,
   isPast,
   total,
   hpd,
-  closedTasks
+  tasks
 }: {
   item: IUser;
   sums: { [key: string]: { e: number; r: number } };
   isPast: boolean;
   total: number;
   hpd: number;
-  closedTasks: ITask[];
+  tasks: ITask[];
 }) => {
-  const {
-    state: {
-      custom_value_map,
-      custom_eid,
-      reject_task_status_ids,
-      task_statuses
-    }
-  } = useContext(RootContext);
   const [customTotal, setTotal] = useState<number>(0);
-  const [progressTotal, setProgressTotal] = useState<IProgressTotal[]>([]);
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setTotal(Number(e.target.value) || 0);
@@ -187,48 +237,6 @@ const UserRow = ({
   const margedTotal = customTotal || total;
   const totalStr = String(margedTotal);
   const imgSrc = item.photo || `http://i.pravatar.cc/80?u=${Math.random()}`;
-  useEffect(() => {
-    const closed_status = _.chain(task_statuses)
-      .filter(item => item.is_closed)
-      .reject(item => _.includes(reject_task_status_ids, String(item.id)))
-      .orderBy("id")
-      .reverse()
-      .map(item => item.id)
-      .value();
-    const closedTotals = _.chain(closedTasks)
-      .groupBy("status")
-      .mapValues(ts =>
-        _.reduce(
-          ts,
-          (result, t) => {
-            result.status = t.status;
-            result.total += getCustomVal(
-              custom_value_map,
-              t,
-              Number(custom_eid)
-            );
-            result.label = t.status_extra_info.name;
-            return result;
-          },
-          { status: 0, total: 0, label: "", style: "" }
-        )
-      )
-      .value();
-    const sortedTotals = _.orderBy(closedTotals, "status")
-      .reverse()
-      .map(item => ({
-        ...item,
-        style: barStyles[closed_status.indexOf(item.status)]
-      }));
-    setProgressTotal(sortedTotals);
-  }, [
-    setProgressTotal,
-    custom_eid,
-    custom_value_map,
-    closedTasks,
-    task_statuses,
-    reject_task_status_ids
-  ]);
   return (
     <tr key={item.id}>
       {total > 0 ? (
@@ -259,23 +267,7 @@ const UserRow = ({
           </td>
           <td className="text-right">{e}</td>
           <td className="text-right">{r}</td>
-          <td>
-            {_.isNumber(e) && (
-              <Progress multi>
-                {progressTotal.map((item, idx) => (
-                  <Progress
-                    bar
-                    key={idx}
-                    value={item.total}
-                    color={item.style}
-                    max={e}
-                  >
-                    {item.label}
-                  </Progress>
-                ))}
-              </Progress>
-            )}
-          </td>
+          <td>{_.isNumber(e) && <TaskProgress tasks={tasks} />}</td>
         </>
       )}
 
@@ -332,10 +324,6 @@ export const UserTasks = () => {
     },
     [setHpd]
   );
-  const disableSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-  }, []);
   useEffect(() => {
     setTotal(hpd * activeLen);
   }, [hpd, activeLen, setTotal]);
@@ -363,7 +351,7 @@ export const UserTasks = () => {
   return (
     <>
       <Navbar color="light" light>
-        <Form inline={true} className="mr-auto" onSubmit={disableSubmit}>
+        <Form inline={true} className="mr-auto" onSubmit={preventDefault}>
           <InputGroup>
             <Input
               type="number"
@@ -418,7 +406,7 @@ export const UserTasks = () => {
               sums={taskSumByUser}
               total={total}
               hpd={hpd}
-              closedTasks={tasksByUser[item.id] || []}
+              tasks={tasksByUser[item.id] || []}
             />
           ))}
           <tr key="null">

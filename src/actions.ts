@@ -34,6 +34,7 @@ export enum ActionTypes {
   PATCH_TASK = "PATCH_TASK",
   FETCH_TASK_STATUSES = "FETCH_TASK_STATUSES",
   SET_TASK_STATUSES = "SET_TASK_STATUSES",
+  SET_ACTIVE_TASK_STATUSES = "SET_ACTIVE_TASK_STATUSES",
   FETCH_CUSTOM_VALUE_MAP = "FETCH_CUSTOM_VALUE_MAP",
   SET_CUSTOM_VALUE_MAP = "SET_CUSTOM_VALUE_MAP",
   PATCH_CUSTOM_VALUE = "PATCH_CUSTOM_VALUE",
@@ -147,6 +148,7 @@ export interface SET_TASKS extends IAction {
   type: ActionTypes.SET_TASKS;
   payload: { tasks: ITask[] };
 }
+
 export interface PATCH_TASK extends IAction {
   type: ActionTypes.PATCH_TASK;
   payload: { key: string; value: string | number; id: number };
@@ -176,6 +178,11 @@ export interface SET_TASK_STATUSES extends IAction {
   type: ActionTypes.SET_TASK_STATUSES;
   payload: { task_statuses: ITaskStatus[] };
 }
+export interface SET_ACTIVE_TASK_STATUSES extends IAction {
+  type: ActionTypes.SET_ACTIVE_TASK_STATUSES;
+  payload: { active_task_statuses: ITaskStatus[] };
+}
+
 export interface FETCH_USER extends IAction {
   type: ActionTypes.FETCH_USER;
   payload: { uid: string };
@@ -239,6 +246,7 @@ export type Actions =
   | SET_CUSTOM_VALUE_MAP
   | FETCH_TASK_STATUSES
   | SET_TASK_STATUSES
+  | SET_ACTIVE_TASK_STATUSES
   | FETCH_USER
   | SET_USER
   | RESET_USER

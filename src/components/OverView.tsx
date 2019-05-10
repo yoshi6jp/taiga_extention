@@ -7,6 +7,7 @@ export const OverView = () => (
   <>
     <UserTasks />
     <UnEstimatedTasks />
+    <br />
     <OverviewChart />
   </>
 );

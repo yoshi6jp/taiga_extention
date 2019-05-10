@@ -26,6 +26,7 @@ import { Link } from "react-router-dom";
 import { ActionTypes } from "../actions";
 import { UpdateButton } from "./UpdateButton";
 import useRouter from "use-react-router";
+import { preventDefault } from "../util/handler";
 const SignInForm: React.FC = () => {
   const {
     state: { auth_token, auth_error, username: sign_in_username },
@@ -64,9 +65,6 @@ const SignInForm: React.FC = () => {
     },
     [setPassword]
   );
-  const disableSubmit = useCallback((e: React.FormEvent) => {
-    e.preventDefault();
-  }, []);
   const handleSignOut = useCallback(() => {
     dispatch({ type: ActionTypes.SIGN_OUT });
   }, [dispatch]);
@@ -78,7 +76,7 @@ const SignInForm: React.FC = () => {
   return (
     <>
       {auth_token ? (
-        <Form inline onSubmit={disableSubmit}>
+        <Form inline onSubmit={preventDefault}>
           <InputGroup>
             <InputGroupAddon addonType="prepend">
               <InputGroupText>

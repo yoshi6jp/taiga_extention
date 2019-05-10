@@ -16,7 +16,6 @@ import {
   Spinner
 } from "reactstrap";
 import classNames from "classnames";
-import _ from "lodash";
 import { ITasksByUserStory, ITask, ITaskStatus } from "../store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -216,17 +215,10 @@ const TaskStatusSelector: React.FC<TaskStatusSelectorProps> = ({
   task,
   disabled
 }) => {
-  const [items, setItems] = useState<ITaskStatus[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const {
-    state: { task_statuses, reject_task_status_ids }
+    state: { active_task_statuses }
   } = useContext(RootContext);
-  useEffect(() => {
-    const list = task_statuses.filter(
-      item => !_.includes(reject_task_status_ids, String(item.id))
-    );
-    setItems(list);
-  }, [setItems, task_statuses, reject_task_status_ids]);
   const handleSelect = useCallback(() => {
     setLoading(true);
   }, [setLoading]);
@@ -243,7 +235,7 @@ const TaskStatusSelector: React.FC<TaskStatusSelectorProps> = ({
             {task.status_extra_info.name}
           </DropdownToggle>
           <DropdownMenu>
-            {items.map(item => (
+            {active_task_statuses.map(item => (
               <TaskStatusItem
                 item={item}
                 key={item.id}

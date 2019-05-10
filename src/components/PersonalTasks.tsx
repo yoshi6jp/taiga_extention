@@ -4,6 +4,7 @@ import {
   Card,
   CardHeader,
   CardBody,
+  CardFooter,
   Input,
   InputGroup,
   InputGroupAddon,
@@ -18,7 +19,8 @@ import {
   getCustomVal,
   getCustomValVersion,
   isCustomValInvalid,
-  isCustomValValid
+  isCustomValValid,
+  TaskProgress
 } from "./UserTasks";
 import _ from "lodash";
 import { UserStory, Grade } from "./UserStory";
@@ -114,6 +116,9 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
             </Col>
           </Row>
         </CardBody>
+        <CardFooter>
+          <TaskProgress tasks={items} />
+        </CardFooter>
       </Card>
     </>
   );

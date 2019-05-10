@@ -113,6 +113,10 @@ export const reducer = (state = initialStateFn(), action: Actions) => {
       const { task_statuses } = action.payload;
       return { ...state, task_statuses };
     }
+    case ActionTypes.SET_ACTIVE_TASK_STATUSES: {
+      const { active_task_statuses } = action.payload;
+      return { ...state, active_task_statuses };
+    }
     case ActionTypes.SET_CUSTOM_VALUE_MAP: {
       const { custom_value_map } = action.payload;
       return { ...state, custom_value_map };

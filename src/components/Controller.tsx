@@ -18,6 +18,7 @@ import {
   faChevronCircleRight,
   faExternalLinkAlt
 } from "@fortawesome/free-solid-svg-icons";
+import { stopPropagation } from "../util/handler";
 import { ProjectSelector } from "./ProjectSelector";
 import { MilestoneSelector } from "./MilestoneSelector";
 import { CustomValuesSelector } from "./CustomValuesSelector";
@@ -77,9 +78,6 @@ export const Controller = () => {
     },
     [url, dispatch]
   );
-  const handleHref = useCallback((e: React.FormEvent) => {
-    e.stopPropagation();
-  }, []);
   const toggle = useCallback(() => {
     if (isOpen) {
       dispatch({ type: ActionTypes.CLOSE_CONTROLLER });
@@ -101,7 +99,7 @@ export const Controller = () => {
         {taskboardUrl ? (
           <a
             target="_blank"
-            onClick={handleHref}
+            onClick={stopPropagation}
             className="float-right"
             href={taskboardUrl}
             rel="noopener noreferrer"

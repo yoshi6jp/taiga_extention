@@ -1,4 +1,5 @@
 import React, { createContext, useReducer, useEffect } from "react";
+import _ from "lodash";
 import { ActionTypes } from "./actions";
 import { initialStateFn } from "./store";
 import { reducer } from "./reducer";
@@ -72,5 +73,15 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
       }
     });
   }, [dispatch, state.tasks, state.custom_eid, state.custom_rid]);
+  useEffect(() => {
+    const active_task_statuses = _.chain(state.task_statuses)
+      .reject(item => _.includes(state.reject_task_status_ids, String(item.id)))
+      .orderBy("order")
+      .value();
+    dispatch({
+      type: ActionTypes.SET_ACTIVE_TASK_STATUSES,
+      payload: { active_task_statuses }
+    });
+  }, [state.task_statuses, state.reject_task_status_ids, dispatch]);
   return <RootContext.Provider value={value}>{children}</RootContext.Provider>;
 };
