@@ -309,6 +309,7 @@ export const TaskItem = ({ item }: { item: ITask }) => {
   }
   const e = getCustomVal(custom_value_map, item, customAttrE.id);
   const r = getCustomVal(custom_value_map, item, customAttrR.id);
+  const unEstimated = !e;
   const valid = isCustomValValid(e, r, item.is_closed);
   const invalid = isCustomValInvalid(e, r);
   const disabled = auth_token === "";
@@ -329,6 +330,7 @@ export const TaskItem = ({ item }: { item: ITask }) => {
             onSubmit={onSubmitE}
             label={customAttrE.name}
             value={e}
+            invalid={unEstimated}
             disabled={disabled}
             loading={loading}
           />
