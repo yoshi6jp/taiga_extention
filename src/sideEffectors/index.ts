@@ -13,6 +13,7 @@ import { fetchUser } from "./fetchUser";
 import { patchCustomValue } from "./patchCustomValue";
 import { patchTask } from "./patchTask";
 import { signIn } from "./signIn";
+import { signOut } from "./signOut";
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
 import { toastr } from "../util/toastr";
 export { ActionTypes };
@@ -92,6 +93,11 @@ export const rootSideEffector = (
       patchTask(action, dispatch, state);
       return;
     }
+    case ActionTypes.SIGN_OUT: {
+      signOut(action, dispatch, state);
+      return;
+    }
+
     default: {
     }
   }

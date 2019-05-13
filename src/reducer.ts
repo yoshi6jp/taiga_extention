@@ -1,12 +1,15 @@
 import _ from "lodash";
 import axios from "axios";
-import { initialStateFn, StorageKey, IProject, ICustomValueMap } from "./store";
-import { ActionTypes, Actions } from "./actions";
 import {
+  initialStateFn,
+  StorageKey,
+  IProject,
+  ICustomValueMap,
   setToStorage,
   setToStorageWithSubkey,
   getFromStorageWithSubkey
 } from "./store";
+import { ActionTypes, Actions } from "./actions";
 export const reducer = (state = initialStateFn(), action: Actions) => {
   switch (action.type) {
     case ActionTypes.SET_URL: {

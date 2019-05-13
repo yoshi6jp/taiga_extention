@@ -6,6 +6,7 @@ import { reducer } from "./reducer";
 import { Actions } from "./actions";
 import { useSideEffector } from "./util/useSideEffector";
 import { rootSideEffector } from "./sideEffectors";
+import { init } from "./init";
 export const baseUrl = (url: string) => `${url.replace(/[¥/]$/, "")}/api/v1`;
 
 const initialState = initialStateFn();
@@ -83,5 +84,8 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
       payload: { active_task_statuses }
     });
   }, [state.task_statuses, state.reject_task_status_ids, dispatch]);
+  useEffect(() => {
+    init(dispatch);
+  }, [dispatch]);
   return <RootContext.Provider value={value}>{children}</RootContext.Provider>;
 };

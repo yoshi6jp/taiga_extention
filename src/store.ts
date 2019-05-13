@@ -113,7 +113,9 @@ export enum StorageKey {
   CUSTOM_EID = "taiga_custom_eid",
   CUSTOM_RID = "taiga_custom_rid",
   BIZ_DAYS = "taiga_biz_days",
-  REJECT_TASK_STATUS_IDS = "reject_task_status_ids"
+  REJECT_TASK_STATUS_IDS = "reject_task_status_ids",
+  USERNAME = "taiga_username",
+  PASSWORD = "taiga_password"
 }
 
 export const getFromStorage = (key: string) => localStorage.getItem(key) || "";
