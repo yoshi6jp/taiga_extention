@@ -13,7 +13,8 @@ import { fetchUser } from "./fetchUser";
 import { patchCustomValue } from "./patchCustomValue";
 import { patchTask } from "./patchTask";
 import { signIn } from "./signIn";
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig, AxiosError } from "axios";
+import { toastr } from "../util/toastr";
 export { ActionTypes };
 export type ISideEffector = (
   action: Actions,
@@ -37,6 +38,10 @@ export const patchData = (
   data: object,
   config?: AxiosRequestConfig
 ) => axios.patch(`${baseUrl(url)}/${path}`, data, config);
+export const errToastr = (err: AxiosError) => {
+  const message = err.response ? err.response.data._error_message : "error";
+  toastr.error(message);
+};
 export const rootSideEffector = (
   action: Actions,
   dispatch: Dispatch<Actions>,

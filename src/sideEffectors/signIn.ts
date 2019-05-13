@@ -1,5 +1,5 @@
 import { IAuthToken } from "../store";
-import { ISideEffector, postData, ActionTypes } from ".";
+import { ISideEffector, postData, ActionTypes, errToastr } from ".";
 export const signIn: ISideEffector = async (action, dispatch, state) => {
   if (action.type === ActionTypes.SIGN_IN) {
     try {
@@ -17,7 +17,7 @@ export const signIn: ISideEffector = async (action, dispatch, state) => {
       }
     } catch (e) {
       dispatch({ type: ActionTypes.SET_AUTH_ERROR });
-      console.log("err:signIn", e);
+      errToastr(e);
     }
   }
 };
