@@ -17,7 +17,13 @@ import {
   Form
 } from "reactstrap";
 import classNames from "classnames";
-import { ITasksByUserStory, ITask, ITaskStatus } from "../store";
+import {
+  ITasksByUserStory,
+  ITask,
+  ITaskStatus,
+  IUserStoryExtraInfo,
+  IProjectExtraInfo
+} from "../store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faExternalLinkAlt,
@@ -42,11 +48,29 @@ import styles from "./UserStory.module.css";
 import { Switch } from "@rmwc/switch";
 import InputGroupText from "reactstrap/lib/InputGroupText";
 import { ActionTypes } from "../actions";
-const UserStoryLink = ({ url, item }: { url: string; item: ITask }) => {
+import _ from "lodash";
+export const convToTasksByUserStory = (tasks: ITask[]) =>
+  _.chain(tasks)
+    .groupBy("user_story")
+    .map((items, key) => ({
+      user_story: Number(key),
+      user_story_extra_info: items[0].user_story_extra_info,
+      project_extra_info: items[0].project_extra_info,
+      tasks: items,
+      is_closed: items.every(task => task.is_closed)
+    }))
+    .value();
+const UserStoryLink = ({
+  user_story_extra_info,
+  project_extra_info
+}: {
+  user_story_extra_info: IUserStoryExtraInfo;
+  project_extra_info: IProjectExtraInfo;
+}) => {
   const {
-    user_story_extra_info,
-    project_extra_info: { slug }
-  } = item;
+    state: { url }
+  } = useContext(RootContext);
+  const { slug } = project_extra_info;
   const usName = user_story_extra_info
     ? `#${user_story_extra_info.ref} ${user_story_extra_info.subject}`
     : undefined;
@@ -65,7 +89,10 @@ const UserStoryLink = ({ url, item }: { url: string; item: ITask }) => {
   }
 };
 
-const TaskLink = ({ url, item }: { url: string; item: ITask }) => {
+const TaskLink = ({ item }: { item: ITask }) => {
+  const {
+    state: { url }
+  } = useContext(RootContext);
   const taskName = `#${item.ref} ${item.subject}`;
   const href = `${url}/project/${item.project_extra_info.slug}/task/${
     item.ref
@@ -260,7 +287,6 @@ const TaskStatusSelector: React.FC<TaskStatusSelectorProps> = ({
 export const TaskItem = ({ item }: { item: ITask }) => {
   const {
     state: {
-      url,
       custom_attrs,
       custom_eid,
       custom_rid,
@@ -320,7 +346,7 @@ export const TaskItem = ({ item }: { item: ITask }) => {
     >
       <div className="d-flex mb-1">
         <div className="mr-auto text-truncate">
-          <TaskLink url={url} item={item} />
+          <TaskLink item={item} />
         </div>
         <TaskStatusSelector task={item} disabled={disabled} />
       </div>
@@ -353,10 +379,29 @@ export const TaskItem = ({ item }: { item: ITask }) => {
     </ListGroupItem>
   );
 };
-export const UserStory = ({ item }: { item: ITasksByUserStory }) => {
-  const {
-    state: { url }
-  } = useContext(RootContext);
+interface UserStoryProps {
+  item: ITasksByUserStory;
+}
+export const UserStoryView: React.FC<UserStoryProps> = ({ item }) => {
+  return (
+    <Card>
+      <CardHeader className="text-truncate">
+        <UserStoryLink
+          user_story_extra_info={item.user_story_extra_info}
+          project_extra_info={item.project_extra_info}
+        />
+      </CardHeader>
+      <ListGroup>
+        {item.tasks.map(task => (
+          <ListGroupItem key={task.id} className="text-truncate">
+            <TaskLink item={task} />
+          </ListGroupItem>
+        ))}
+      </ListGroup>
+    </Card>
+  );
+};
+export const UserStory: React.FC<UserStoryProps> = ({ item }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const toggle = useCallback(() => {
     setIsOpen(!isOpen);
@@ -373,7 +418,10 @@ export const UserStory = ({ item }: { item: ITasksByUserStory }) => {
         onClick={toggle}
       >
         <ToggleIcon isOpen={isOpen} />
-        <UserStoryLink url={url} item={item.tasks[0]} />
+        <UserStoryLink
+          user_story_extra_info={item.user_story_extra_info}
+          project_extra_info={item.project_extra_info}
+        />
       </CardHeader>
       <Collapse isOpen={isOpen}>
         <ListGroup>

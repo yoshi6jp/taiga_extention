@@ -15,7 +15,7 @@ export interface IMilestone {
   project: number;
   project_extra_info: IProjectExtraInfo;
 }
-interface IProjectExtraInfo {
+export interface IProjectExtraInfo {
   id: number;
   name: string;
   slug: string;
@@ -24,7 +24,7 @@ interface IStatusExtraInfo {
   name: string;
   is_closed: boolean;
 }
-interface IUserStoryExtraInfo {
+export interface IUserStoryExtraInfo {
   id: number;
   subject: string;
   epics: any;
@@ -43,12 +43,13 @@ export interface ITask {
   status: number;
   status_extra_info: IStatusExtraInfo;
   user_story: number;
-  user_story_extra_info?: IUserStoryExtraInfo;
+  user_story_extra_info: IUserStoryExtraInfo;
   version: number;
 }
 export interface ITasksByUserStory {
   user_story: number;
-  user_story_extra_info?: IUserStoryExtraInfo;
+  user_story_extra_info: IUserStoryExtraInfo;
+  project_extra_info: IProjectExtraInfo;
   tasks: ITask[];
   is_closed: boolean;
 }
