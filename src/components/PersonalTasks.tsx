@@ -91,9 +91,7 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
         <UserStory item={item} key={item.user_story} />
       ))}
       <Card>
-        <CardHeader className={classNames("bg-info", "text-light")}>
-          Total
-        </CardHeader>
+        <CardHeader className={classNames("alert-info")}>Total</CardHeader>
         <CardBody>
           <Row>
             <Col>

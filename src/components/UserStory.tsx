@@ -22,7 +22,8 @@ import {
   ITask,
   ITaskStatus,
   IUserStoryExtraInfo,
-  IProjectExtraInfo
+  IProjectExtraInfo,
+  IUser
 } from "../store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -60,6 +61,8 @@ export const convToTasksByUserStory = (tasks: ITask[]) =>
       is_closed: items.every(task => task.is_closed)
     }))
     .value();
+const needAuthMsg = (disabled: boolean | undefined) =>
+  disabled ? "Need sign in!" : "";
 const UserStoryLink = ({
   user_story_extra_info,
   project_extra_info
@@ -152,7 +155,7 @@ const ToggleNumberInput: React.FC<ToggleNumberInputProps> = ({
       setChecked(false);
     }
   }, [setChecked, disabled]);
-  const title = disabled ? "Need sign in!" : "";
+  const title = needAuthMsg(disabled);
   return (
     <Form inline onSubmit={handleSubmit}>
       <InputGroup className={styles.toggle_input}>
@@ -265,7 +268,11 @@ const TaskStatusSelector: React.FC<TaskStatusSelectorProps> = ({
         <Spinner type="grow" color="info" />
       ) : (
         <UncontrolledDropdown>
-          <DropdownToggle disabled={disabled} caret={!disabled}>
+          <DropdownToggle
+            title={needAuthMsg(disabled)}
+            disabled={disabled}
+            caret={!disabled}
+          >
             {task.status_extra_info.name}
           </DropdownToggle>
           <DropdownMenu>
@@ -283,7 +290,73 @@ const TaskStatusSelector: React.FC<TaskStatusSelectorProps> = ({
     </>
   );
 };
-
+interface UserItemProps {
+  item: IUser;
+  onSelect?: (id: number) => void;
+}
+const UserItem: React.FC<UserItemProps> = ({ item, onSelect }) => {
+  const handleClick = useCallback(() => {
+    onSelect && onSelect(item.id);
+  }, [item.id, onSelect]);
+  return <DropdownItem onClick={handleClick}>{item.username}</DropdownItem>;
+};
+interface TaskUserSelectorProps {
+  task: ITask;
+  disabled?: boolean;
+}
+export const TaskUserSelector: React.FC<TaskUserSelectorProps> = ({
+  task,
+  disabled
+}) => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const {
+    state: {
+      project: { members }
+    },
+    dispatch
+  } = useContext(RootContext);
+  const handleSelect = useCallback(
+    (id: number) => {
+      setLoading(true);
+      dispatch({
+        type: ActionTypes.PATCH_TASK,
+        payload: {
+          key: "assigned_to",
+          value: id,
+          id: task.id
+        }
+      });
+    },
+    [dispatch, task.id]
+  );
+  useEffect(() => {
+    setLoading(false);
+  }, [task.version, setLoading]);
+  return (
+    <>
+      {loading ? (
+        <Spinner type="grow" color="info" />
+      ) : (
+        <UncontrolledDropdown>
+          <DropdownToggle
+            title={needAuthMsg(disabled)}
+            size="sm"
+            disabled={disabled}
+            caret={!disabled}
+          >
+            Assign To
+          </DropdownToggle>
+          <DropdownMenu>
+            <DropdownItem>dummy</DropdownItem>
+            {members.map(item => (
+              <UserItem item={item} onSelect={handleSelect} key={item.id} />
+            ))}
+          </DropdownMenu>
+        </UncontrolledDropdown>
+      )}
+    </>
+  );
+};
 export const TaskItem = ({ item }: { item: ITask }) => {
   const {
     state: {
@@ -401,6 +474,37 @@ export const UserStoryView: React.FC<UserStoryProps> = ({ item }) => {
     </Card>
   );
 };
+export const UserStoryWithTaskUser: React.FC<UserStoryProps> = ({ item }) => {
+  const {
+    state: { auth_token }
+  } = useContext(RootContext);
+  const disabled = auth_token === "";
+  return (
+    <Card>
+      <CardHeader className="text-truncate">
+        <UserStoryLink
+          user_story_extra_info={item.user_story_extra_info}
+          project_extra_info={item.project_extra_info}
+        />
+      </CardHeader>
+      <Collapse isOpen={true}>
+        <ListGroup>
+          {item.tasks.map(task => (
+            <ListGroupItem key={task.id}>
+              <div className="d-flex">
+                <div className="mr-auto text-truncate">
+                  <TaskLink item={task} />
+                </div>
+                <TaskUserSelector task={task} disabled={disabled} />
+              </div>
+            </ListGroupItem>
+          ))}
+        </ListGroup>
+      </Collapse>
+    </Card>
+  );
+};
+
 export const UserStory: React.FC<UserStoryProps> = ({ item }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const toggle = useCallback(() => {

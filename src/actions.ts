@@ -151,7 +151,7 @@ export interface SET_TASKS extends IAction {
 
 export interface PATCH_TASK extends IAction {
   type: ActionTypes.PATCH_TASK;
-  payload: { key: string; value: string | number; id: number };
+  payload: { key: keyof ITask; value: ITask[keyof ITask]; id: number };
 }
 export interface FETCH_CUSTOM_VALUE_MAP extends IAction {
   type: ActionTypes.FETCH_CUSTOM_VALUE_MAP;

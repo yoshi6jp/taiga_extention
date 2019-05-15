@@ -25,7 +25,7 @@ export const UnEstimatedTasks = () => {
   } else {
     return (
       <Card>
-        <CardHeader>Un estimated user stories / tasks</CardHeader>
+        <CardHeader className="alert-danger">Un estimated tasks</CardHeader>
         <CardBody>
           {userStories.map(item => (
             <UserStoryView item={item} key={item.user_story} />

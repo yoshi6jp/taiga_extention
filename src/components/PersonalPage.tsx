@@ -27,7 +27,7 @@ import { ActionTypes } from "../actions";
 import { UpdateButton } from "./UpdateButton";
 import useRouter from "use-react-router";
 import { preventDefault } from "../util/handler";
-const SignInForm: React.FC = () => {
+export const SignInForm: React.FC = () => {
   const {
     state: { auth_token, auth_error, username: sign_in_username },
     dispatch
@@ -76,7 +76,7 @@ const SignInForm: React.FC = () => {
   return (
     <>
       {auth_token ? (
-        <Form inline onSubmit={preventDefault}>
+        <Form inline onSubmit={preventDefault} className="mr-1">
           <InputGroup>
             <InputGroupAddon addonType="prepend">
               <InputGroupText>
@@ -85,14 +85,14 @@ const SignInForm: React.FC = () => {
             </InputGroupAddon>
             <Input readOnly valid={true} placeholder={sign_in_username} />
             <InputGroupAddon addonType="append">
-              <Button onClick={handleSignOut}>
+              <Button onClick={handleSignOut} color="danger">
                 <FontAwesomeIcon icon={faSignOutAlt} />
               </Button>
             </InputGroupAddon>
           </InputGroup>
         </Form>
       ) : (
-        <Form inline onSubmit={handleSubmit}>
+        <Form inline onSubmit={handleSubmit} className="mr-1">
           <InputGroup>
             <InputGroupAddon addonType="prepend">
               <InputGroupText>
@@ -124,7 +124,7 @@ const SignInForm: React.FC = () => {
               invalid={auth_error}
             />
           </InputGroup>
-          <Button color="primary">
+          <Button color="info">
             {loading ? (
               <Spinner size="sm" type="grow" />
             ) : (
