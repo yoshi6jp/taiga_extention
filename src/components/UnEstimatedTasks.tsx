@@ -2,7 +2,7 @@ import React, { useContext, useMemo } from "react";
 import { RootContext } from "../Provider";
 import { Card, CardHeader, CardBody } from "reactstrap";
 import { getCustomVal, getCustomValVersion } from "./UserTasks";
-import { UserStoryView, convToTasksByUserStory } from "./UserStory";
+import { UserStoryWithEstimate, convToTasksByUserStory } from "./UserStory";
 export const UnEstimatedTasks = () => {
   const {
     state: { tasks, custom_value_map, custom_eid }
@@ -28,7 +28,7 @@ export const UnEstimatedTasks = () => {
         <CardHeader className="alert-danger">Un estimated tasks</CardHeader>
         <CardBody>
           {userStories.map(item => (
-            <UserStoryView item={item} key={item.user_story} />
+            <UserStoryWithEstimate item={item} key={item.user_story} />
           ))}
         </CardBody>
       </Card>

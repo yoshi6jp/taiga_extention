@@ -354,7 +354,7 @@ export const TaskUserSelector: React.FC<TaskUserSelectorProps> = ({
             Assign To
           </DropdownToggle>
           <DropdownMenu>
-            {members.map(item => (
+            {(members || []).map(item => (
               <UserItem item={item} onSelect={handleSelect} key={item.id} />
             ))}
           </DropdownMenu>
@@ -400,6 +400,52 @@ const NotAssignedButton: React.FC<NotAssignedButtonProps> = ({ task }) => {
     </>
   );
 };
+interface CustomValueInputProps {
+  item: ITask;
+}
+const EstimateInput: React.FC<CustomValueInputProps> = ({ item }) => {
+  const {
+    state: { custom_attrs, custom_eid, custom_value_map, auth_token },
+    dispatch
+  } = useContext(RootContext);
+  const version = getCustomValVersion(custom_value_map, item);
+  const onSubmitE = useCallback(
+    (value: number) => {
+      if (version) {
+        dispatch({
+          type: ActionTypes.PATCH_CUSTOM_VALUE,
+          payload: {
+            id: item.id,
+            key: custom_eid,
+            value,
+            version
+          }
+        });
+      }
+    },
+    [dispatch, item.id, custom_eid, version]
+  );
+  const customAttrE = getCustomAttr(custom_attrs, Number(custom_eid));
+  if (!customAttrE) {
+    return null;
+  }
+  const e = getCustomVal(custom_value_map, item, customAttrE.id);
+  const unEstimated = !e;
+  const disabled = auth_token === "";
+  const loading = !version;
+
+  return (
+    <ToggleNumberInput
+      onSubmit={onSubmitE}
+      label={customAttrE.name}
+      value={e}
+      invalid={unEstimated}
+      disabled={disabled}
+      loading={loading}
+    />
+  );
+};
+
 export const TaskItem = ({ item }: { item: ITask }) => {
   const {
     state: {
@@ -500,7 +546,7 @@ export const TaskItem = ({ item }: { item: ITask }) => {
 interface UserStoryProps {
   item: ITasksByUserStory;
 }
-export const UserStoryView: React.FC<UserStoryProps> = ({ item }) => {
+export const UserStoryWithEstimate: React.FC<UserStoryProps> = ({ item }) => {
   return (
     <Card>
       <CardHeader className="text-truncate">
@@ -512,7 +558,12 @@ export const UserStoryView: React.FC<UserStoryProps> = ({ item }) => {
       <ListGroup>
         {item.tasks.map(task => (
           <ListGroupItem key={task.id} className="text-truncate">
-            <TaskLink item={task} />
+            <div className="d-flex">
+              <div className="mr-auto text-truncate">
+                <TaskLink item={task} />
+              </div>
+              <EstimateInput item={task} />
+            </div>
           </ListGroupItem>
         ))}
       </ListGroup>
