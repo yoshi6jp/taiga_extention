@@ -1,6 +1,6 @@
 {
-  "name": "taiga-task",
-  "version": "0.1.0",
+  "name": "taiga-extention",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.12",
