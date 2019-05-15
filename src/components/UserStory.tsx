@@ -30,7 +30,8 @@ import {
   faExternalLinkAlt,
   faCloudUploadAlt,
   faEdit,
-  faHandPointRight
+  faHandPointRight,
+  faUserTimes
 } from "@fortawesome/free-solid-svg-icons";
 import { InputGroupSpinner } from "./InputGroupSpinner";
 import { RootContext } from "../Provider";
@@ -347,12 +348,48 @@ export const TaskUserSelector: React.FC<TaskUserSelectorProps> = ({
             Assign To
           </DropdownToggle>
           <DropdownMenu>
-            <DropdownItem>dummy</DropdownItem>
             {members.map(item => (
               <UserItem item={item} onSelect={handleSelect} key={item.id} />
             ))}
           </DropdownMenu>
         </UncontrolledDropdown>
+      )}
+    </>
+  );
+};
+interface NotAssignedButtonProps {
+  task: ITask;
+}
+const NotAssignedButton: React.FC<NotAssignedButtonProps> = ({ task }) => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const { dispatch } = useContext(RootContext);
+  const handleClick = useCallback(() => {
+    setLoading(true);
+    dispatch({
+      type: ActionTypes.PATCH_TASK,
+      payload: {
+        key: "assigned_to",
+        value: null,
+        id: task.id
+      }
+    });
+  }, [dispatch, task.id]);
+  useEffect(() => {
+    setLoading(false);
+  }, [task.version, setLoading]);
+  return (
+    <>
+      {loading ? (
+        <Spinner type="grow" color="danger" />
+      ) : (
+        <Button
+          className="mr-2"
+          title="Not assigned"
+          color="danger"
+          onClick={handleClick}
+        >
+          <FontAwesomeIcon icon={faUserTimes} />
+        </Button>
       )}
     </>
   );
@@ -413,6 +450,7 @@ export const TaskItem = ({ item }: { item: ITask }) => {
   const invalid = isCustomValInvalid(e, r);
   const disabled = auth_token === "";
   const loading = !version;
+  const inactive = r === 0 && !item.is_closed && !disabled && !loading;
   return (
     <ListGroupItem
       className={classNames({ [styles.is_closed]: item.is_closed })}
@@ -421,6 +459,7 @@ export const TaskItem = ({ item }: { item: ITask }) => {
         <div className="mr-auto text-truncate">
           <TaskLink item={item} />
         </div>
+        {inactive && <NotAssignedButton task={item} />}
         <TaskStatusSelector task={item} disabled={disabled} />
       </div>
       <Row>

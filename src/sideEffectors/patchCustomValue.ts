@@ -9,7 +9,7 @@ export const patchCustomValue: ISideEffector = async (
       const { url, custom_value_map, tasks } = state();
       const { id, key, value, version } = action.payload;
       const task = tasks.find(task => task.id === id);
-      if (url && id && key && value && task && custom_value_map.has(task)) {
+      if (url && id && key && task && custom_value_map.has(task)) {
         const custom_value = custom_value_map.get(task);
         if (custom_value) {
           const { attributes_values } = custom_value;

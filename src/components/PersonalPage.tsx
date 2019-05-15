@@ -83,9 +83,14 @@ export const SignInForm: React.FC = () => {
                 <FontAwesomeIcon icon={faUser} />
               </InputGroupText>
             </InputGroupAddon>
-            <Input readOnly valid={true} placeholder={sign_in_username} />
+            <InputGroupAddon
+              addonType="prepend"
+              className="border border-success"
+            >
+              <InputGroupText>{sign_in_username}</InputGroupText>
+            </InputGroupAddon>
             <InputGroupAddon addonType="append">
-              <Button onClick={handleSignOut} color="danger">
+              <Button title="Sign out" onClick={handleSignOut} color="danger">
                 <FontAwesomeIcon icon={faSignOutAlt} />
               </Button>
             </InputGroupAddon>
