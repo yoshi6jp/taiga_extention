@@ -517,7 +517,7 @@ export const UserStory: React.FC<UserStoryProps> = ({ item }) => {
     <Card>
       <CardHeader
         className={classNames(styles.header, "text-truncate", {
-          [styles.is_closed]: item.is_closed
+          "alert-primary": item.is_closed
         })}
         onClick={toggle}
       >
