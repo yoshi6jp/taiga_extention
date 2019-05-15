@@ -162,7 +162,7 @@ export const PersonalPage: React.FC = () => {
   return (
     <>
       <Navbar color="light" light>
-        <Button tag={Link} to="/">
+        <Button tag={Link} to="/" className="mr-auto">
           <FontAwesomeIcon icon={faArrowCircleLeft} /> Go back
         </Button>
         <SignInForm />
