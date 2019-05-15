@@ -77,7 +77,7 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const active_task_statuses = _.chain(state.task_statuses)
       .reject(item => _.includes(state.reject_task_status_ids, String(item.id)))
-      .orderBy("order")
+      .orderBy(item => item.order)
       .value();
     dispatch({
       type: ActionTypes.SET_ACTIVE_TASK_STATUSES,
