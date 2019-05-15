@@ -4,6 +4,7 @@ import "./index.css";
 import "bootstrap-css-only/css/bootstrap.css";
 import "@material/switch/dist/mdc.switch.css";
 import "@material/form-field/dist/mdc.form-field.css";
+import "@rmwc/avatar/avatar.css";
 import "react-toastify/dist/ReactToastify.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";

@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
+import { Avatar, AvatarProps } from "@rmwc/avatar";
 import { ICustomValueMap, IUser, ITask, ICustomAttr } from "../store";
 import { RootContext } from "../Provider";
 import classNames from "classnames";
@@ -20,7 +21,8 @@ import {
   faEquals,
   faGrinBeam,
   faGrinBeamSweat,
-  faDizzy
+  faDizzy,
+  faGhost
 } from "@fortawesome/free-solid-svg-icons";
 import { UpdateButton } from "./UpdateButton";
 import styles from "./UserTasks.module.css";
@@ -32,6 +34,10 @@ import { SignInForm } from "./PersonalPage";
 const barStyles = ["success", "warning", "info", "danger"];
 const getTasksByUser = (items: ITask[]) => _.groupBy(items, "assigned_to");
 const getClosedTasks = (items: ITask[]) => items.filter(item => item.is_closed);
+export const AvatarSquare: React.FC<AvatarProps> = props => {
+  const src = props.src || `http://i.pravatar.cc/80?u=${Math.random()}`;
+  return <Avatar {...props} src={src} square className="mr-1" />;
+};
 export const parseCustomVal = (val: string) =>
   _.chain(val)
     .replace(/[^0-9.+,]/g, "")
@@ -108,8 +114,7 @@ const NameAndWorkLoad = ({
     return (
       <>
         <td>
-          <img className={styles.avator} src={imgSrc} alt={username} />{" "}
-          {username}
+          <AvatarSquare src={imgSrc} /> {username}
         </td>
         <td />
       </>
@@ -134,7 +139,7 @@ const NameAndWorkLoad = ({
   return (
     <>
       <td className={tblCls}>
-        <img className={styles.avator} src={imgSrc} alt={username} /> {username}
+        <AvatarSquare src={imgSrc} /> {username}
         <FontAwesomeIcon className="mx-1" icon={icon} />
       </td>
       <td className={classNames(tblCls, "text-right")}>{val}</td>
@@ -237,7 +242,6 @@ const UserRow = ({
   const r = _.get(sumItem, "r");
   const margedTotal = customTotal || total;
   const totalStr = String(margedTotal);
-  const imgSrc = item.photo || `http://i.pravatar.cc/80?u=${Math.random()}`;
   return (
     <tr key={item.id}>
       {total > 0 ? (
@@ -246,7 +250,7 @@ const UserRow = ({
             username={item.username}
             val={e}
             total={margedTotal}
-            imgSrc={imgSrc}
+            imgSrc={item.photo}
           />
           <td className="text-right">{total}</td>
           <td className={styles.custom_input_td}>
@@ -263,7 +267,7 @@ const UserRow = ({
       ) : (
         <>
           <td>
-            <img className={styles.avator} src={imgSrc} alt={item.username} />{" "}
+            <AvatarSquare src={item.photo} />
             <Link to={`/${item.id}`}>{item.username}</Link>
           </td>
           <td className="text-right">{e}</td>
@@ -339,7 +343,7 @@ export const UserTasks = () => {
   if (!customAttrE || !customAttrR || biz_days.length <= 1) {
     return null;
   }
-  const unassignedSum = _.get(taskSumByUser, "null.e", 0);
+  const notAssignedSum = _.get(taskSumByUser, "null.e", 0);
   const isPlanning = total > 0;
   const isPast =
     !isPlanning &&
@@ -412,8 +416,11 @@ export const UserTasks = () => {
             />
           ))}
           <tr key="null">
-            <td>unassigned</td>
-            <td className="text-right text-danger">{unassignedSum}</td>
+            <td className="text-danger">
+              <FontAwesomeIcon icon={faGhost} className="ml-1 mr-2 fa-lg" />
+              Not assigned
+            </td>
+            <td className="text-right text-danger">{notAssignedSum}</td>
             <td />
             <td />
             {isPast ? <td /> : null}

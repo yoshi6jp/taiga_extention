@@ -41,7 +41,8 @@ import {
   getCustomValVersion,
   isCustomValInvalid,
   isCustomValValid,
-  Medal
+  Medal,
+  AvatarSquare
 } from "./UserTasks";
 import { ToggleIcon } from "./Controller";
 import ListGroup from "reactstrap/lib/ListGroup";
@@ -299,7 +300,12 @@ const UserItem: React.FC<UserItemProps> = ({ item, onSelect }) => {
   const handleClick = useCallback(() => {
     onSelect && onSelect(item.id);
   }, [item.id, onSelect]);
-  return <DropdownItem onClick={handleClick}>{item.username}</DropdownItem>;
+  return (
+    <DropdownItem onClick={handleClick}>
+      <AvatarSquare src={item.photo} />
+      {item.username}
+    </DropdownItem>
+  );
 };
 interface TaskUserSelectorProps {
   task: ITask;
