@@ -1,5 +1,4 @@
 import _ from "lodash";
-import axios from "axios";
 import {
   initialStateFn,
   StorageKey,
@@ -175,16 +174,12 @@ export const reducer = (state = initialStateFn(), action: Actions) => {
     }
     case ActionTypes.SET_AUTH_TOKEN: {
       const { auth_token } = action.payload;
-      axios.defaults.headers.common["Authorization"] = `Bearer ${auth_token}`;
       return { ...state, auth_token };
     }
     case ActionTypes.SET_AUTH_ERROR: {
       return { ...state, auth_error: true };
     }
     case ActionTypes.SIGN_OUT: {
-      if (axios.defaults.headers.common["Authorization"]) {
-        delete axios.defaults.headers.common["Authorization"];
-      }
       return { ...state, auth_token: "", username: "", password: "" };
     }
     default: {

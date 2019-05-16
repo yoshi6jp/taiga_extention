@@ -1,8 +1,10 @@
 import { StorageKey } from "../store";
-import { ISideEffector, ActionTypes } from ".";
+import { ISideEffector } from ".";
+import axios from "axios";
 export const signOut: ISideEffector = (action, dispatch, state) => {
-  if (action.type === ActionTypes.SIGN_OUT) {
-    localStorage.removeItem(StorageKey.USERNAME);
-    localStorage.removeItem(StorageKey.PASSWORD);
+  localStorage.removeItem(StorageKey.USERNAME);
+  localStorage.removeItem(StorageKey.PASSWORD);
+  if (axios.defaults.headers.common["Authorization"]) {
+    delete axios.defaults.headers.common["Authorization"];
   }
 };
