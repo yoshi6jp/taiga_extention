@@ -16,7 +16,7 @@
     "@types/react-router-dom": "^4.3.3",
     "@types/react-toastify": "^4.0.2",
     "@types/reactstrap": "^8.0.1",
-    "@types/recharts": "^1.1.6",
+    "@types/recharts": "^1.1.16",
     "axios": "^0.18.0",
     "bootstrap-css-only": "^4.3.1",
     "classnames": "^2.2.6",
@@ -30,7 +30,7 @@
     "react-scripts": "3.0.1",
     "react-toastify": "^5.1.0",
     "reactstrap": "^8.0.0",
-    "recharts": "^1.5.0",
+    "recharts": "^1.6.0",
     "rmwc": "^5.5.1",
     "typescript": "^3.4.5",
     "use-react-router": "^1.0.5"

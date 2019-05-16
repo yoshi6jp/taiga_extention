@@ -2353,7 +2353,7 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/recharts-scale/-/recharts-scale-1.0.0.tgz#348c9220d6d9062c44a9d585d686644a97f7e25d"
 
-"@types/recharts@^1.1.6":
+"@types/recharts@^1.1.16":
   version "1.1.16"
   resolved "https://registry.yarnpkg.com/@types/recharts/-/recharts-1.1.16.tgz#54ea319cd688c4cb72f3b5d664cee5a364d3ca00"
   dependencies:
@@ -8678,7 +8678,7 @@ recharts-scale@^0.4.2:
   dependencies:
     decimal.js-light "^2.4.1"
 
-recharts@^1.5.0:
+recharts@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/recharts/-/recharts-1.6.0.tgz#ebf6e18062610e5aaa9ce4fd70a13b981022a359"
   dependencies:
