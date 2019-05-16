@@ -1,11 +1,19 @@
-import { Dispatch, useCallback } from "react";
+import { Dispatch, useCallback, useMemo } from "react";
 
 export type SideEffector<S, A> = (
   action: A,
   dispatch: Dispatch<A>,
   state: () => S
 ) => void;
-let ss: any;
+const stateStoreFactory = <S>() => {
+  let state: S;
+  return {
+    getter: () => state,
+    setter: (newState: S) => {
+      state = newState;
+    }
+  };
+};
 export const useSideEffector = <S, A>(
   [state, dispatch]: [S, Dispatch<A>],
   sideEffector: SideEffector<S, A>
@@ -18,11 +26,12 @@ export const useSideEffector = <S, A>(
     },
     [dispatchSE]
   );
-  ss = state;
-  const getState = () => ss;
+  const stateStore = useMemo(() => stateStoreFactory<S>(), []);
+
+  stateStore.setter(state);
   dispatchSE = useCallback(
     dispatchSideEffector<S, A>(
-      getState,
+      stateStore.getter,
       dispatch,
       sideEffector,
       dispatchSECaller
