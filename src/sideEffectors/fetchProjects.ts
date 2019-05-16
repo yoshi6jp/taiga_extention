@@ -1,5 +1,5 @@
 import { IProject } from "../store";
-import { ISideEffector, fetchData, ActionTypes } from ".";
+import { ISideEffector, fetchData, ActionTypes, errToastr } from ".";
 export const fetchProjecs: ISideEffector = async (action, dispatch, state) => {
   try {
     const { url } = state();
@@ -8,6 +8,6 @@ export const fetchProjecs: ISideEffector = async (action, dispatch, state) => {
       dispatch({ type: ActionTypes.SET_PROJECTS, payload: { projects } });
     }
   } catch (e) {
-    console.log("err:fetchProjects", e);
+    errToastr(e);
   }
 };

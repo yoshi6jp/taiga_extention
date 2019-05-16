@@ -1,5 +1,5 @@
 import { ITask, ICustomValue } from "../store";
-import { ISideEffector, fetchData, ActionTypes } from ".";
+import { ISideEffector, fetchData, ActionTypes, errToastr } from ".";
 export const fetchCustomValueMap: ISideEffector = async (
   action,
   dispatch,
@@ -27,7 +27,7 @@ export const fetchCustomValueMap: ISideEffector = async (
         });
       }
     } catch (e) {
-      console.log("err:fetchCustomValueMap", e);
+      errToastr(e);
     }
   }
 };

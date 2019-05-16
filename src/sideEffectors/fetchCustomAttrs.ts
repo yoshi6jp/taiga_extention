@@ -1,5 +1,5 @@
 import { ICustomAttr } from "../store";
-import { ISideEffector, fetchData, ActionTypes } from ".";
+import { ISideEffector, fetchData, ActionTypes, errToastr } from ".";
 export const fetchCustomAttrs: ISideEffector = async (
   action,
   dispatch,
@@ -21,7 +21,7 @@ export const fetchCustomAttrs: ISideEffector = async (
         });
       }
     } catch (e) {
-      console.log("err:fetchCustomAttrs", e);
+      errToastr(e);
     }
   }
 };

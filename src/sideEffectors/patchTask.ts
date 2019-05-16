@@ -1,4 +1,5 @@
-import { ActionTypes, ISideEffector, patchData } from ".";
+import { ActionTypes, ISideEffector, patchData, errToastr } from ".";
+import { toastr } from "../util/toastr";
 export const patchTask: ISideEffector = async (action, dispatch, state) => {
   if (action.type === ActionTypes.PATCH_TASK) {
     try {
@@ -11,9 +12,10 @@ export const patchTask: ISideEffector = async (action, dispatch, state) => {
           version: task.version
         });
         dispatch({ type: ActionTypes.UPDATE_DATA });
+        toastr.success(`Task updated. [${key}=${value}]`);
       }
     } catch (e) {
-      console.log("err:patchTask", e);
+      errToastr(e);
     }
   }
 };

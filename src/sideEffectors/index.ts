@@ -40,7 +40,12 @@ export const patchData = (
   config?: AxiosRequestConfig
 ) => axios.patch(`${baseUrl(url)}/${path}`, data, config);
 export const errToastr = (err: AxiosError) => {
-  const message = err.response ? err.response.data._error_message : "error";
+  let message: string;
+  try {
+    message = err.response ? err.response.data._error_message : "error";
+  } catch (e) {
+    message = e.message || e;
+  }
   toastr.error(message);
 };
 export const rootSideEffector = (

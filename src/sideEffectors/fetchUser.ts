@@ -1,5 +1,5 @@
 import { IUser } from "../store";
-import { ISideEffector, fetchData, ActionTypes } from ".";
+import { ISideEffector, fetchData, ActionTypes, errToastr } from ".";
 export const fetchUser: ISideEffector = async (action, dispatch, state) => {
   if (action.type === ActionTypes.FETCH_USER) {
     try {
@@ -13,7 +13,7 @@ export const fetchUser: ISideEffector = async (action, dispatch, state) => {
         });
       }
     } catch (e) {
-      console.log("err:fetchUser", e);
+      errToastr(e);
     }
   }
 };

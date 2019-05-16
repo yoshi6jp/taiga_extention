@@ -1,5 +1,5 @@
 import { ITask } from "../store";
-import { ISideEffector, fetchData, ActionTypes } from ".";
+import { ISideEffector, fetchData, ActionTypes, errToastr } from ".";
 import _ from "lodash";
 export const fetchTasks: ISideEffector = async (action, dispatch, state) => {
   if (action.type === ActionTypes.FETCH_TASKS) {
@@ -17,7 +17,7 @@ export const fetchTasks: ISideEffector = async (action, dispatch, state) => {
         dispatch({ type: ActionTypes.SET_TASKS, payload: { tasks } });
       }
     } catch (e) {
-      console.log("err:fetchTasks", e);
+      errToastr(e);
     }
   }
 };

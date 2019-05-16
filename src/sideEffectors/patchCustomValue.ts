@@ -1,4 +1,5 @@
-import { ISideEffector, patchData, ActionTypes } from ".";
+import { ISideEffector, patchData, ActionTypes, errToastr } from ".";
+import { toastr } from "../util/toastr";
 export const patchCustomValue: ISideEffector = async (
   action,
   dispatch,
@@ -21,10 +22,11 @@ export const patchCustomValue: ISideEffector = async (
             version
           });
           dispatch({ type: ActionTypes.UPDATE_DATA });
+          toastr.success(`Custom value updated. [${value}]`);
         }
       }
     } catch (e) {
-      console.log("err:patchCustomValue", e);
+      errToastr(e);
     }
   }
 };

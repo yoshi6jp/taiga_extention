@@ -1,5 +1,5 @@
 import { IProject } from "../store";
-import { ISideEffector, fetchData, ActionTypes } from ".";
+import { ISideEffector, fetchData, ActionTypes, errToastr } from ".";
 export const fetchProject: ISideEffector = async (action, dispatch, state) => {
   if (action.type === ActionTypes.FETCH_PROJECT) {
     try {
@@ -16,7 +16,7 @@ export const fetchProject: ISideEffector = async (action, dispatch, state) => {
         });
       }
     } catch (e) {
-      console.log("err:fetchProject", e);
+      errToastr(e);
     }
   }
 };

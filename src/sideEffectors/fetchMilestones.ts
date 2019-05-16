@@ -1,5 +1,5 @@
 import { IMilestone } from "../store";
-import { ISideEffector, fetchData, ActionTypes } from ".";
+import { ISideEffector, fetchData, ActionTypes, errToastr } from ".";
 export const fetchMilestones: ISideEffector = async (
   action,
   dispatch,
@@ -18,7 +18,7 @@ export const fetchMilestones: ISideEffector = async (
         dispatch({ type: ActionTypes.SET_MILESTONES, payload: { milestones } });
       }
     } catch (e) {
-      console.log("err:fetchMilestones", e);
+      errToastr(e);
     }
   }
 };

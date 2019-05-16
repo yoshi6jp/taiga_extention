@@ -1,5 +1,5 @@
 import { ITaskStatus } from "../store";
-import { ISideEffector, fetchData, ActionTypes } from ".";
+import { ISideEffector, fetchData, ActionTypes, errToastr } from ".";
 export const fetchTaskStatuses: ISideEffector = async (
   action,
   dispatch,
@@ -21,7 +21,7 @@ export const fetchTaskStatuses: ISideEffector = async (
         });
       }
     } catch (e) {
-      console.log("err:fetchTaskStatuses", e);
+      errToastr(e);
     }
   }
 };
