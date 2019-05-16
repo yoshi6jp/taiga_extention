@@ -53,6 +53,14 @@ export const reducer = (state = initialStateFn(), action: Actions) => {
       const { custom_attrs } = action.payload;
       return { ...state, custom_attrs };
     }
+    case ActionTypes.SET_CUSTOM_ATTR_E: {
+      const { custom_attr_e } = action.payload;
+      return { ...state, custom_attr_e };
+    }
+    case ActionTypes.SET_CUSTOM_ATTR_R: {
+      const { custom_attr_r } = action.payload;
+      return { ...state, custom_attr_r };
+    }
     case ActionTypes.SET_CUSTOM_RID: {
       const { custom_rid } = action.payload;
       return { ...state, custom_rid };

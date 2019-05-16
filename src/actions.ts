@@ -26,6 +26,8 @@ export enum ActionTypes {
   SET_CUSTOM_RID = "SET_CUSTOM_RID",
   FETCH_CUSTOM_ATTRS = "FETCH_CUSTOM_ATTRS",
   SET_CUSTOM_ATTRS = "SET_CUSTOM_ATTRS",
+  SET_CUSTOM_ATTR_E = "SET_CUSTOM_ATTR_E",
+  SET_CUSTOM_ATTR_R = "SET_CUSTOM_ATTR_R",
   SET_BIZ_DAYS = "SET_BIZ_DAYS",
   ADD_BIZ_DAY = "ADD_BIZ_DAY",
   REMOVE_BIZ_DAY = "REMOVE_BIZ_DAY",
@@ -124,7 +126,14 @@ export interface SET_CUSTOM_ATTRS extends IAction {
   type: ActionTypes.SET_CUSTOM_ATTRS;
   payload: { custom_attrs: ICustomAttr[] };
 }
-
+export interface SET_CUSTOM_ATTR_E extends IAction {
+  type: ActionTypes.SET_CUSTOM_ATTR_E;
+  payload: { custom_attr_e: ICustomAttr };
+}
+export interface SET_CUSTOM_ATTR_R extends IAction {
+  type: ActionTypes.SET_CUSTOM_ATTR_R;
+  payload: { custom_attr_r: ICustomAttr };
+}
 export interface SET_BIZ_DAYS extends IAction {
   type: ActionTypes.SET_BIZ_DAYS;
   payload: { biz_days: string[] };
@@ -234,6 +243,8 @@ export type Actions =
   | SET_CUSTOM_RID
   | FETCH_CUSTOM_ATTRS
   | SET_CUSTOM_ATTRS
+  | SET_CUSTOM_ATTR_E
+  | SET_CUSTOM_ATTR_R
   | PATCH_CUSTOM_VALUE
   | SET_BIZ_DAYS
   | SET_BIZ_DAYS

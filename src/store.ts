@@ -96,6 +96,8 @@ export interface IState {
   custom_eid: string; //  pid
   custom_rid: string; // pid
   custom_attrs: ICustomAttr[]; // pid
+  custom_attr_e: ICustomAttr;
+  custom_attr_r: ICustomAttr;
   biz_days: string[]; //mid
   milestones: IMilestone[]; // pid
   tasks: ITask[]; //mid
@@ -158,6 +160,8 @@ export const initialStateFn = (): IState => {
     custom_eid,
     custom_rid,
     custom_attrs: [],
+    custom_attr_e: {} as ICustomAttr,
+    custom_attr_r: {} as ICustomAttr,
     biz_days,
     milestones: [],
     tasks: [],

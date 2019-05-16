@@ -1,5 +1,15 @@
-import React, { useContext, useState, useEffect } from "react";
-import { ComposedChart, Tooltip, Line, XAxis, YAxis, Bar } from "recharts";
+import React, { useContext, useState, useEffect, useCallback } from "react";
+import {
+  ComposedChart,
+  Tooltip,
+  Line,
+  XAxis,
+  YAxis,
+  Bar,
+  Legend,
+  TooltipFormatter,
+  LegendValueFormatter
+} from "recharts";
 import { ITask, ICustomValueMap } from "../store";
 import _ from "lodash";
 import moment from "moment";
@@ -56,7 +66,13 @@ const getSumVal = (
 export const Chart = ({ tasks }: { tasks: ITask[] }) => {
   const [data, setData] = useState<IChartItem[]>([]);
   const {
-    state: { biz_days, custom_value_map, custom_eid }
+    state: {
+      biz_days,
+      custom_value_map,
+      custom_eid,
+      custom_attr_e,
+      custom_attr_r
+    }
   } = useContext(RootContext);
   useEffect(() => {
     const days_len = biz_days.length;
@@ -105,16 +121,37 @@ export const Chart = ({ tasks }: { tasks: ITask[] }) => {
       setData([]);
     }
   }, [tasks, biz_days, custom_eid, custom_value_map, setData]);
+  const labelFormatter: LegendValueFormatter = useCallback(
+    (name: string) => {
+      switch (name) {
+        case "estimate": {
+          return custom_attr_e.name || name;
+        }
+        case "result": {
+          return custom_attr_r.name || name;
+        }
+        default: {
+          return name;
+        }
+      }
+    },
+    [custom_attr_e.name, custom_attr_r.name]
+  );
+  const formatter: TooltipFormatter = useCallback(
+    (value, name) => [Number(value).toFixed(1), labelFormatter(name)],
+    [labelFormatter]
+  );
   if (data.length === 0) {
     return null;
   } else {
     return (
-      <Card>
+      <Card className="mb-2">
         <CardHeader>Burn down chart</CardHeader>
         <ComposedChart data={data} width={800} height={400}>
           <YAxis />
           <XAxis dataKey="label" />
-          <Tooltip />
+          <Tooltip formatter={formatter} />
+          <Legend formatter={labelFormatter} />
           <Bar dataKey="result" fill="#8884d8" stackId="a" />
           <Bar dataKey="add" fill="#82ca9d" stackId="a" />
           <Line dataKey="estimate" />

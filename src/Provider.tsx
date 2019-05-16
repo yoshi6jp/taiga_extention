@@ -1,14 +1,15 @@
 import React, { createContext, useReducer, useEffect } from "react";
 import _ from "lodash";
 import { ActionTypes } from "./actions";
-import { initialStateFn } from "./store";
+import { initialStateFn, ICustomAttr } from "./store";
 import { reducer } from "./reducer";
 import { Actions } from "./actions";
 import { useSideEffector } from "./util/useSideEffector";
 import { rootSideEffector } from "./sideEffectors";
 import { init } from "./init";
 export const baseUrl = (url: string) => `${url.replace(/[¥/]$/, "")}/api/v1`;
-
+const getCustomAttr = (items: ICustomAttr[], id: number) =>
+  _.find(items, { id });
 const initialState = initialStateFn();
 export const RootContext = createContext({
   state: initialState,
@@ -84,6 +85,31 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
       payload: { active_task_statuses }
     });
   }, [state.task_statuses, state.reject_task_status_ids, dispatch]);
+  useEffect(() => {
+    const custom_attr_e = getCustomAttr(
+      state.custom_attrs,
+      Number(state.custom_eid)
+    );
+    if (custom_attr_e) {
+      dispatch({
+        type: ActionTypes.SET_CUSTOM_ATTR_E,
+        payload: { custom_attr_e }
+      });
+    }
+  }, [dispatch, state.custom_attrs, state.custom_eid]);
+  useEffect(() => {
+    const custom_attr_r = getCustomAttr(
+      state.custom_attrs,
+      Number(state.custom_rid)
+    );
+    if (custom_attr_r) {
+      dispatch({
+        type: ActionTypes.SET_CUSTOM_ATTR_R,
+        payload: { custom_attr_r }
+      });
+    }
+  }, [dispatch, state.custom_attrs, state.custom_rid]);
+
   useEffect(() => {
     init(dispatch);
   }, [dispatch]);
