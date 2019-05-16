@@ -14,6 +14,7 @@ import { patchCustomValue } from "./patchCustomValue";
 import { patchTask } from "./patchTask";
 import { signIn } from "./signIn";
 import { signOut } from "./signOut";
+import { setAuthToken } from "./setAuthToken";
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
 import { toastr } from "../util/toastr";
 export { ActionTypes };
@@ -102,7 +103,10 @@ export const rootSideEffector = (
       signOut(action, dispatch, state);
       return;
     }
-
+    case ActionTypes.SET_AUTH_TOKEN: {
+      setAuthToken(action, dispatch, state);
+      return;
+    }
     default: {
     }
   }
