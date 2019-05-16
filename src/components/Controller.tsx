@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback } from "react";
+import React, { useContext, useState, useCallback, useMemo } from "react";
 import _ from "lodash";
 import classNames from "classnames";
 import { RootContext } from "../Provider";
@@ -85,17 +85,26 @@ export const Controller = () => {
       dispatch({ type: ActionTypes.OPEN_CONTROLLER });
     }
   }, [dispatch, isOpen]);
-  const taskboardUrl = getTaskboardUrl(stateUrl, mid, milestones);
+  const taskboardUrl = useMemo(
+    () => getTaskboardUrl(stateUrl, mid, milestones),
+    [mid, milestones, stateUrl]
+  );
+  const spName = useMemo(() => getSpName(mid, milestones), [mid, milestones]);
+  const range = useMemo(() => getRange(biz_days), [biz_days]);
   return (
     <Card>
       <CardHeader className={classNames(styles.header)} onClick={toggle}>
         <ToggleIcon isOpen={isOpen} />
-        <Badge color="primary" pill className="p-1 m-1">
-          <span>{getSpName(mid, milestones)}</span>
-        </Badge>
-        <Badge className="p-1 m-1">
-          <span>{getRange(biz_days)}</span>
-        </Badge>
+        {spName && (
+          <Badge color="primary" pill className="p-1 m-1">
+            <span>{spName}</span>
+          </Badge>
+        )}
+        {range && (
+          <Badge className="p-1 m-1">
+            <span>{range}</span>
+          </Badge>
+        )}
         {taskboardUrl ? (
           <a
             target="_blank"

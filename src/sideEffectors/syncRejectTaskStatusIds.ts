@@ -5,10 +5,12 @@ export const syncRejectTaskStatusIds: ISideEffector = (
   dispatch,
   state
 ) => {
-  const { pid, reject_task_status_ids } = state();
-  setToStorageWithSubkey(
-    StorageKey.REJECT_TASK_STATUS_IDS,
-    pid,
-    reject_task_status_ids.join(",")
-  );
+  setTimeout(() => {
+    const { pid, reject_task_status_ids } = state();
+    setToStorageWithSubkey(
+      StorageKey.REJECT_TASK_STATUS_IDS,
+      pid,
+      reject_task_status_ids.join(",")
+    );
+  }, 1);
 };

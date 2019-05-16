@@ -21,6 +21,7 @@ export const reducer = (state = initialStateFn(), action: Actions) => {
         pid,
         project: {} as IProject,
         mid: "",
+        biz_days: [],
         custom_attrs: [],
         milestones: [],
         custom_value_map: new WeakMap() as ICustomValueMap
