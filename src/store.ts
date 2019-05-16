@@ -119,10 +119,10 @@ export enum StorageKey {
   PASSWORD = "taiga_password"
 }
 
-export const getFromStorage = (key: string) => localStorage.getItem(key) || "";
-
+const _getFromStorage = (key: string) => localStorage.getItem(key) || "";
+export const getFromStorage = (key: StorageKey) => _getFromStorage(key);
 export const getFromStorageWithSubkey = (key: StorageKey, subkey: string) =>
-  subkey ? getFromStorage(`${subkey}/${key}`) : "";
+  subkey ? _getFromStorage(`${subkey}/${key}`) : "";
 
 export const setToStorage = (key: string, item: string) => {
   localStorage.setItem(key, item);

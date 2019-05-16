@@ -1,19 +1,10 @@
 import _ from "lodash";
-import {
-  initialStateFn,
-  StorageKey,
-  IProject,
-  ICustomValueMap,
-  setToStorage,
-  setToStorageWithSubkey,
-  getFromStorageWithSubkey
-} from "./store";
+import { initialStateFn, IProject, ICustomValueMap } from "./store";
 import { ActionTypes, Actions } from "./actions";
 export const reducer = (state = initialStateFn(), action: Actions) => {
   switch (action.type) {
     case ActionTypes.SET_URL: {
       const { url } = action.payload;
-      setToStorage(StorageKey.URL, url);
       return { ...state, url };
     }
     case ActionTypes.SET_PROJECTS: {
@@ -25,14 +16,11 @@ export const reducer = (state = initialStateFn(), action: Actions) => {
     }
     case ActionTypes.SET_PID: {
       const { pid } = action.payload;
-      setToStorage(StorageKey.PID, pid);
       return {
         ...state,
         pid,
         project: {} as IProject,
         mid: "",
-        custom_eid: getFromStorageWithSubkey(StorageKey.CUSTOM_EID, pid),
-        custom_rid: getFromStorageWithSubkey(StorageKey.CUSTOM_RID, pid),
         custom_attrs: [],
         milestones: [],
         custom_value_map: new WeakMap() as ICustomValueMap
@@ -47,14 +35,10 @@ export const reducer = (state = initialStateFn(), action: Actions) => {
     }
     case ActionTypes.SET_MID: {
       const { mid } = action.payload;
-      setToStorage(StorageKey.MID, mid);
       return {
         ...state,
         mid,
-        tasks: [],
-        biz_days: _.compact(
-          getFromStorageWithSubkey(StorageKey.BIZ_DAYS, mid).split(",")
-        ).sort()
+        tasks: []
       };
     }
     case ActionTypes.SET_MILESTONES: {
@@ -63,7 +47,6 @@ export const reducer = (state = initialStateFn(), action: Actions) => {
     }
     case ActionTypes.SET_CUSTOM_EID: {
       const { custom_eid } = action.payload;
-      setToStorageWithSubkey(StorageKey.CUSTOM_EID, state.pid, custom_eid);
       return { ...state, custom_eid };
     }
     case ActionTypes.SET_CUSTOM_ATTRS: {
@@ -72,16 +55,10 @@ export const reducer = (state = initialStateFn(), action: Actions) => {
     }
     case ActionTypes.SET_CUSTOM_RID: {
       const { custom_rid } = action.payload;
-      setToStorageWithSubkey(StorageKey.CUSTOM_RID, state.pid, custom_rid);
       return { ...state, custom_rid };
     }
     case ActionTypes.SET_BIZ_DAYS: {
       const { biz_days } = action.payload;
-      setToStorageWithSubkey(
-        StorageKey.BIZ_DAYS,
-        state.mid,
-        biz_days.join(",")
-      );
       return { ...state, biz_days };
     }
     case ActionTypes.ADD_BIZ_DAY: {
@@ -90,21 +67,11 @@ export const reducer = (state = initialStateFn(), action: Actions) => {
         .uniq()
         .sort()
         .value();
-      setToStorageWithSubkey(
-        StorageKey.BIZ_DAYS,
-        state.mid,
-        biz_days.join(",")
-      );
       return { ...state, biz_days };
     }
     case ActionTypes.REMOVE_BIZ_DAY: {
       const { biz_day } = action.payload;
       const biz_days = _.reject([...state.biz_days], item => item === biz_day);
-      setToStorageWithSubkey(
-        StorageKey.BIZ_DAYS,
-        state.mid,
-        biz_days.join(",")
-      );
       return { ...state, biz_days };
     }
     case ActionTypes.SET_TASKS: {
@@ -139,11 +106,6 @@ export const reducer = (state = initialStateFn(), action: Actions) => {
         .compact()
         .uniq()
         .value();
-      setToStorageWithSubkey(
-        StorageKey.REJECT_TASK_STATUS_IDS,
-        state.pid,
-        reject_task_status_ids.join(",")
-      );
       return { ...state, reject_task_status_ids };
     }
     case ActionTypes.REMOVE_REJECT_TASK_STATUS_ID: {
@@ -151,11 +113,6 @@ export const reducer = (state = initialStateFn(), action: Actions) => {
       const reject_task_status_ids = _.reject(
         [...state.reject_task_status_ids],
         item => item === reject_task_status_id
-      );
-      setToStorageWithSubkey(
-        StorageKey.REJECT_TASK_STATUS_IDS,
-        state.pid,
-        reject_task_status_ids.join(",")
       );
       return { ...state, reject_task_status_ids };
     }

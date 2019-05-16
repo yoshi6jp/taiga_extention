@@ -15,6 +15,13 @@ import { patchTask } from "./patchTask";
 import { signIn } from "./signIn";
 import { signOut } from "./signOut";
 import { setAuthToken } from "./setAuthToken";
+import { setUrl } from "./setUrl";
+import { setPid } from "./setPid";
+import { setMid } from "./setMid";
+import { setCustomEid } from "./setCustomEid";
+import { setCustomRid } from "./setCustomRid";
+import { syncBizDays } from "./syncBizDays";
+import { syncRejectTaskStatusIds } from "./syncRejectTaskStatusIds";
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
 import { toastr } from "../util/toastr";
 export { ActionTypes };
@@ -106,6 +113,37 @@ export const rootSideEffector = (
     case ActionTypes.SET_AUTH_TOKEN: {
       setAuthToken(action, dispatch, state);
       return;
+    }
+    case ActionTypes.SET_URL: {
+      setUrl(action, dispatch, state);
+      return;
+    }
+    case ActionTypes.SET_PID: {
+      setPid(action, dispatch, state);
+      break;
+    }
+    case ActionTypes.SET_MID: {
+      setMid(action, dispatch, state);
+      break;
+    }
+    case ActionTypes.SET_CUSTOM_EID: {
+      setCustomEid(action, dispatch, state);
+      break;
+    }
+    case ActionTypes.SET_CUSTOM_RID: {
+      setCustomRid(action, dispatch, state);
+      break;
+    }
+    case ActionTypes.SET_BIZ_DAYS:
+    case ActionTypes.ADD_BIZ_DAY:
+    case ActionTypes.REMOVE_BIZ_DAY: {
+      syncBizDays(action, dispatch, state);
+      break;
+    }
+    case ActionTypes.ADD_REJECT_TASK_STATUS_ID:
+    case ActionTypes.REMOVE_REJECT_TASK_STATUS_ID: {
+      syncRejectTaskStatusIds(action, dispatch, state);
+      break;
     }
     default: {
     }
