@@ -1,6 +1,6 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useState, useMemo } from "react";
 import { Avatar, AvatarProps } from "@rmwc/avatar";
-import { ICustomValueMap, IUser, ITask, ICustomAttr } from "../store";
+import { ICustomValueMap, IUser, ITask } from "../store";
 import { RootContext } from "../Provider";
 import classNames from "classnames";
 import {
@@ -110,6 +110,19 @@ const NameAndWorkLoad = ({
   total: number;
   imgSrc: string;
 }) => {
+  const [icon, tblCls] = useMemo(() => {
+    const diff = total > 0 ? (val - total) / total : 0;
+    if (diff < -0.1) {
+      return [faGrinBeam, ""];
+    } else if (diff <= 0.1) {
+      return [faGrinBeam, "table-success"];
+    } else if (diff <= 0.2) {
+      return [faGrinBeamSweat, "table-warning"];
+    } else {
+      return [faDizzy, "table-danger"];
+    }
+  }, [total, val]);
+
   if (!val) {
     return (
       <>
@@ -119,22 +132,6 @@ const NameAndWorkLoad = ({
         <td />
       </>
     );
-  }
-  const diff = (val - total) / total;
-  let icon;
-  let tblCls;
-  if (diff < -0.1) {
-    icon = faGrinBeam;
-    tblCls = "";
-  } else if (diff <= 0.1) {
-    tblCls = "table-success";
-    icon = faGrinBeam;
-  } else if (diff <= 0.2) {
-    tblCls = "table-warning";
-    icon = faGrinBeamSweat;
-  } else {
-    tblCls = "table-danger";
-    icon = faDizzy;
   }
   return (
     <>
@@ -148,7 +145,7 @@ const NameAndWorkLoad = ({
 };
 
 export const Medal = ({ e, r }: { e: number; r: number }) => {
-  const [grade, num] = getGrade(e, r);
+  const [grade, num] = useMemo(() => getGrade(e, r), [e, r]);
   if (grade) {
     return (
       <>
@@ -175,30 +172,32 @@ export const TaskProgress: React.FC<TaskProgressProps> = ({ tasks }) => {
   const {
     state: { active_task_statuses, custom_eid, custom_value_map }
   } = useContext(RootContext);
-  const [items, setItems] = useState<IProgressTotal[]>([]);
-  const [allSum, setAllSum] = useState<number>(0);
   const eid = Number(custom_eid);
-  useEffect(() => {
-    const val = _.chain(active_task_statuses)
-      .filter({ is_closed: true })
-      .reverse()
-      .map((item, idx) => ({
-        status: item.id,
-        total: getSumCustomVal(
-          custom_value_map,
-          _.filter(tasks, { status: item.id }),
-          eid
-        ),
-        style: barStyles[idx],
-        label: item.name
-      }))
-      .value();
-    setItems(val);
-  }, [active_task_statuses, eid, custom_value_map, setItems, tasks]);
-  useEffect(() => {
-    const val = getSumCustomVal(custom_value_map, tasks, eid);
-    setAllSum(val);
-  }, [eid, custom_value_map, setAllSum, tasks]);
+  const items = useMemo(
+    () =>
+      _.chain(active_task_statuses)
+        .filter({ is_closed: true })
+        .reverse()
+        .map((item, idx) => ({
+          status: item.id,
+          total: getSumCustomVal(
+            custom_value_map,
+            _.filter(tasks, { status: item.id }),
+            eid
+          ),
+          style: barStyles[idx],
+          label: item.name
+        }))
+        .value(),
+    [active_task_statuses, custom_value_map, eid, tasks]
+  );
+
+  const allSum = useMemo(() => getSumCustomVal(custom_value_map, tasks, eid), [
+    custom_value_map,
+    eid,
+    tasks
+  ]);
+
   return (
     <Progress multi>
       {items.map(item => (
@@ -306,22 +305,20 @@ const getTaskSumByUser = (
   );
   return tasksByUser;
 };
-export const getCustomAttr = (items: ICustomAttr[], id: number) =>
-  items.find(item => item.id === id);
 export const UserTasks = () => {
   const {
     state: {
       tasks,
       custom_value_map,
-      custom_attrs,
       custom_eid,
       custom_rid,
       biz_days,
+      custom_attr_e,
+      custom_attr_r,
       project: { members }
     }
   } = useContext(RootContext);
   const [hpd, setHpd] = useState<number>(0);
-  const [total, setTotal] = useState<number>(0);
   const activeLen = biz_days.length - 1;
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -329,30 +326,29 @@ export const UserTasks = () => {
     },
     [setHpd]
   );
-  useEffect(() => {
-    setTotal(hpd * activeLen);
-  }, [hpd, activeLen, setTotal]);
-  const taskSumByUser = getTaskSumByUser(
-    tasks,
-    custom_value_map,
-    custom_eid,
-    custom_rid
+  const total = hpd * activeLen;
+  const taskSumByUser = useMemo(
+    () => getTaskSumByUser(tasks, custom_value_map, custom_eid, custom_rid),
+    [custom_eid, custom_rid, custom_value_map, tasks]
   );
-  const customAttrE = getCustomAttr(custom_attrs, Number(custom_eid));
-  const customAttrR = getCustomAttr(custom_attrs, Number(custom_rid));
-  if (!customAttrE || !customAttrR || biz_days.length <= 1) {
-    return null;
-  }
   const notAssignedSum = _.get(taskSumByUser, "null.e", 0);
   const isPlanning = total > 0;
-  const isPast =
-    !isPlanning &&
-    moment().diff(
-      moment(_.last(biz_days))
-        .local()
-        .endOf("days")
-    ) > 0;
-  const tasksByUser = getTasksByUser(getClosedTasks(tasks));
+  const isPast = useMemo(
+    () =>
+      !isPlanning &&
+      moment().diff(
+        moment(_.last(biz_days))
+          .local()
+          .endOf("days")
+      ) > 0,
+    [biz_days, isPlanning]
+  );
+  const tasksByUser = useMemo(() => getTasksByUser(getClosedTasks(tasks)), [
+    tasks
+  ]);
+  if (!custom_attr_e.id || !custom_attr_r.id || biz_days.length <= 1) {
+    return null;
+  }
   return (
     <>
       <Navbar color="light" light>
@@ -389,14 +385,14 @@ export const UserTasks = () => {
         <thead>
           <tr>
             <th>Name</th>
-            <th>{customAttrE.name}</th>
+            <th>{custom_attr_e.name}</th>
             {isPlanning ? (
               <>
                 <th>Total</th> <th>Custom</th>
               </>
             ) : (
               <>
-                <th>{customAttrR.name}</th>
+                <th>{custom_attr_r.name}</th>
                 <th>Progress</th>
               </>
             )}
