@@ -1,4 +1,10 @@
-import React, { useContext, useState, useCallback, useEffect } from "react";
+import React, {
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  useMemo
+} from "react";
 import {
   Button,
   Card,
@@ -36,7 +42,6 @@ import {
 import { InputGroupSpinner } from "./InputGroupSpinner";
 import { RootContext } from "../Provider";
 import {
-  getCustomAttr,
   getCustomVal,
   getCustomValVersion,
   isCustomValInvalid,
@@ -127,8 +132,9 @@ const ToggleNumberInput: React.FC<ToggleNumberInputProps> = ({
   disabled,
   loading
 }) => {
-  const [checked, setChecked] = useState<boolean>(false);
+  const [checked, setChecked] = useState(false);
   const [val, setVal] = useState("");
+  const [running, setRunning] = useState(false);
   const onChange = useCallback(
     (evt: React.FormEvent<any>) => {
       setChecked(evt.currentTarget.checked);
@@ -147,6 +153,7 @@ const ToggleNumberInput: React.FC<ToggleNumberInputProps> = ({
       if (checked && val !== "" && num >= 0 && onSubmit) {
         onSubmit(num);
         setChecked(false);
+        setRunning(true);
       }
       e.preventDefault();
     },
@@ -157,6 +164,9 @@ const ToggleNumberInput: React.FC<ToggleNumberInputProps> = ({
       setChecked(false);
     }
   }, [setChecked, disabled]);
+  useEffect(() => {
+    setRunning(false);
+  }, [value]);
   const title = needAuthMsg(disabled);
   return (
     <Form inline onSubmit={handleSubmit}>
@@ -194,7 +204,18 @@ const ToggleNumberInput: React.FC<ToggleNumberInputProps> = ({
                 </InputGroupAddon>
               </>
             ) : (
-              <Input valid={valid} invalid={invalid} readOnly value={value} />
+              <>
+                {running ? (
+                  <InputGroupSpinner />
+                ) : (
+                  <Input
+                    valid={valid}
+                    invalid={invalid}
+                    readOnly
+                    value={value}
+                  />
+                )}
+              </>
             )}
             <InputGroupAddon addonType="append" title={title}>
               <Switch disabled={disabled} checked={checked} onChange={onChange}>
@@ -403,13 +424,14 @@ const NotAssignedButton: React.FC<NotAssignedButtonProps> = ({ task }) => {
 interface CustomValueInputProps {
   item: ITask;
 }
+
 const EstimateInput: React.FC<CustomValueInputProps> = ({ item }) => {
   const {
-    state: { custom_attrs, custom_eid, custom_value_map, auth_token },
+    state: { custom_eid, custom_value_map, auth_token, custom_attr_e },
     dispatch
   } = useContext(RootContext);
   const version = getCustomValVersion(custom_value_map, item);
-  const onSubmitE = useCallback(
+  const handleSubmit = useCallback(
     (value: number) => {
       if (version) {
         dispatch({
@@ -425,19 +447,21 @@ const EstimateInput: React.FC<CustomValueInputProps> = ({ item }) => {
     },
     [dispatch, item.id, custom_eid, version]
   );
-  const customAttrE = getCustomAttr(custom_attrs, Number(custom_eid));
-  if (!customAttrE) {
+  const e = useMemo(
+    () => getCustomVal(custom_value_map, item, custom_attr_e.id),
+    [custom_attr_e.id, custom_value_map, item]
+  );
+  if (!custom_attr_e.id) {
     return null;
   }
-  const e = getCustomVal(custom_value_map, item, customAttrE.id);
   const unEstimated = !e;
   const disabled = auth_token === "";
   const loading = !version;
 
   return (
     <ToggleNumberInput
-      onSubmit={onSubmitE}
-      label={customAttrE.name}
+      onSubmit={handleSubmit}
+      label={custom_attr_e.name}
       value={e}
       invalid={unEstimated}
       disabled={disabled}
@@ -445,36 +469,19 @@ const EstimateInput: React.FC<CustomValueInputProps> = ({ item }) => {
     />
   );
 };
-
-export const TaskItem = ({ item }: { item: ITask }) => {
+const ResultInput: React.FC<CustomValueInputProps> = ({ item }) => {
   const {
     state: {
-      custom_attrs,
-      custom_eid,
       custom_rid,
       custom_value_map,
+      custom_attr_e,
+      custom_attr_r,
       auth_token
     },
     dispatch
   } = useContext(RootContext);
   const version = getCustomValVersion(custom_value_map, item);
-  const onSubmitE = useCallback(
-    (value: number) => {
-      if (version) {
-        dispatch({
-          type: ActionTypes.PATCH_CUSTOM_VALUE,
-          payload: {
-            id: item.id,
-            key: custom_eid,
-            value,
-            version
-          }
-        });
-      }
-    },
-    [dispatch, item.id, custom_eid, version]
-  );
-  const onSubmitR = useCallback(
+  const handleSubmit = useCallback(
     (value: number) => {
       if (version) {
         dispatch({
@@ -490,16 +497,58 @@ export const TaskItem = ({ item }: { item: ITask }) => {
     },
     [custom_rid, dispatch, item.id, version]
   );
-  const customAttrE = getCustomAttr(custom_attrs, Number(custom_eid));
-  const customAttrR = getCustomAttr(custom_attrs, Number(custom_rid));
-  if (!customAttrE || !customAttrR) {
+  const e = useMemo(
+    () => getCustomVal(custom_value_map, item, custom_attr_e.id),
+    [custom_attr_e.id, custom_value_map, item]
+  );
+  const r = useMemo(
+    () => getCustomVal(custom_value_map, item, custom_attr_r.id),
+    [custom_attr_r.id, custom_value_map, item]
+  );
+  const valid = useMemo(() => isCustomValValid(e, r, item.is_closed), [
+    e,
+    item.is_closed,
+    r
+  ]);
+  const invalid = useMemo(() => isCustomValInvalid(e, r), [e, r]);
+  if (!custom_attr_r.id) {
     return null;
   }
-  const e = getCustomVal(custom_value_map, item, customAttrE.id);
-  const r = getCustomVal(custom_value_map, item, customAttrR.id);
-  const unEstimated = !e;
-  const valid = isCustomValValid(e, r, item.is_closed);
-  const invalid = isCustomValInvalid(e, r);
+
+  const disabled = auth_token === "";
+  const loading = !version;
+  return (
+    <ToggleNumberInput
+      onSubmit={handleSubmit}
+      label={custom_attr_r.name}
+      value={r}
+      valid={valid}
+      invalid={invalid}
+      disabled={disabled}
+      loading={loading}
+    />
+  );
+};
+export const TaskItem = ({ item }: { item: ITask }) => {
+  const {
+    state: { custom_value_map, custom_attr_e, custom_attr_r, auth_token }
+  } = useContext(RootContext);
+  const version = useMemo(() => getCustomValVersion(custom_value_map, item), [
+    custom_value_map,
+    item
+  ]);
+  const e = useMemo(
+    () => getCustomVal(custom_value_map, item, custom_attr_e.id),
+    [custom_attr_e.id, custom_value_map, item]
+  );
+  const r = useMemo(
+    () => getCustomVal(custom_value_map, item, custom_attr_r.id),
+    [custom_attr_r.id, custom_value_map, item]
+  );
+  if (!custom_attr_e.id || !custom_attr_r.id) {
+    return null;
+  }
+
   const disabled = auth_token === "";
   const loading = !version;
   const inactive = r === 0 && !item.is_closed && !disabled && !loading;
@@ -516,25 +565,10 @@ export const TaskItem = ({ item }: { item: ITask }) => {
       </div>
       <Row>
         <Col>
-          <ToggleNumberInput
-            onSubmit={onSubmitE}
-            label={customAttrE.name}
-            value={e}
-            invalid={unEstimated}
-            disabled={disabled}
-            loading={loading}
-          />
+          <EstimateInput item={item} />
         </Col>
         <Col>
-          <ToggleNumberInput
-            onSubmit={onSubmitR}
-            label={customAttrR.name}
-            value={r}
-            valid={valid}
-            invalid={invalid}
-            disabled={disabled}
-            loading={loading}
-          />
+          <ResultInput item={item} />
         </Col>
         <Col>
           <Grade e={e} r={r} />
