@@ -37,8 +37,6 @@ export const dayName = (date: string, biz_days: string[]) => {
   const idx = biz_days.indexOf(date);
   return dayNameFromIdx(date, idx);
 };
-export const getMilestone = (mid: string, items: IMilestone[]) =>
-  items.find(item => String(item.id) === mid);
 const getDays = (item: IMilestone) => {
   const startM = moment(item.estimated_start).local();
   const finishM = moment(item.estimated_finish).local();
@@ -55,16 +53,15 @@ const weekClassName = (day: number) => ({
   "text-info": day === 6
 });
 
-const DayItem = ({
-  item,
-  biz_days,
-  idx
-}: {
+interface DayItemProps {
   item: Moment | null;
-  biz_days: string[];
   idx: number;
-}) => {
-  const { dispatch } = useContext(RootContext);
+}
+const DayItem: React.FC<DayItemProps> = ({ item, idx }) => {
+  const {
+    state: { biz_days },
+    dispatch
+  } = useContext(RootContext);
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const biz_day = e.target.value;
@@ -86,6 +83,7 @@ const DayItem = ({
   const value = item.format("YYYY-MM-DD");
   const isPlanning = value === biz_days[0];
   const eleId = `biz-day-${value}`;
+  const checked = _.includes(biz_days, value);
   return (
     <>
       <td
@@ -100,7 +98,7 @@ const DayItem = ({
                 disabled={biz.isWeekendDay(item)}
                 value={value}
                 type="checkbox"
-                checked={_.includes(biz_days, value)}
+                checked={checked}
                 className="form-check-input"
               />
               {value}
@@ -110,7 +108,7 @@ const DayItem = ({
           <span>{value}</span>
         )}
       </td>
-      {_.includes(biz_days, value) ? (
+      {checked ? (
         <UncontrolledTooltip target={eleId}>
           {dayName(value, biz_days)}
         </UncontrolledTooltip>
@@ -119,14 +117,13 @@ const DayItem = ({
   );
 };
 
-export const DaysSelector = () => {
+export const DaysSelector: React.FC = () => {
   const {
-    state: { mid, milestones, biz_days },
+    state: { biz_days, milestone },
     dispatch
   } = useContext(RootContext);
   const [items, setItems] = useState<Moment[]>([]);
   useEffect(() => {
-    const milestone = getMilestone(mid, milestones);
     if (milestone) {
       const items = getDays(milestone);
       setItems(items);
@@ -137,7 +134,7 @@ export const DaysSelector = () => {
         });
       }
     }
-  }, [mid, milestones, biz_days, dispatch]);
+  }, [milestone, biz_days, dispatch]);
   if (items.length === 0) {
     return null;
   } else {
@@ -165,12 +162,7 @@ export const DaysSelector = () => {
             {weekdays.map((days, i) => (
               <tr key={i}>
                 {days.map((item, idx) => (
-                  <DayItem
-                    idx={idx}
-                    key={idx}
-                    item={item}
-                    biz_days={biz_days}
-                  />
+                  <DayItem idx={idx} key={idx} item={item} />
                 ))}
               </tr>
             ))}

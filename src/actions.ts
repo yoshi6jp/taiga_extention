@@ -22,6 +22,7 @@ export enum ActionTypes {
   FETCH_MILESTONES = "FETCH_MILESTONES",
   SET_MID = "SET_MID",
   SET_MILESTONES = "SET_MILESTONES",
+  SET_MILESTONE = "SET_MILESTONE",
   SET_CUSTOM_EID = "SET_CUSTOM_EID",
   SET_CUSTOM_RID = "SET_CUSTOM_RID",
   FETCH_CUSTOM_ATTRS = "FETCH_CUSTOM_ATTRS",
@@ -106,6 +107,10 @@ export interface SET_MILESTONES extends IAction {
 export interface SET_MID extends IAction {
   type: ActionTypes.SET_MID;
   payload: { mid: string };
+}
+export interface SET_MILESTONE extends IAction {
+  type: ActionTypes.SET_MILESTONE;
+  payload: { milestone: IMilestone };
 }
 
 export interface SET_CUSTOM_EID extends IAction {
@@ -239,6 +244,7 @@ export type Actions =
   | FETCH_MILESTONES
   | SET_MILESTONES
   | SET_MID
+  | SET_MILESTONE
   | SET_CUSTOM_EID
   | SET_CUSTOM_RID
   | FETCH_CUSTOM_ATTRS

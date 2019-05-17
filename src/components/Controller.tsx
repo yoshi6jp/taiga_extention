@@ -22,16 +22,13 @@ import { stopPropagation } from "../util/handler";
 import { ProjectSelector } from "./ProjectSelector";
 import { MilestoneSelector } from "./MilestoneSelector";
 import { CustomValuesSelector } from "./CustomValuesSelector";
-import { DaysSelector, getMilestone } from "./DaysSelector";
+import { DaysSelector } from "./DaysSelector";
 import { TaskStatusSelector } from "./TaskStatusSelector";
 import { IMilestone } from "../store";
 import styles from "./Controller.module.css";
 import { ActionTypes } from "../actions";
-const getSpName = (mid: string, items: IMilestone[]) =>
-  _.get(getMilestone(mid, items), "name", "");
-const getTaskboardUrl = (url: string, mid: string, items: IMilestone[]) => {
-  const milestone = getMilestone(mid, items);
-  if (url && milestone) {
+const getTaskboardUrl = (url: string, milestone: IMilestone) => {
+  if (url && milestone.project_extra_info) {
     return `${url}/project/${milestone.project_extra_info.slug}/taskboard/${
       milestone.slug
     }`;
@@ -59,7 +56,7 @@ export const ToggleIcon = ({ isOpen }: { isOpen: boolean }) => {
 };
 export const Controller = () => {
   const {
-    state: { url: stateUrl, isOpen, mid, milestones, biz_days },
+    state: { url: stateUrl, isOpen, biz_days, milestone },
     dispatch
   } = useContext(RootContext);
   const [url, setUrl] = useState("");
@@ -85,11 +82,11 @@ export const Controller = () => {
       dispatch({ type: ActionTypes.OPEN_CONTROLLER });
     }
   }, [dispatch, isOpen]);
-  const taskboardUrl = useMemo(
-    () => getTaskboardUrl(stateUrl, mid, milestones),
-    [mid, milestones, stateUrl]
-  );
-  const spName = useMemo(() => getSpName(mid, milestones), [mid, milestones]);
+  const taskboardUrl = useMemo(() => getTaskboardUrl(stateUrl, milestone), [
+    milestone,
+    stateUrl
+  ]);
+  const spName = milestone.name;
   const range = useMemo(() => getRange(biz_days), [biz_days]);
   return (
     <Card>

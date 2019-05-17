@@ -100,6 +100,7 @@ export interface IState {
   custom_attr_r: ICustomAttr;
   biz_days: string[]; //mid
   milestones: IMilestone[]; // pid
+  milestone: IMilestone;
   tasks: ITask[]; //mid
   task_statuses: ITaskStatus[];
   active_task_statuses: ITaskStatus[];
@@ -164,6 +165,7 @@ export const initialStateFn = (): IState => {
     custom_attr_r: {} as ICustomAttr,
     biz_days,
     milestones: [],
+    milestone: {} as IMilestone,
     tasks: [],
     task_statuses: [],
     active_task_statuses: [],

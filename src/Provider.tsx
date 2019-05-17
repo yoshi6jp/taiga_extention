@@ -1,7 +1,7 @@
 import React, { createContext, useReducer, useEffect } from "react";
 import _ from "lodash";
 import { ActionTypes } from "./actions";
-import { initialStateFn, ICustomAttr } from "./store";
+import { initialStateFn, ICustomAttr, IMilestone } from "./store";
 import { reducer } from "./reducer";
 import { Actions } from "./actions";
 import { useSideEffector } from "./util/useSideEffector";
@@ -10,6 +10,8 @@ import { init } from "./init";
 export const baseUrl = (url: string) => `${url.replace(/[¥/]$/, "")}/api/v1`;
 const getCustomAttr = (items: ICustomAttr[], id: number) =>
   _.find(items, { id });
+const getMilestone = (items: IMilestone[], mid: string) =>
+  items.find(item => String(item.id) === mid);
 const initialState = initialStateFn();
 export const RootContext = createContext({
   state: initialState,
@@ -109,6 +111,15 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
       });
     }
   }, [dispatch, state.custom_attrs, state.custom_rid]);
+  useEffect(() => {
+    const milestone = getMilestone(state.milestones, state.mid);
+    if (milestone) {
+      dispatch({
+        type: ActionTypes.SET_MILESTONE,
+        payload: { milestone }
+      });
+    }
+  }, [dispatch, state.mid, state.milestones]);
 
   useEffect(() => {
     init(dispatch);

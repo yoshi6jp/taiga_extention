@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { initialStateFn, IProject, ICustomValueMap } from "./store";
+import { initialStateFn, IProject, ICustomValueMap, IMilestone } from "./store";
 import { ActionTypes, Actions } from "./actions";
 export const reducer = (state = initialStateFn(), action: Actions) => {
   switch (action.type) {
@@ -39,12 +39,17 @@ export const reducer = (state = initialStateFn(), action: Actions) => {
       return {
         ...state,
         mid,
+        milestone: {} as IMilestone,
         tasks: []
       };
     }
     case ActionTypes.SET_MILESTONES: {
       const { milestones } = action.payload;
       return { ...state, milestones };
+    }
+    case ActionTypes.SET_MILESTONE: {
+      const { milestone } = action.payload;
+      return { ...state, milestone };
     }
     case ActionTypes.SET_CUSTOM_EID: {
       const { custom_eid } = action.payload;
