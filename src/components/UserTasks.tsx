@@ -29,7 +29,7 @@ import styles from "./UserTasks.module.css";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import { preventDefault } from "../util/handler";
-import { SignInForm } from "./PersonalPage";
+import { SignInForm } from "./SignInForm";
 
 const barStyles = ["success", "warning", "info", "danger"];
 const getTasksByUser = (items: ITask[]) => _.groupBy(items, "assigned_to");
