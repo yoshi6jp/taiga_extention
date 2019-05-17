@@ -13,7 +13,7 @@ import {
 import { PersonalTasks } from "./PersonalTasks";
 import { PersonalInfo } from "./PersonalInfo";
 import { RootContext } from "../Provider";
-import { PersonalChart } from "./PersonalChart";
+import { Chart } from "./Chart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowCircleLeft,
@@ -143,7 +143,7 @@ export const SignInForm: React.FC = () => {
 };
 export const PersonalPage: React.FC = () => {
   const {
-    state: { user },
+    state: { user, user_tasks },
     dispatch
   } = useContext(RootContext);
   const {
@@ -159,6 +159,7 @@ export const PersonalPage: React.FC = () => {
       dispatch({ type: ActionTypes.RESET_USER });
     };
   }, [dispatch, uid]);
+
   return (
     <>
       <Navbar color="light" light>
@@ -170,11 +171,11 @@ export const PersonalPage: React.FC = () => {
       </Navbar>
       {user ? (
         <>
-          <PersonalInfo userInfo={user} />
+          <PersonalInfo />
           <br />
-          <PersonalTasks userInfo={user} />
+          <PersonalTasks />
           <br />
-          <PersonalChart userInfo={user} />
+          <Chart tasks={user_tasks} />
         </>
       ) : (
         <Alert color="danger">This user does not exist.</Alert>

@@ -92,6 +92,10 @@ export const reducer = (state = initialStateFn(), action: Actions) => {
       const { tasks } = action.payload;
       return { ...state, tasks };
     }
+    case ActionTypes.SET_USER_TASKS: {
+      const { user_tasks } = action.payload;
+      return { ...state, user_tasks };
+    }
     case ActionTypes.SET_TASK_STATUSES: {
       const { task_statuses } = action.payload;
       return { ...state, task_statuses };
@@ -109,7 +113,7 @@ export const reducer = (state = initialStateFn(), action: Actions) => {
       return { ...state, user };
     }
     case ActionTypes.RESET_USER: {
-      return { ...state, user: null };
+      return { ...state, user: null, user_tasks: [] };
     }
     case ActionTypes.ADD_REJECT_TASK_STATUS_ID: {
       const { reject_task_status_id } = action.payload;

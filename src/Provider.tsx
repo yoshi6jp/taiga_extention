@@ -1,7 +1,7 @@
 import React, { createContext, useReducer, useEffect } from "react";
 import _ from "lodash";
 import { ActionTypes } from "./actions";
-import { initialStateFn, ICustomAttr, IMilestone } from "./store";
+import { initialStateFn, ICustomAttr, IMilestone, ITask } from "./store";
 import { reducer } from "./reducer";
 import { Actions } from "./actions";
 import { useSideEffector } from "./util/useSideEffector";
@@ -12,6 +12,12 @@ const getCustomAttr = (items: ICustomAttr[], id: number) =>
   _.find(items, { id });
 const getMilestone = (items: IMilestone[], mid: string) =>
   items.find(item => String(item.id) === mid);
+const getUserTasks = (items: ITask[], uid: number) =>
+  _.chain(items)
+    .filter({ assigned_to: uid })
+    .sortBy("user_story")
+    .value();
+
 const initialState = initialStateFn();
 export const RootContext = createContext({
   state: initialState,
@@ -120,6 +126,12 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
       });
     }
   }, [dispatch, state.mid, state.milestones]);
+  useEffect(() => {
+    if (state.tasks.length > 0 && state.user) {
+      const user_tasks = getUserTasks(state.tasks, state.user.id);
+      dispatch({ type: ActionTypes.SET_USER_TASKS, payload: { user_tasks } });
+    }
+  }, [dispatch, state.tasks, state.user]);
 
   useEffect(() => {
     init(dispatch);

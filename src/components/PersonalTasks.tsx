@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import { RootContext } from "../Provider";
 import {
   Card,
@@ -12,10 +12,8 @@ import {
   Col
 } from "reactstrap";
 import classNames from "classnames";
-import { ITask, IUser, ITasksByUserStory } from "../store";
 import { InputGroupSpinner } from "./InputGroupSpinner";
 import {
-  getCustomAttr,
   getCustomVal,
   getCustomValVersion,
   isCustomValInvalid,
@@ -23,54 +21,31 @@ import {
   TaskProgress
 } from "./UserTasks";
 import { UserStory, Grade, convToTasksByUserStory } from "./UserStory";
-export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
+export const PersonalTasks: React.FC = () => {
   const {
     state: {
-      tasks,
-      custom_attrs,
       custom_value_map,
-      custom_eid,
-      custom_rid,
-      biz_days
+      biz_days,
+      user_tasks,
+      custom_attr_e,
+      custom_attr_r
     }
   } = useContext(RootContext);
-  const [items, setItems] = useState<ITask[]>([]);
-  const [userStories, setUserStories] = useState<ITasksByUserStory[]>([]);
-  useEffect(() => {
-    const userTasks = tasks
-      .filter(task => task.assigned_to === userInfo.id)
-      .sort((a, b) => a.user_story - b.user_story);
-    setItems(userTasks);
-    const userStories = convToTasksByUserStory(userTasks);
-    setUserStories(userStories);
-  }, [tasks, userInfo.id]);
-
-  const customAttrE = useMemo(
-    () => getCustomAttr(custom_attrs, Number(custom_eid)),
-    [custom_attrs, custom_eid]
-  );
-  const customAttrR = useMemo(
-    () => getCustomAttr(custom_attrs, Number(custom_rid)),
-    [custom_attrs, custom_rid]
-  );
+  const userStories = useMemo(() => convToTasksByUserStory(user_tasks), [
+    user_tasks
+  ]);
   const [e, r] = useMemo(
     () =>
-      items.reduce(
+      user_tasks.reduce(
         (result, item) => {
           return [
-            result[0] +
-              (customAttrE
-                ? getCustomVal(custom_value_map, item, customAttrE.id)
-                : 0),
-            result[1] +
-              (customAttrR
-                ? getCustomVal(custom_value_map, item, customAttrR.id)
-                : 0)
+            result[0] + getCustomVal(custom_value_map, item, custom_attr_e.id),
+            result[1] + getCustomVal(custom_value_map, item, custom_attr_r.id)
           ];
         },
         [0, 0]
       ),
-    [customAttrE, customAttrR, custom_value_map, items]
+    [custom_attr_e.id, custom_attr_r.id, custom_value_map, user_tasks]
   );
   const valid = useMemo(
     () => isCustomValValid(e, r, userStories.every(item => item.is_closed)),
@@ -78,10 +53,10 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
   );
   const invalid = useMemo(() => isCustomValInvalid(e, r), [e, r]);
   const loading = useMemo(
-    () => items.some(item => !getCustomValVersion(custom_value_map, item)),
-    [custom_value_map, items]
+    () => user_tasks.some(item => !getCustomValVersion(custom_value_map, item)),
+    [custom_value_map, user_tasks]
   );
-  if (!customAttrE || !customAttrR || biz_days.length <= 1) {
+  if (!custom_attr_e.id || !custom_attr_r.id || biz_days.length <= 1) {
     return null;
   }
 
@@ -97,7 +72,7 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
             <Col>
               <InputGroup>
                 <InputGroupAddon addonType="prepend">
-                  {customAttrE.name}
+                  {custom_attr_e.name}
                 </InputGroupAddon>
                 {loading ? <InputGroupSpinner /> : <Input readOnly value={e} />}
               </InputGroup>
@@ -105,7 +80,7 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
             <Col>
               <InputGroup>
                 <InputGroupAddon addonType="prepend">
-                  {customAttrR.name}
+                  {custom_attr_r.name}
                 </InputGroupAddon>
                 {loading ? (
                   <InputGroupSpinner />
@@ -120,7 +95,7 @@ export const PersonalTasks = ({ userInfo }: { userInfo: IUser }) => {
           </Row>
         </CardBody>
         <CardFooter>
-          <TaskProgress tasks={items} />
+          <TaskProgress tasks={user_tasks} />
         </CardFooter>
       </Card>
     </>

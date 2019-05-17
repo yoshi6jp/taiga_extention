@@ -1,15 +1,20 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Card, CardHeader } from "reactstrap";
-import { IUser } from "../store";
+import { RootContext } from "../Provider";
 
 import { AvatarSquare } from "./UserTasks";
-export const PersonalInfo = ({ userInfo }: { userInfo: IUser }) => {
+export const PersonalInfo: React.FC = () => {
+  const {
+    state: { user }
+  } = useContext(RootContext);
   return (
     <Card>
-      <CardHeader>
-        <AvatarSquare src={userInfo.photo} size="xlarge" />
-        {userInfo.username} 's task
-      </CardHeader>
+      {user && (
+        <CardHeader>
+          <AvatarSquare src={user.photo} size="xlarge" />
+          {user.username} 's task
+        </CardHeader>
+      )}
     </Card>
   );
 };

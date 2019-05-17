@@ -102,6 +102,7 @@ export interface IState {
   milestones: IMilestone[]; // pid
   milestone: IMilestone;
   tasks: ITask[]; //mid
+  user_tasks: ITask[];
   task_statuses: ITaskStatus[];
   active_task_statuses: ITaskStatus[];
   custom_value_map: ICustomValueMap; // pid
@@ -167,6 +168,7 @@ export const initialStateFn = (): IState => {
     milestones: [],
     milestone: {} as IMilestone,
     tasks: [],
+    user_tasks: [],
     task_statuses: [],
     active_task_statuses: [],
     custom_value_map: new WeakMap(),
