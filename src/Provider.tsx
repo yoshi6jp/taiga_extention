@@ -1,7 +1,7 @@
 import React, { createContext, useReducer, useEffect } from "react";
 import _ from "lodash";
 import { ActionTypes } from "./actions";
-import { initialStateFn, ICustomAttr, IMilestone, ITask } from "./store";
+import { initialState, ICustomAttr, IMilestone, ITask } from "./store";
 import { reducer } from "./reducer";
 import { Actions } from "./actions";
 import { useSideEffector } from "./util/useSideEffector";
@@ -18,7 +18,6 @@ const getUserTasks = (items: ITask[], uid: number) =>
     .sortBy("user_story")
     .value();
 
-const initialState = initialStateFn();
 export const RootContext = createContext({
   state: initialState,
   dispatch: (action: Actions) => {}

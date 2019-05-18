@@ -1,7 +1,7 @@
 import _ from "lodash";
-import { initialStateFn, IProject, ICustomValueMap, IMilestone } from "./store";
+import { initialState, IProject, ICustomValueMap, IMilestone } from "./store";
 import { ActionTypes, Actions } from "./actions";
-export const reducer = (state = initialStateFn(), action: Actions) => {
+export const reducer = (state = initialState, action: Actions) => {
   switch (action.type) {
     case ActionTypes.SET_URL: {
       const { url } = action.payload;
@@ -114,6 +114,10 @@ export const reducer = (state = initialStateFn(), action: Actions) => {
     }
     case ActionTypes.RESET_USER: {
       return { ...state, user: null, user_tasks: [] };
+    }
+    case ActionTypes.SET_REJECT_TASK_STATUS_IDS: {
+      const { reject_task_status_ids } = action.payload;
+      return { ...state, reject_task_status_ids };
     }
     case ActionTypes.ADD_REJECT_TASK_STATUS_ID: {
       const { reject_task_status_id } = action.payload;

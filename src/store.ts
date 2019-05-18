@@ -1,4 +1,3 @@
-import _ from "lodash";
 export interface ICustomAttr {
   id: number;
   name: string;
@@ -136,44 +135,31 @@ export const setToStorageWithSubkey = (
   subkey: string,
   item: string
 ) => (subkey ? setToStorage(`${subkey}/${key}`, item) : null);
-export const initialStateFn = (): IState => {
-  const url = getFromStorage(StorageKey.URL);
-  const pid = getFromStorage(StorageKey.PID);
-  const mid = getFromStorage(StorageKey.MID);
-  const custom_eid = getFromStorageWithSubkey(StorageKey.CUSTOM_EID, pid);
-  const custom_rid = getFromStorageWithSubkey(StorageKey.CUSTOM_RID, pid);
-  const biz_days_str = getFromStorageWithSubkey(StorageKey.BIZ_DAYS, mid);
-  const biz_days = _.compact(biz_days_str.split(",")).sort();
-  const reject_task_status_ids = _.compact(
-    getFromStorageWithSubkey(StorageKey.REJECT_TASK_STATUS_IDS, pid).split(",")
-  );
-  const isOpen = !(url && pid && mid && custom_eid && custom_rid);
-  return {
-    url,
-    auth_token: "",
-    auth_error: false,
-    username: "",
-    password: "",
-    user: null,
-    projects: [],
-    pid,
-    project: {} as IProject,
-    mid,
-    custom_eid,
-    custom_rid,
-    custom_attrs: [],
-    custom_attr_e: {} as ICustomAttr,
-    custom_attr_r: {} as ICustomAttr,
-    biz_days,
-    milestones: [],
-    milestone: {} as IMilestone,
-    tasks: [],
-    user_tasks: [],
-    task_statuses: [],
-    active_task_statuses: [],
-    custom_value_map: new WeakMap(),
-    reject_task_status_ids,
-    updated_time: 0,
-    isOpen
-  };
+export const initialState: IState = {
+  url: "",
+  auth_token: "",
+  auth_error: false,
+  username: "",
+  password: "",
+  user: null,
+  projects: [],
+  pid: "",
+  project: {} as IProject,
+  mid: "",
+  custom_eid: "",
+  custom_rid: "",
+  custom_attrs: [],
+  custom_attr_e: {} as ICustomAttr,
+  custom_attr_r: {} as ICustomAttr,
+  biz_days: [],
+  milestones: [],
+  milestone: {} as IMilestone,
+  tasks: [],
+  user_tasks: [],
+  task_statuses: [],
+  active_task_statuses: [],
+  custom_value_map: new WeakMap(),
+  reject_task_status_ids: [],
+  updated_time: 0,
+  isOpen: false
 };

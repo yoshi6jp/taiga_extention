@@ -45,8 +45,9 @@ export enum ActionTypes {
   FETCH_USER = "FETCH_USER",
   SET_USER = "SET_USER",
   RESET_USER = "RESET_USER",
-  ADD_REJECT_TASK_STATUS_ID = "ADD_REJECT_TASK_STATUS",
-  REMOVE_REJECT_TASK_STATUS_ID = "REMOVE_REJECT_TASK_STATUS",
+  SET_REJECT_TASK_STATUS_IDS = "SET_REJECT_TASK_STATUS_IDS",
+  ADD_REJECT_TASK_STATUS_ID = "ADD_REJECT_TASK_STATUS_ID",
+  REMOVE_REJECT_TASK_STATUS_ID = "REMOVE_REJECT_TASK_STATUS_ID",
   OPEN_CONTROLLER = "OPEN_CONTROLLER",
   CLOSE_CONTROLLER = "CLOSE_CONTROLLER",
   UPDATE_DATA = "UPDATE_DATA"
@@ -213,6 +214,10 @@ export interface SET_USER extends IAction {
 export interface RESET_USER extends IAction {
   type: ActionTypes.RESET_USER;
 }
+export interface SET_REJECT_TASK_STATUS_IDS extends IAction {
+  type: ActionTypes.SET_REJECT_TASK_STATUS_IDS;
+  payload: { reject_task_status_ids: string[] };
+}
 export interface ADD_REJECT_TASK_STATUS_ID extends IAction {
   type: ActionTypes.ADD_REJECT_TASK_STATUS_ID;
   payload: { reject_task_status_id: string };
@@ -273,6 +278,7 @@ export type Actions =
   | FETCH_USER
   | SET_USER
   | RESET_USER
+  | SET_REJECT_TASK_STATUS_IDS
   | ADD_REJECT_TASK_STATUS_ID
   | REMOVE_REJECT_TASK_STATUS_ID
   | OPEN_CONTROLLER
