@@ -14,7 +14,7 @@ import { SignInForm } from "./SignInForm";
 
 export const PersonalPage: React.FC = () => {
   const {
-    state: { user, user_tasks },
+    state: { user, user_tasks, url },
     dispatch
   } = useContext(RootContext);
   const {
@@ -23,13 +23,13 @@ export const PersonalPage: React.FC = () => {
     }
   } = useRouter();
   useEffect(() => {
-    if (uid) {
+    if (uid && url) {
       dispatch({ type: ActionTypes.FETCH_USER, payload: { uid } });
     }
     return () => {
       dispatch({ type: ActionTypes.RESET_USER });
     };
-  }, [dispatch, uid]);
+  }, [dispatch, uid, url]);
 
   return (
     <>
