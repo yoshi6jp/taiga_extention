@@ -40,5 +40,7 @@ const syncStorage = (dispatch: Dispatch<Actions>) => {
 };
 export const init = (dispatch: Dispatch<Actions>) => {
   syncStorage(dispatch);
-  signIn(dispatch);
+  _.defer(() => {
+    signIn(dispatch);
+  });
 };
