@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import {
   Button,
+  ButtonGroup,
   Card,
   CardHeader,
   Collapse,
@@ -20,7 +21,10 @@ import {
   DropdownItem,
   DropdownMenu,
   Spinner,
-  Form
+  Form,
+  Popover,
+  PopoverHeader,
+  PopoverBody
 } from "reactstrap";
 import classNames from "classnames";
 import {
@@ -37,10 +41,14 @@ import {
   faCloudUploadAlt,
   faEdit,
   faHandPointRight,
-  faUserTimes
+  faUserTimes,
+  faPlus,
+  faMinus,
+  faEraser
 } from "@fortawesome/free-solid-svg-icons";
 import { InputGroupSpinner } from "./InputGroupSpinner";
 import { RootContext } from "../Provider";
+import { Tomato, TomatoState } from "./Tomato";
 import {
   getCustomVal,
   getCustomValVersion,
@@ -118,19 +126,27 @@ interface ToggleNumberInputProps {
   label: string;
   value: number;
   onSubmit?: (value: number) => void;
+  onEditable?: (value: boolean) => void;
+  onValueChange?: (value: number) => void;
   valid?: boolean;
   invalid?: boolean;
   disabled?: boolean;
   loading?: boolean;
+  id?: string;
+  submitting?: boolean;
 }
 const ToggleNumberInput: React.FC<ToggleNumberInputProps> = ({
   label,
   value,
   onSubmit,
+  onEditable,
+  onValueChange,
   valid,
   invalid,
   disabled,
-  loading
+  loading,
+  id,
+  submitting
 }) => {
   const [checked, setChecked] = useState(false);
   const [val, setVal] = useState("");
@@ -143,9 +159,11 @@ const ToggleNumberInput: React.FC<ToggleNumberInputProps> = ({
   );
   const handleVal = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setVal(e.target.value);
+      const { value } = e.target;
+      setVal(value);
+      onValueChange && onValueChange(Number(value));
     },
-    [setVal]
+    [onValueChange]
   );
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
@@ -167,6 +185,15 @@ const ToggleNumberInput: React.FC<ToggleNumberInputProps> = ({
   useEffect(() => {
     setRunning(false);
   }, [value]);
+  useEffect(() => {
+    onEditable && onEditable(checked);
+  }, [checked, onEditable]);
+  useEffect(() => {
+    if (submitting) {
+      setChecked(false);
+      setRunning(true);
+    }
+  }, [submitting]);
   const title = needAuthMsg(disabled);
   return (
     <Form inline onSubmit={handleSubmit}>
@@ -196,6 +223,7 @@ const ToggleNumberInput: React.FC<ToggleNumberInputProps> = ({
                   type="number"
                   step="0.5"
                   min="0"
+                  id={id}
                 />
                 <InputGroupAddon addonType="append">
                   <Button color="info">
@@ -470,19 +498,28 @@ const EstimateInput: React.FC<CustomValueInputProps> = ({ item }) => {
   );
 };
 const ResultInput: React.FC<CustomValueInputProps> = ({ item }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [used_number, set_used_number] = useState(0);
+  const [editable, setEditable] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const {
     state: {
       custom_rid,
       custom_value_map,
       custom_attr_e,
       custom_attr_r,
-      auth_token
+      auth_token,
+      pomodoro_number,
+      pomodoro_used_number
     },
     dispatch
   } = useContext(RootContext);
   const version = getCustomValVersion(custom_value_map, item);
+  const handleToggle = useCallback(() => {
+    setIsOpen(!isOpen);
+  }, [isOpen]);
   const handleSubmit = useCallback(
-    (value: number) => {
+    (value: number, used_number?: number) => {
       if (version) {
         dispatch({
           type: ActionTypes.PATCH_CUSTOM_VALUE,
@@ -491,12 +528,27 @@ const ResultInput: React.FC<CustomValueInputProps> = ({ item }) => {
             key: custom_rid,
             value,
             version
-          }
+          },
+          meta: used_number ? { use_pomodoro: { used_number } } : undefined
         });
+        setSubmitting(true);
       }
     },
     [custom_rid, dispatch, item.id, version]
   );
+  const handlePluse = useCallback(() => {
+    set_used_number(used_number + 1);
+  }, [used_number]);
+  const handleMinus = useCallback(() => {
+    set_used_number(used_number - 1);
+  }, [used_number]);
+
+  const handleReset = useCallback(() => {
+    set_used_number(0);
+  }, []);
+  const handleEditable = useCallback((val: boolean) => {
+    setEditable(val);
+  }, []);
   const e = useMemo(
     () => getCustomVal(custom_value_map, item, custom_attr_e.id),
     [custom_attr_e.id, custom_value_map, item]
@@ -505,28 +557,94 @@ const ResultInput: React.FC<CustomValueInputProps> = ({ item }) => {
     () => getCustomVal(custom_value_map, item, custom_attr_r.id),
     [custom_attr_r.id, custom_value_map, item]
   );
+  const handleValueChange = useCallback(
+    (val: number) => {
+      setEditable(r === val);
+    },
+    [r]
+  );
+  const handleUsePomodoro = useCallback(() => {
+    const result = r + used_number / 2;
+    handleSubmit(result, used_number);
+    setIsOpen(false);
+    set_used_number(0);
+  }, [handleSubmit, r, used_number]);
+
   const valid = useMemo(() => isCustomValValid(e, r, item.is_closed), [
     e,
     item.is_closed,
     r
   ]);
   const invalid = useMemo(() => isCustomValInvalid(e, r), [e, r]);
+  useEffect(() => {
+    if (!version) {
+      setSubmitting(false);
+    }
+  }, [version]);
   if (!custom_attr_r.id) {
     return null;
   }
 
   const disabled = auth_token === "";
   const loading = !version;
+  const elId = `rusult-input-${item.id}`;
+  const usableNumber = pomodoro_number - pomodoro_used_number;
+  const submittable = used_number > 0;
+  const isMax = used_number === usableNumber;
   return (
-    <ToggleNumberInput
-      onSubmit={handleSubmit}
-      label={custom_attr_r.name}
-      value={r}
-      valid={valid}
-      invalid={invalid}
-      disabled={disabled}
-      loading={loading}
-    />
+    <>
+      <ToggleNumberInput
+        onSubmit={handleSubmit}
+        onEditable={handleEditable}
+        onValueChange={handleValueChange}
+        label={custom_attr_r.name}
+        value={r}
+        valid={valid}
+        invalid={invalid}
+        disabled={disabled}
+        loading={loading}
+        id={elId}
+        submitting={submitting}
+      />
+      {editable && usableNumber > 0 && (
+        <Popover
+          className={classNames("popover-wide")}
+          target={elId}
+          placement="top"
+          isOpen={isOpen}
+          toggle={handleToggle}
+          trigger="click hover"
+        >
+          <PopoverHeader>Pomodoro</PopoverHeader>
+          <PopoverBody>
+            <ButtonGroup>
+              <Button disabled={isMax} onClick={handlePluse}>
+                <FontAwesomeIcon icon={faPlus} />
+              </Button>
+              <Button disabled={!submittable} onClick={handleMinus}>
+                <FontAwesomeIcon icon={faMinus} />
+              </Button>
+              <Button disabled className="bg-light">
+                {_.times(usableNumber).map(i => (
+                  <Tomato
+                    key={i}
+                    state={
+                      i >= used_number ? TomatoState.FRESH : TomatoState.STALE
+                    }
+                  />
+                ))}
+              </Button>
+              <Button disabled={!submittable} onClick={handleUsePomodoro}>
+                <FontAwesomeIcon icon={faCloudUploadAlt} />
+              </Button>
+              <Button disabled={!submittable} onClick={handleReset}>
+                <FontAwesomeIcon icon={faEraser} />
+              </Button>
+            </ButtonGroup>
+          </PopoverBody>
+        </Popover>
+      )}
+    </>
   );
 };
 export const TaskItem = ({ item }: { item: ITask }) => {

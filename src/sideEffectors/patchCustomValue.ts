@@ -21,6 +21,13 @@ export const patchCustomValue: ISideEffector = async (
             },
             version
           });
+          if (action.meta && action.meta.use_pomodoro) {
+            const { used_number } = action.meta.use_pomodoro;
+            dispatch({
+              type: ActionTypes.USE_POMODORO,
+              payload: { used_number }
+            });
+          }
           dispatch({ type: ActionTypes.UPDATE_DATA });
           toastr.success(`Custom value updated. [${value}]`);
         }

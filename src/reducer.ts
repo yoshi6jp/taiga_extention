@@ -161,6 +161,33 @@ export const reducer = (state = initialState, action: Actions) => {
     case ActionTypes.SIGN_OUT: {
       return { ...state, auth_token: "", username: "", password: "" };
     }
+    case ActionTypes.ADD_POMODORO: {
+      const pomodoro_number = state.pomodoro_number + 1;
+      return {
+        ...state,
+        pomodoro_number
+      };
+    }
+    case ActionTypes.USE_POMODORO: {
+      const { used_number } = action.payload;
+      const pomodoro_used_number = Math.max(
+        0,
+        state.pomodoro_used_number + used_number
+      );
+      return {
+        ...state,
+        pomodoro_used_number
+      };
+    }
+    case ActionTypes.RESET_POMODORO: {
+      const { pomodoro_date } = action.payload;
+      return {
+        ...state,
+        pomodoro_number: 0,
+        pomodoro_used_number: 0,
+        pomodoro_date
+      };
+    }
     default: {
       return state;
     }

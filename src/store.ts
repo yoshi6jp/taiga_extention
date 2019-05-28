@@ -108,6 +108,9 @@ export interface IState {
   reject_task_status_ids: string[]; // pid
   updated_time: number;
   isOpen: boolean;
+  pomodoro_number: number;
+  pomodoro_date: string;
+  pomodoro_used_number: number;
 }
 
 export enum StorageKey {
@@ -161,5 +164,8 @@ export const initialState: IState = {
   custom_value_map: new WeakMap(),
   reject_task_status_ids: [],
   updated_time: 0,
-  isOpen: false
+  isOpen: false,
+  pomodoro_date: "",
+  pomodoro_number: 0,
+  pomodoro_used_number: 0
 };
