@@ -1,0 +1,9 @@
+.top :global(.dropdown-item) {
+  color: var(--secondary);
+}
+.top :global(.dropdown-item) :global(.fa-fw) {
+  margin-right: 0.25rem;
+}
+.button_group {
+  margin: -10px 0;
+}

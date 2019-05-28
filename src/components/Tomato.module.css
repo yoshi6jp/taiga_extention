@@ -1,0 +1,12 @@
+.fresh :global(.leaf) {
+  color: green;
+}
+.fresh :global(.tomato) {
+  color: red;
+}
+.stale :global(.leaf) {
+  color: yellowgreen;
+}
+.stale :global(.tomato) {
+  color: orange;
+}

@@ -50,7 +50,10 @@ export enum ActionTypes {
   REMOVE_REJECT_TASK_STATUS_ID = "REMOVE_REJECT_TASK_STATUS_ID",
   OPEN_CONTROLLER = "OPEN_CONTROLLER",
   CLOSE_CONTROLLER = "CLOSE_CONTROLLER",
-  UPDATE_DATA = "UPDATE_DATA"
+  UPDATE_DATA = "UPDATE_DATA",
+  ADD_POMODORO = "ADD_POMODORO",
+  USE_POMODORO = "USE_POMODORO",
+  RESET_POMODORO = "RESET_POMODORO"
 }
 
 export interface IAction {
@@ -189,6 +192,11 @@ export interface PATCH_CUSTOM_VALUE extends IAction {
     value: string | number;
     version: number;
   };
+  meta?: {
+    use_pomodoro?: {
+      used_number: number;
+    };
+  };
 }
 export interface FETCH_TASK_STATUSES extends IAction {
   type: ActionTypes.FETCH_TASK_STATUSES;
@@ -239,7 +247,17 @@ export interface CLOSE_CONTROLLER extends IAction {
 export interface UPDATE_DATA extends IAction {
   type: ActionTypes.UPDATE_DATA;
 }
-
+export interface ADD_POMODORO extends IAction {
+  type: ActionTypes.ADD_POMODORO;
+}
+export interface USE_POMODORO extends IAction {
+  type: ActionTypes.USE_POMODORO;
+  payload: { used_number: number };
+}
+export interface RESET_POMODORO extends IAction {
+  type: ActionTypes.RESET_POMODORO;
+  payload: { pomodoro_date: string };
+}
 export type Actions =
   | SET_URL
   | SIGN_IN
@@ -283,4 +301,7 @@ export type Actions =
   | REMOVE_REJECT_TASK_STATUS_ID
   | OPEN_CONTROLLER
   | CLOSE_CONTROLLER
-  | UPDATE_DATA;
+  | UPDATE_DATA
+  | ADD_POMODORO
+  | USE_POMODORO
+  | RESET_POMODORO;
