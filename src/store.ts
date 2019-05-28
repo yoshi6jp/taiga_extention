@@ -111,6 +111,7 @@ export interface IState {
   pomodoro_number: number;
   pomodoro_date: string;
   pomodoro_used_number: number;
+  loaded: boolean;
 }
 
 export enum StorageKey {
@@ -122,7 +123,10 @@ export enum StorageKey {
   BIZ_DAYS = "taiga_biz_days",
   REJECT_TASK_STATUS_IDS = "reject_task_status_ids",
   USERNAME = "taiga_username",
-  PASSWORD = "taiga_password"
+  PASSWORD = "taiga_password",
+  POMODORO_DATE = "taiga_pomodoro_date",
+  POMODORO_NUMBER = "taiga_pomodoro_number",
+  POMODORO_USED_NUMBER = "taiga_pomodoro_used_number"
 }
 
 const _getFromStorage = (key: string) => localStorage.getItem(key) || "";
@@ -167,5 +171,6 @@ export const initialState: IState = {
   isOpen: false,
   pomodoro_date: "",
   pomodoro_number: 0,
-  pomodoro_used_number: 0
+  pomodoro_used_number: 0,
+  loaded: false
 };

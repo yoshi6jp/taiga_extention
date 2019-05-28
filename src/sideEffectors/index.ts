@@ -22,6 +22,7 @@ import { setCustomEid } from "./setCustomEid";
 import { setCustomRid } from "./setCustomRid";
 import { syncBizDays } from "./syncBizDays";
 import { syncRejectTaskStatusIds } from "./syncRejectTaskStatusIds";
+import { syncPomodoro } from "./syncPomodoro";
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
 import { toastr } from "../util/toastr";
 export { ActionTypes };
@@ -143,6 +144,12 @@ export const rootSideEffector = (
     case ActionTypes.ADD_REJECT_TASK_STATUS_ID:
     case ActionTypes.REMOVE_REJECT_TASK_STATUS_ID: {
       syncRejectTaskStatusIds(action, dispatch, state);
+      break;
+    }
+    case ActionTypes.ADD_POMODORO:
+    case ActionTypes.USE_POMODORO:
+    case ActionTypes.RESET_POMODORO: {
+      syncPomodoro(action, dispatch, state);
       break;
     }
     default: {

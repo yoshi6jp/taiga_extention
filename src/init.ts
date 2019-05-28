@@ -21,6 +21,14 @@ const syncStorage = (dispatch: Dispatch<Actions>) => {
   );
 
   const isOpen = !(url && pid && mid && custom_eid && custom_rid);
+
+  const pomodoro_date = getFromStorage(StorageKey.POMODORO_DATE);
+  const pomodoro_number = Number(
+    getFromStorage(StorageKey.POMODORO_NUMBER) || "0"
+  );
+  const pomodoro_used_number = Number(
+    getFromStorage(StorageKey.POMODORO_USED_NUMBER) || "0"
+  );
   url && dispatch({ type: ActionTypes.SET_URL, payload: { url } });
   pid && dispatch({ type: ActionTypes.SET_PID, payload: { pid } });
   mid && dispatch({ type: ActionTypes.SET_MID, payload: { mid } });
@@ -37,6 +45,12 @@ const syncStorage = (dispatch: Dispatch<Actions>) => {
     });
 
   isOpen && dispatch({ type: ActionTypes.OPEN_CONTROLLER });
+  pomodoro_date &&
+    dispatch({
+      type: ActionTypes.RESTORE_POMODORO,
+      payload: { pomodoro_date, pomodoro_number, pomodoro_used_number }
+    });
+  dispatch({ type: ActionTypes.LOADED });
 };
 export const init = (dispatch: Dispatch<Actions>) => {
   syncStorage(dispatch);

@@ -188,6 +188,25 @@ export const reducer = (state = initialState, action: Actions) => {
         pomodoro_date
       };
     }
+    case ActionTypes.RESTORE_POMODORO: {
+      const {
+        pomodoro_date,
+        pomodoro_number,
+        pomodoro_used_number
+      } = action.payload;
+      return {
+        ...state,
+        pomodoro_date,
+        pomodoro_number,
+        pomodoro_used_number
+      };
+    }
+    case ActionTypes.LOADED: {
+      return {
+        ...state,
+        loaded: true
+      };
+    }
     default: {
       return state;
     }

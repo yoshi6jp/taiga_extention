@@ -1,5 +1,6 @@
 import React, { useContext, useState, useCallback, useEffect } from "react";
 import _ from "lodash";
+import moment from "moment";
 import {
   Card,
   CardHeader,
@@ -68,7 +69,13 @@ const TimerItem: React.FC<TimerItemProps> = ({ mode, onSelect }) => {
 };
 export const Pomodoro: React.FC = () => {
   const {
-    state: { pomodoro_number, pomodoro_used_number, auth_token },
+    state: {
+      loaded,
+      pomodoro_date,
+      pomodoro_number,
+      pomodoro_used_number,
+      auth_token
+    },
     dispatch
   } = useContext(RootContext);
   const [isOpen, setIsOpen] = useState(false);
@@ -100,6 +107,7 @@ export const Pomodoro: React.FC = () => {
   }, [state]);
   const handleState: TimerEventListener = useCallback(status => {
     setState(status.state);
+    setRemainingMin(secToMin(status.remaining));
   }, []);
   const handleMode: TimerEventListener = useCallback(status => {
     setMode(status.mode);
@@ -136,6 +144,25 @@ export const Pomodoro: React.FC = () => {
       timer.removeAllListeners();
     };
   }, [handleExpire, handleMode, handleState, handleTick]);
+  useEffect(() => {
+    setMode(timer.mode);
+    setState(timer.state);
+    setRemainingMin(secToMin(timer.remaining));
+    if (timer.restoreExpired) {
+      handleExpire(timer.status);
+      timer.restoreExpired = false;
+    }
+  }, [handleExpire]);
+  useEffect(() => {
+    const today = moment().format("YYYY-MM-DD");
+    if (loaded && pomodoro_date !== today) {
+      dispatch({
+        type: ActionTypes.RESET_POMODORO,
+        payload: { pomodoro_date: today }
+      });
+      timer.changeMode(TimerMode.FOCUS);
+    }
+  }, [dispatch, loaded, pomodoro_date]);
   if (!auth_token) {
     return null;
   }

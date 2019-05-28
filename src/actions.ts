@@ -53,7 +53,9 @@ export enum ActionTypes {
   UPDATE_DATA = "UPDATE_DATA",
   ADD_POMODORO = "ADD_POMODORO",
   USE_POMODORO = "USE_POMODORO",
-  RESET_POMODORO = "RESET_POMODORO"
+  RESET_POMODORO = "RESET_POMODORO",
+  RESTORE_POMODORO = "RESTORE_POMODORO",
+  LOADED = "LOADED"
 }
 
 export interface IAction {
@@ -258,6 +260,17 @@ export interface RESET_POMODORO extends IAction {
   type: ActionTypes.RESET_POMODORO;
   payload: { pomodoro_date: string };
 }
+export interface RESTORE_POMODORO extends IAction {
+  type: ActionTypes.RESTORE_POMODORO;
+  payload: {
+    pomodoro_date: string;
+    pomodoro_number: number;
+    pomodoro_used_number: number;
+  };
+}
+export interface LOADED extends IAction {
+  type: ActionTypes.LOADED;
+}
 export type Actions =
   | SET_URL
   | SIGN_IN
@@ -304,4 +317,6 @@ export type Actions =
   | UPDATE_DATA
   | ADD_POMODORO
   | USE_POMODORO
-  | RESET_POMODORO;
+  | RESET_POMODORO
+  | RESTORE_POMODORO
+  | LOADED;

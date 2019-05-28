@@ -27,8 +27,6 @@ export const CustomValuesSelector = () => {
             });
             break;
           }
-          default:
-            console.log("other id");
         }
       }
     },
