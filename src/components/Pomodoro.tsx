@@ -128,7 +128,11 @@ export const Pomodoro: React.FC = () => {
       if (status.mode === TimerMode.FOCUS) {
         dispatch({ type: ActionTypes.ADD_POMODORO });
         num++;
-        timer.changeMode(TimerMode.SHORT);
+        if (num % 4 === 0) {
+          timer.changeMode(TimerMode.LONG);
+        } else {
+          timer.changeMode(TimerMode.SHORT);
+        }
       } else {
         timer.changeMode(TimerMode.FOCUS);
       }
