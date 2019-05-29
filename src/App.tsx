@@ -9,7 +9,7 @@ import { PersonalPage } from "./components/PersonalPage";
 import { Pomodoro } from "./components/Pomodoro";
 export const App = () => (
   <div className="container">
-    <ToastContainer />
+    <ToastContainer className="toast-top" />
     <HashRouter>
       <Provider>
         <Pomodoro />

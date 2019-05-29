@@ -112,6 +112,7 @@ export interface IState {
   pomodoro_date: string;
   pomodoro_used_number: number;
   loaded: boolean;
+  isNotifable: boolean;
 }
 
 export enum StorageKey {
@@ -172,5 +173,6 @@ export const initialState: IState = {
   pomodoro_date: "",
   pomodoro_number: 0,
   pomodoro_used_number: 0,
-  loaded: false
+  loaded: false,
+  isNotifable: false
 };

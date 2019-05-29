@@ -207,6 +207,12 @@ export const reducer = (state = initialState, action: Actions) => {
         loaded: true
       };
     }
+    case ActionTypes.ALLOW_NOTIFICATION: {
+      return {
+        ...state,
+        isNotifable: true
+      };
+    }
     default: {
       return state;
     }

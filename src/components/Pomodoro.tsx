@@ -17,13 +17,15 @@ import {
 import styles from "./Pomodoro.module.css";
 import classNames from "classnames";
 import { Tomato, TomatoState } from "./Tomato";
+import tomatoIcon from "../tomato.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCoffee,
   faPlay,
   faPause,
   faRedo,
-  faCookie
+  faCookie,
+  faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import {
   TimerState,
@@ -34,6 +36,8 @@ import {
 } from "../util/timer";
 import { RootContext } from "../Provider";
 import { ActionTypes } from "../sideEffectors";
+const Favico = require("favico.js-slevomat");
+const favico = new Favico({ animation: "fade" });
 
 const secToMin = (seconds: number) => Math.ceil(seconds / 60);
 interface TimerIconProps {
@@ -74,7 +78,8 @@ export const Pomodoro: React.FC = () => {
       pomodoro_date,
       pomodoro_number,
       pomodoro_used_number,
-      auth_token
+      auth_token,
+      isNotifable
     },
     dispatch
   } = useContext(RootContext);
@@ -118,15 +123,44 @@ export const Pomodoro: React.FC = () => {
   }, []);
   const handleExpire: TimerEventListener = useCallback(
     status => {
+      let num = pomodoro_number;
       handleState(status);
       if (status.mode === TimerMode.FOCUS) {
         dispatch({ type: ActionTypes.ADD_POMODORO });
+        num++;
         timer.changeMode(TimerMode.SHORT);
       } else {
         timer.changeMode(TimerMode.FOCUS);
       }
+      if (isNotifable) {
+        let title: string = "";
+        let body: string;
+        body = `${num} Pomodoros today!`;
+        switch (timer.mode) {
+          case TimerMode.FOCUS: {
+            title = "Start Focusing.";
+            break;
+          }
+          case TimerMode.SHORT: {
+            title = "Take a Short Break.";
+            break;
+          }
+          case TimerMode.LONG: {
+            title = "Take a Long Break.";
+            break;
+          }
+        }
+        const notify = new Notification(title, {
+          body,
+          icon: tomatoIcon
+        });
+        notify.onclick = () => {
+          timer.start();
+          notify.close();
+        };
+      }
     },
-    [dispatch, handleState]
+    [dispatch, handleState, isNotifable, pomodoro_number]
   );
   const handleRetry = useCallback(() => {
     timer.changeMode(TimerMode.FOCUS);
@@ -163,6 +197,34 @@ export const Pomodoro: React.FC = () => {
       timer.changeMode(TimerMode.FOCUS);
     }
   }, [dispatch, loaded, pomodoro_date]);
+  useEffect(() => {
+    if (Notification.permission !== "denied") {
+      Notification.requestPermission(permission => {
+        if (permission === "granted") {
+          dispatch({ type: ActionTypes.ALLOW_NOTIFICATION });
+        }
+      });
+    }
+  }, [dispatch]);
+  useEffect(() => {
+    const bgColor = mode === TimerMode.FOCUS ? "#f00" : "#0f0";
+    const textColor = mode === TimerMode.FOCUS ? "#fff" : "#000";
+    const shape = mode === TimerMode.FOCUS ? "rectangle" : "circle";
+    switch (state) {
+      case TimerState.RUNNING: {
+        favico.badge(remainingMin, { bgColor, textColor, type: shape });
+        break;
+      }
+      case TimerState.PAUSED: {
+        favico.badge("-", { bgColor, textColor, type: shape });
+        break;
+      }
+      default: {
+        favico.reset();
+      }
+    }
+  }, [mode, remainingMin, state]);
+
   if (!auth_token) {
     return null;
   }
@@ -220,7 +282,11 @@ export const Pomodoro: React.FC = () => {
               </InputGroupAddon>
             )}
           </InputGroup>
-          <Badge color="warning">Beta</Badge>
+          {pomodoro_number > 0 && (
+            <Badge color="danger" className="mr-2">
+              <Tomato /> <FontAwesomeIcon icon={faTimes} /> {pomodoro_number}
+            </Badge>
+          )}
           {_.times(pomodoro_number).map(i => (
             <Tomato
               key={i}

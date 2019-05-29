@@ -4728,6 +4728,11 @@ fast-levenshtein@~2.0.4:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
 
+favico.js-slevomat@^0.3.11:
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/favico.js-slevomat/-/favico.js-slevomat-0.3.11.tgz#36a67ba695f8a0e4cf5cc0ca7ef02ce82b571ef4"
+  integrity sha512-fP1e3RqjT+zNo0yU0LBaSbJrQ7DWUbt+yVigkZ2VXRjNpAm6ZEsoM9FnN5Gdf/9r8/SlS84X7OhBESD6f7EihQ==
+
 faye-websocket@^0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/faye-websocket/-/faye-websocket-0.10.0.tgz#4e492f8d04dfb6f89003507f6edbf2d501e7c6f4"

@@ -55,7 +55,8 @@ export enum ActionTypes {
   USE_POMODORO = "USE_POMODORO",
   RESET_POMODORO = "RESET_POMODORO",
   RESTORE_POMODORO = "RESTORE_POMODORO",
-  LOADED = "LOADED"
+  LOADED = "LOADED",
+  ALLOW_NOTIFICATION = "ALLOW_NOTIFICATION"
 }
 
 export interface IAction {
@@ -271,6 +272,10 @@ export interface RESTORE_POMODORO extends IAction {
 export interface LOADED extends IAction {
   type: ActionTypes.LOADED;
 }
+export interface ALLOW_NOTIFICATION extends IAction {
+  type: ActionTypes.ALLOW_NOTIFICATION;
+}
+
 export type Actions =
   | SET_URL
   | SIGN_IN
@@ -319,4 +324,5 @@ export type Actions =
   | USE_POMODORO
   | RESET_POMODORO
   | RESTORE_POMODORO
-  | LOADED;
+  | LOADED
+  | ALLOW_NOTIFICATION;
