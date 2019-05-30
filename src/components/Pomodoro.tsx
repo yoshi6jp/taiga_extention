@@ -152,6 +152,8 @@ export const Pomodoro: React.FC = () => {
       if (isNotifable) {
         let title: string = "";
         let body: string;
+        let clickCount = 0;
+        let closeTimer: NodeJS.Timeout | null = null;
         body = `${num} Pomodoros today!`;
         switch (timer.mode) {
           case TimerMode.FOCUS: {
@@ -160,10 +162,12 @@ export const Pomodoro: React.FC = () => {
           }
           case TimerMode.SHORT: {
             title = "Take a Short Break.";
+            body = `${body} Retry focusing if double click.`;
             break;
           }
           case TimerMode.LONG: {
             title = "Take a Long Break.";
+            body = `${body} Retry focusing if double click.`;
             break;
           }
         }
@@ -172,8 +176,29 @@ export const Pomodoro: React.FC = () => {
           icon: tomatoIcon
         });
         notify.onclick = () => {
-          timer.start();
-          notify.close();
+          if (timer.mode === TimerMode.FOCUS) {
+            timer.start();
+            notify.close();
+          } else {
+            if (clickCount === 0) {
+              timer.start();
+              closeTimer = setTimeout(() => {
+                clickCount = 0;
+                closeTimer = null;
+                notify.close();
+              }, 2000);
+              clickCount++;
+            } else {
+              if (closeTimer) {
+                clearTimeout(closeTimer);
+                closeTimer = null;
+              }
+              clickCount = 0;
+              timer.changeMode(TimerMode.FOCUS);
+              timer.start();
+              notify.close();
+            }
+          }
         };
       }
     },
