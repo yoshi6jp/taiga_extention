@@ -51,6 +51,7 @@ const syncStorage = (dispatch: Dispatch<Actions>) => {
       payload: { pomodoro_date, pomodoro_number, pomodoro_used_number }
     });
   dispatch({ type: ActionTypes.LOADED });
+  dispatch({ type: ActionTypes.LOAD_POMODORO_TOTALS });
 };
 export const init = (dispatch: Dispatch<Actions>) => {
   syncStorage(dispatch);

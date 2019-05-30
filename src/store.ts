@@ -1,3 +1,4 @@
+import { IDailyTotal } from "./AppDb";
 export interface ICustomAttr {
   id: number;
   name: string;
@@ -113,6 +114,7 @@ export interface IState {
   pomodoro_used_number: number;
   loaded: boolean;
   isNotifable: boolean;
+  pomodoro_daily_totals: IDailyTotal[];
 }
 
 export enum StorageKey {
@@ -174,5 +176,6 @@ export const initialState: IState = {
   pomodoro_number: 0,
   pomodoro_used_number: 0,
   loaded: false,
-  isNotifable: false
+  isNotifable: false,
+  pomodoro_daily_totals: []
 };

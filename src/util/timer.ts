@@ -55,6 +55,7 @@ class Timer extends EventEmitter {
   expireTimeout: NodeJS.Timeout | null = null;
   tickInterval: NodeJS.Timeout | null = null;
   restoreExpired = false;
+  estimateCompletedAt: Date = new Date();
   constructor(tick: number) {
     super();
     this.tick = tick;
@@ -174,15 +175,8 @@ class Timer extends EventEmitter {
   }
   setExpireTimeout(seconds: number) {
     this.expireTimeout = setTimeout(() => {
-      this.clearTickInterval();
-      this.clearExpireTimeout();
-
-      this.checkpointStartAt = Date.now();
-      this.checkpointElapsed = this.duration;
-
-      this.state = TimerState.STOPPED;
-
       this.emit("expire", this.status);
+      this.stop();
     }, seconds * 1000);
   }
   clearExpireTimeout() {
@@ -254,11 +248,11 @@ class Timer extends EventEmitter {
               this.setExpireTimeout(this.remaining);
               this.setTickInterval(this.tick);
             } else {
-              this.checkpointStartAt = Date.now();
-              this.checkpointElapsed = this.duration;
+              this.stop();
 
-              this.state = TimerState.STOPPED;
-
+              this.estimateCompletedAt = new Date(
+                cpStartAt + (duration - cpElapsed) * 1000
+              );
               this.restoreExpired = true;
             }
           }

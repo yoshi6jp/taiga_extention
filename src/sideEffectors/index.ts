@@ -23,6 +23,9 @@ import { setCustomRid } from "./setCustomRid";
 import { syncBizDays } from "./syncBizDays";
 import { syncRejectTaskStatusIds } from "./syncRejectTaskStatusIds";
 import { syncPomodoro } from "./syncPomodoro";
+import { addPomodoro } from "./addPomodoro";
+import { calcPomodoroTotal } from "./calcPomodoroTotal";
+import { loadPomodoroTotals } from "./loadPomodoroTotals";
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
 import { toastr } from "../util/toastr";
 export { ActionTypes };
@@ -146,12 +149,25 @@ export const rootSideEffector = (
       syncRejectTaskStatusIds(action, dispatch, state);
       break;
     }
-    case ActionTypes.ADD_POMODORO:
+    case ActionTypes.ADD_POMODORO: {
+      addPomodoro(action, dispatch, state);
+      syncPomodoro(action, dispatch, state);
+      break;
+    }
     case ActionTypes.USE_POMODORO:
     case ActionTypes.RESET_POMODORO: {
       syncPomodoro(action, dispatch, state);
       break;
     }
+    case ActionTypes.CALC_POMODORO_TOTAL: {
+      calcPomodoroTotal(action, dispatch, state);
+      break;
+    }
+    case ActionTypes.LOAD_POMODORO_TOTALS: {
+      loadPomodoroTotals(action, dispatch, state);
+      break;
+    }
+
     default: {
     }
   }

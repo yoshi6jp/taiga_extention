@@ -201,6 +201,13 @@ export const reducer = (state = initialState, action: Actions) => {
         pomodoro_used_number
       };
     }
+    case ActionTypes.SET_POMODORO_TOTALS: {
+      const { pomodoro_daily_totals } = action.payload;
+      return {
+        ...state,
+        pomodoro_daily_totals
+      };
+    }
     case ActionTypes.LOADED: {
       return {
         ...state,

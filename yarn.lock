@@ -2301,6 +2301,13 @@
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.2.tgz#690a1475b84f2a884fd07cd797c00f5f31356ea8"
 
+"@types/react-calendar-heatmap@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@types/react-calendar-heatmap/-/react-calendar-heatmap-1.6.2.tgz#739bdec0ebc4d5f8af5fa4987fb76ebfdb3bc456"
+  integrity sha512-5sbvToPXLN4RSQBSNvxV971nkn6Obb6gCWxn1cqkcMFfn3/VjG72krvJuI6/c95JQjFa/zItVkmaKSn4i2Xoqg==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-dom@^16.8.4":
   version "16.8.4"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.8.4.tgz#7fb7ba368857c7aa0f4e4511c4710ca2c5a12a88"
@@ -2328,6 +2335,13 @@
   dependencies:
     "@types/react" "*"
     "@types/react-transition-group" "*"
+
+"@types/react-tooltip@^3.9.2":
+  version "3.9.2"
+  resolved "https://registry.yarnpkg.com/@types/react-tooltip/-/react-tooltip-3.9.2.tgz#c46ee03cc8631ec1b130feef02af119dbe3639d2"
+  integrity sha512-nw8yikdyULgQoZWSkMgjMVd7nnrjlnUJc4U8NtuxCmTIloEgQTJpI6O/KrWTBK8cNP67KZy/fGgjZ9rOQsdwBQ==
+  dependencies:
+    "@types/react" "*"
 
 "@types/react-transition-group@*":
   version "2.9.1"
@@ -4124,6 +4138,11 @@ detect-port-alt@1.1.6:
   dependencies:
     address "^1.0.1"
     debug "^2.6.0"
+
+dexie@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/dexie/-/dexie-2.0.4.tgz#6027a5e05879424e8f9979d8c14e7420f27e3a11"
+  integrity sha512-aQ/s1U2wHxwBKRrt2Z/mwFNHMQWhESerFsMYzE+5P5OsIe5o1kgpFMWkzKTtkvkyyEni6mWr/T4HUJuY9xIHLA==
 
 diff-sequences@^24.3.0:
   version "24.3.0"
@@ -6739,6 +6758,11 @@ mem@^4.0.0:
     mimic-fn "^2.0.0"
     p-is-promise "^2.0.0"
 
+memoize-one@^4.0.2:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-4.1.0.tgz#a2387c58c03fff27ca390c31b764a79addf3f906"
+  integrity sha512-2GApq0yI/b22J2j9rhbrAlsHb0Qcz+7yWxeLG8h+95sl1XPUgeLimQSOdur4Vw7cUhrBHwaUZxWFZueojqNRzA==
+
 memory-fs@^0.4.0, memory-fs@^0.4.1, memory-fs@~0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/memory-fs/-/memory-fs-0.4.1.tgz#3a9a20b8462523e447cfbc7e8bb80ed667bfc552"
@@ -8406,6 +8430,14 @@ react-app-polyfill@^1.0.1:
     regenerator-runtime "0.13.2"
     whatwg-fetch "3.0.0"
 
+react-calendar-heatmap@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/react-calendar-heatmap/-/react-calendar-heatmap-1.8.0.tgz#7672fc697c792c3ab71cb6d8ecb19362ace14ed1"
+  integrity sha512-Dsf2d2MKA31QzLN63fW6PTixJVzMCm2+KhprkGXaeZFvBAL2hK2guiYvr+zFpPkh1ZpGNYdrdNfn9FxhiBd1fg==
+  dependencies:
+    memoize-one "^4.0.2"
+    prop-types "^15.6.2"
+
 react-dev-utils@^9.0.1:
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-9.0.1.tgz#5c03d85a0b2537d0c46af7165c24a7dfb274bef2"
@@ -8580,6 +8612,14 @@ react-toastify@^5.1.0:
     classnames "^2.2.6"
     prop-types "^15.7.2"
     react-transition-group "^2.6.1"
+
+react-tooltip@^3.10.0:
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/react-tooltip/-/react-tooltip-3.10.0.tgz#268b5ef519fd8a1369288d1f086f42c90d5da7ef"
+  integrity sha512-GGdxJvM1zSFztkTP7gCQbLTstWr1OOoMpJ5WZUGhimj0nhRY+MPz+92MpEnKmj0cftJ9Pd/M6FfSl0sfzmZWkg==
+  dependencies:
+    classnames "^2.2.5"
+    prop-types "^15.6.0"
 
 react-transition-group@^2.3.1, react-transition-group@^2.5.0, react-transition-group@^2.6.1:
   version "2.9.0"

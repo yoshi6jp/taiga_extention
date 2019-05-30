@@ -7,6 +7,7 @@ import {
   ITaskStatus,
   IUser
 } from "./store";
+import { IPomodoroHistory, IDailyTotal } from "./AppDb";
 
 export enum ActionTypes {
   SET_URL = "SET_URL",
@@ -55,6 +56,9 @@ export enum ActionTypes {
   USE_POMODORO = "USE_POMODORO",
   RESET_POMODORO = "RESET_POMODORO",
   RESTORE_POMODORO = "RESTORE_POMODORO",
+  CALC_POMODORO_TOTAL = "CALC_POMODORO_TOTAL",
+  LOAD_POMODORO_TOTALS = "LOAD_POMODORO_TOTALS",
+  SET_POMODORO_TOTALS = "SET_POMODORO_TOTALS",
   LOADED = "LOADED",
   ALLOW_NOTIFICATION = "ALLOW_NOTIFICATION"
 }
@@ -252,6 +256,7 @@ export interface UPDATE_DATA extends IAction {
 }
 export interface ADD_POMODORO extends IAction {
   type: ActionTypes.ADD_POMODORO;
+  meta?: Pick<IPomodoroHistory, "completedAt" | "duration" | "pure">;
 }
 export interface USE_POMODORO extends IAction {
   type: ActionTypes.USE_POMODORO;
@@ -267,6 +272,21 @@ export interface RESTORE_POMODORO extends IAction {
     pomodoro_date: string;
     pomodoro_number: number;
     pomodoro_used_number: number;
+  };
+}
+export interface CALC_POMODORO_TOTAL extends IAction {
+  type: ActionTypes.CALC_POMODORO_TOTAL;
+  payload: {
+    dateKey: string;
+  };
+}
+export interface LOAD_POMODORO_TOTALS extends IAction {
+  type: ActionTypes.LOAD_POMODORO_TOTALS;
+}
+export interface SET_POMODORO_TOTALS extends IAction {
+  type: ActionTypes.SET_POMODORO_TOTALS;
+  payload: {
+    pomodoro_daily_totals: IDailyTotal[];
   };
 }
 export interface LOADED extends IAction {
@@ -324,5 +344,8 @@ export type Actions =
   | USE_POMODORO
   | RESET_POMODORO
   | RESTORE_POMODORO
+  | CALC_POMODORO_TOTAL
+  | LOAD_POMODORO_TOTALS
+  | SET_POMODORO_TOTALS
   | LOADED
   | ALLOW_NOTIFICATION;

@@ -65,6 +65,7 @@ import { Switch } from "@rmwc/switch";
 import InputGroupText from "reactstrap/lib/InputGroupText";
 import { ActionTypes } from "../actions";
 import _ from "lodash";
+import { stopPropagation } from "../util/handler";
 export const convToTasksByUserStory = (tasks: ITask[]) =>
   _.chain(tasks)
     .groupBy("user_story")
@@ -98,7 +99,13 @@ const UserStoryLink = ({
 
   if (usName) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" title={usName}>
+      <a
+        href={href}
+        onClick={stopPropagation}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={usName}
+      >
         <FontAwesomeIcon icon={faExternalLinkAlt} /> {usName}
       </a>
     );

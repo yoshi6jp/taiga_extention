@@ -4,6 +4,12 @@
 .top :global(.dropdown-item) :global(.fa-fw) {
   margin-right: 0.25rem;
 }
+.top :global(.card-header) {
+  cursor: pointer;
+}
+.top :global(.card-header) :global(.input-group-text) {
+  cursor: text;
+}
 .button_group {
   margin: -10px 0;
 }

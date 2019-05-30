@@ -3,7 +3,9 @@ import _ from "lodash";
 import moment from "moment";
 import {
   Card,
+  Collapse,
   CardHeader,
+  CardBody,
   Badge,
   DropdownToggle,
   DropdownMenu,
@@ -17,8 +19,10 @@ import {
 import styles from "./Pomodoro.module.css";
 import classNames from "classnames";
 import { Tomato, TomatoState } from "./Tomato";
+import { ToggleIcon } from "./Controller";
 import tomatoIcon from "../tomato.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { stopPropagation } from "../util/handler";
 import {
   faCoffee,
   faPlay,
@@ -35,6 +39,7 @@ import {
   TimerEventListener
 } from "../util/timer";
 import { RootContext } from "../Provider";
+import { PomodoroHeatmap } from "./PomodoroHeatmap";
 import { ActionTypes } from "../sideEffectors";
 const Favico = require("favico.js-slevomat");
 const favico = new Favico({ animation: "fade" });
@@ -84,13 +89,14 @@ export const Pomodoro: React.FC = () => {
     dispatch
   } = useContext(RootContext);
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenDropdown, setIsOpenDropdown] = useState(false);
   const [remainingMin, setRemainingMin] = useState(
     TimerDurationMin[TimerMode.FOCUS]
   );
   const [state, setState] = useState<TimerState>(TimerState.STOPPED);
   const [mode, setMode] = useState<TimerMode>(TimerMode.FOCUS);
   const toggleDropdown = useCallback(() => {
-    setIsOpen(prev => !prev);
+    setIsOpenDropdown(prev => !prev);
   }, []);
   const handleSelect = useCallback((mode: TimerMode) => {
     timer.changeMode(mode);
@@ -122,11 +128,18 @@ export const Pomodoro: React.FC = () => {
     setRemainingMin(secToMin(status.remaining));
   }, []);
   const handleExpire: TimerEventListener = useCallback(
-    status => {
+    (status, completedAt?: Date) => {
       let num = pomodoro_number;
       handleState(status);
       if (status.mode === TimerMode.FOCUS) {
-        dispatch({ type: ActionTypes.ADD_POMODORO });
+        dispatch({
+          type: ActionTypes.ADD_POMODORO,
+          meta: {
+            completedAt: completedAt || new Date(),
+            duration: status.duration,
+            pure: status.checkpointElapsed === 0
+          }
+        });
         num++;
         if (num % 4 === 0) {
           timer.changeMode(TimerMode.LONG);
@@ -228,17 +241,21 @@ export const Pomodoro: React.FC = () => {
       }
     }
   }, [mode, remainingMin, state]);
-
+  const handleToggle = useCallback(() => {
+    setIsOpen(prev => !prev);
+  }, []);
   if (!auth_token) {
     return null;
   }
   return (
     <Card className={classNames(styles.top)}>
-      <CardHeader>
+      <CardHeader onClick={handleToggle}>
         <div className="d-flex">
-          <InputGroup className={classNames(styles.button_group)}>
+          <ToggleIcon isOpen={isOpen} />
+          <InputGroup className={classNames(styles.button_group, "ml-1")}>
             <InputGroupButtonDropdown
-              isOpen={isOpen}
+              onClick={stopPropagation}
+              isOpen={isOpenDropdown}
               toggle={toggleDropdown}
               addonType="prepend"
             >
@@ -251,7 +268,7 @@ export const Pomodoro: React.FC = () => {
                 <TimerItem mode={TimerMode.LONG} onSelect={handleSelect} />
               </DropdownMenu>
             </InputGroupButtonDropdown>
-            <InputGroupAddon addonType="prepend">
+            <InputGroupAddon addonType="prepend" onClick={stopPropagation}>
               <InputGroupText
                 className={classNames({
                   "font-weight-bold": state === TimerState.RUNNING
@@ -260,8 +277,10 @@ export const Pomodoro: React.FC = () => {
                 {remainingMin}
               </InputGroupText>
             </InputGroupAddon>
-            <InputGroupAddon addonType="prepend">min</InputGroupAddon>
-            <InputGroupAddon addonType="append">
+            <InputGroupAddon onClick={stopPropagation} addonType="prepend">
+              min
+            </InputGroupAddon>
+            <InputGroupAddon addonType="append" onClick={stopPropagation}>
               {state === TimerState.RUNNING ? (
                 <Button color="danger" onClick={handleClick}>
                   <FontAwesomeIcon icon={faPause} />
@@ -274,7 +293,7 @@ export const Pomodoro: React.FC = () => {
             </InputGroupAddon>
 
             {mode !== TimerMode.FOCUS && (
-              <InputGroupAddon addonType="append">
+              <InputGroupAddon addonType="append" onClick={stopPropagation}>
                 <Button
                   color="info"
                   onClick={handleRetry}
@@ -301,6 +320,11 @@ export const Pomodoro: React.FC = () => {
           ))}
         </div>
       </CardHeader>
+      <Collapse isOpen={isOpen}>
+        <CardBody>
+          <PomodoroHeatmap />
+        </CardBody>
+      </Collapse>
     </Card>
   );
 };
