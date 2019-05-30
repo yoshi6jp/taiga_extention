@@ -3,6 +3,7 @@ import moment from "moment";
 import _ from "lodash";
 import ReactTooltip from "react-tooltip";
 import CalendarHeatmap from "react-calendar-heatmap";
+import { Alert } from "reactstrap";
 import { RootContext } from "../Provider";
 interface IItem {
   date: string;
@@ -47,7 +48,7 @@ export const PomodoroHeatmap: React.FC = () => {
     []
   );
   if (pomodoro_daily_totals.length === 0) {
-    return null;
+    return <Alert color="warning">No pomodoro history!</Alert>;
   } else {
     return (
       <>
