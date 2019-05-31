@@ -185,10 +185,25 @@ class Timer extends EventEmitter {
     }
     this.expireTimeout = null;
   }
-  setTickInterval(seconds: number) {
+  setTickInterval(seconds: number, limit = 120) {
+    const { remaining } = this.status;
+    if (remaining < limit) {
+      this.setSecTickInterval();
+    } else {
+      this.tickInterval = setInterval(() => {
+        const status = this.status;
+        this.emit("tick", status);
+        if (status.remaining < limit) {
+          this.clearTickInterval();
+          this.setSecTickInterval();
+        }
+      }, seconds * 1000);
+    }
+  }
+  setSecTickInterval() {
     this.tickInterval = setInterval(() => {
       this.emit("tick", this.status);
-    }, seconds * 1000);
+    }, 1000);
   }
   clearTickInterval() {
     if (this.tickInterval) {

@@ -5,6 +5,7 @@ import "bootstrap-css-only/css/bootstrap.css";
 import "@material/switch/dist/mdc.switch.css";
 import "@material/form-field/dist/mdc.form-field.css";
 import "@rmwc/avatar/avatar.css";
+import "@material/linear-progress/dist/mdc.linear-progress.css";
 import "react-toastify/dist/ReactToastify.css";
 import "react-calendar-heatmap/dist/styles.css";
 import App from "./App";

@@ -1,6 +1,8 @@
 import React, { useContext, useState, useCallback, useEffect } from "react";
 import _ from "lodash";
 import moment from "moment";
+import { LinearProgress } from "@rmwc/linear-progress";
+import { ThemeProvider } from "@rmwc/theme";
 import {
   Card,
   Collapse,
@@ -42,12 +44,13 @@ import { RootContext } from "../Provider";
 import { PomodoroHeatmap } from "./PomodoroHeatmap";
 import { ActionTypes } from "../sideEffectors";
 const Favico = require("favico.js-slevomat");
-const favico = new Favico({ animation: "fade" });
-
+const favico = new Favico({ type: "rectangle" });
 const secToMin = (seconds: number) => Math.ceil(seconds / 60);
 interface TimerIconProps {
   mode: TimerMode;
 }
+const toValueAndUnit = (seconds: number): [number, string] =>
+  seconds >= 60 ? [secToMin(seconds), "min"] : [Math.ceil(seconds), "sec"];
 const TimerIcon: React.FC<TimerIconProps> = ({ mode }) => {
   switch (mode) {
     case TimerMode.SHORT: {
@@ -90,11 +93,12 @@ export const Pomodoro: React.FC = () => {
   } = useContext(RootContext);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
-  const [remainingMin, setRemainingMin] = useState(
-    TimerDurationMin[TimerMode.FOCUS]
-  );
+  const [remaining, setRemaining] = useState(TimerDurationMin[TimerMode.FOCUS]);
   const [state, setState] = useState<TimerState>(TimerState.STOPPED);
   const [mode, setMode] = useState<TimerMode>(TimerMode.FOCUS);
+  const [progress, setProgress] = useState(0);
+  const [unit, setUnit] = useState("min");
+
   const toggleDropdown = useCallback(() => {
     setIsOpenDropdown(prev => !prev);
   }, []);
@@ -116,17 +120,31 @@ export const Pomodoro: React.FC = () => {
       }
     }
   }, [state]);
-  const handleState: TimerEventListener = useCallback(status => {
-    setState(status.state);
-    setRemainingMin(secToMin(status.remaining));
+  const setRemainingAndUnit = useCallback((seconds: number) => {
+    const [val, unit] = toValueAndUnit(seconds);
+    setRemaining(val);
+    setUnit(unit);
   }, []);
-  const handleMode: TimerEventListener = useCallback(status => {
-    setMode(status.mode);
-    setRemainingMin(secToMin(status.duration));
-  }, []);
-  const handleTick: TimerEventListener = useCallback(status => {
-    setRemainingMin(secToMin(status.remaining));
-  }, []);
+  const handleState: TimerEventListener = useCallback(
+    status => {
+      setState(status.state);
+      setRemainingAndUnit(status.remaining);
+    },
+    [setRemainingAndUnit]
+  );
+  const handleMode: TimerEventListener = useCallback(
+    status => {
+      setMode(status.mode);
+      setRemainingAndUnit(status.duration);
+    },
+    [setRemainingAndUnit]
+  );
+  const handleTick: TimerEventListener = useCallback(
+    status => {
+      setRemainingAndUnit(status.remaining);
+    },
+    [setRemainingAndUnit]
+  );
   const handleExpire: TimerEventListener = useCallback(
     (status, completedAt?: Date) => {
       let num = pomodoro_number;
@@ -223,12 +241,12 @@ export const Pomodoro: React.FC = () => {
   useEffect(() => {
     setMode(timer.mode);
     setState(timer.state);
-    setRemainingMin(secToMin(timer.remaining));
+    setRemainingAndUnit(timer.remaining);
     if (timer.restoreExpired) {
       handleExpire(timer.status);
       timer.restoreExpired = false;
     }
-  }, [handleExpire]);
+  }, [handleExpire, setRemainingAndUnit]);
   useEffect(() => {
     const today = moment().format("YYYY-MM-DD");
     if (loaded && pomodoro_date !== today) {
@@ -249,31 +267,54 @@ export const Pomodoro: React.FC = () => {
     }
   }, [dispatch]);
   useEffect(() => {
-    const bgColor = mode === TimerMode.FOCUS ? "#f00" : "#0f0";
-    const textColor = mode === TimerMode.FOCUS ? "#fff" : "#000";
-    const shape = mode === TimerMode.FOCUS ? "rectangle" : "circle";
+    let bgColor = mode === TimerMode.FOCUS ? "#f00" : "#0f0";
+    let textColor = mode === TimerMode.FOCUS ? "#fff" : "#000";
+    let animation = "fade";
+    if (unit === "sec") {
+      [bgColor, textColor] = [textColor, bgColor];
+      animation = "none";
+    }
     switch (state) {
       case TimerState.RUNNING: {
-        favico.badge(remainingMin, { bgColor, textColor, type: shape });
+        favico.badge(remaining, {
+          bgColor,
+          textColor,
+          animation
+        });
         break;
       }
       case TimerState.PAUSED: {
-        favico.badge("-", { bgColor, textColor, type: shape });
+        favico.badge("-", { bgColor, textColor, animation });
         break;
       }
       default: {
         favico.reset();
       }
     }
-  }, [mode, remainingMin, state]);
+  }, [mode, remaining, state, unit]);
+  useEffect(() => {
+    const duration = TimerDurationMin[mode] * 60;
+    const val = unit === "min" ? remaining * 60 : remaining;
+    setProgress(0.01 + ((duration - val) * 99) / duration / 100);
+  }, [mode, remaining, unit]);
   const handleToggle = useCallback(() => {
     setIsOpen(prev => !prev);
   }, []);
+  const buffer = state === TimerState.RUNNING ? progress : 1;
   if (!auth_token) {
     return null;
   }
   return (
     <Card className={classNames(styles.top)}>
+      <ThemeProvider
+        options={{ primary: mode === TimerMode.FOCUS ? "red" : "green" }}
+      >
+        <LinearProgress
+          buffer={buffer}
+          progress={progress}
+          closed={state === TimerState.STOPPED}
+        />
+      </ThemeProvider>
       <CardHeader onClick={handleToggle}>
         <div className="d-flex">
           <ToggleIcon isOpen={isOpen} />
@@ -295,15 +336,19 @@ export const Pomodoro: React.FC = () => {
             </InputGroupButtonDropdown>
             <InputGroupAddon addonType="prepend" onClick={stopPropagation}>
               <InputGroupText
-                className={classNames({
+                className={classNames(styles.fix_w, {
                   "font-weight-bold": state === TimerState.RUNNING
                 })}
               >
-                {remainingMin}
+                {remaining}
               </InputGroupText>
             </InputGroupAddon>
-            <InputGroupAddon onClick={stopPropagation} addonType="prepend">
-              min
+            <InputGroupAddon
+              clsasName={classNames(styles.fix_w)}
+              onClick={stopPropagation}
+              addonType="prepend"
+            >
+              {unit}
             </InputGroupAddon>
             <InputGroupAddon addonType="append" onClick={stopPropagation}>
               {state === TimerState.RUNNING ? (

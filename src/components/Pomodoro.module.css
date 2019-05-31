@@ -13,3 +13,8 @@
 .button_group {
   margin: -10px 0;
 }
+.fix_w {
+  text-align: center;
+  display: inline-block;
+  width: 3em;
+}
