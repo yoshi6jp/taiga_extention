@@ -253,7 +253,9 @@ export const Pomodoro: React.FC = () => {
     setState(timer.state);
     setRemainingAndUnit(timer.remaining);
     if (timer.restoreExpired) {
-      handleExpire(timer.status);
+      _.defer(() => {
+        handleExpire(timer.status);
+      });
       timer.restoreExpired = false;
     }
   }, [handleExpire, setRemainingAndUnit]);
@@ -353,11 +355,7 @@ export const Pomodoro: React.FC = () => {
                 {remaining}
               </InputGroupText>
             </InputGroupAddon>
-            <InputGroupAddon
-              clsasName={classNames(styles.fix_w)}
-              onClick={stopPropagation}
-              addonType="prepend"
-            >
+            <InputGroupAddon onClick={stopPropagation} addonType="prepend">
               {unit}
             </InputGroupAddon>
             <InputGroupAddon addonType="append" onClick={stopPropagation}>
