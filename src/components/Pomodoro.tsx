@@ -54,13 +54,23 @@ const toValueAndUnit = (seconds: number): [number, string] =>
 const TimerIcon: React.FC<TimerIconProps> = ({ mode }) => {
   switch (mode) {
     case TimerMode.SHORT: {
-      return <FontAwesomeIcon className="fa-fw" icon={faCoffee} />;
+      return (
+        <FontAwesomeIcon
+          className={classNames("fa-fw", styles.short_break_icon)}
+          icon={faCoffee}
+        />
+      );
     }
     case TimerMode.LONG: {
-      return <FontAwesomeIcon className="fa-fw" icon={faCookie} />;
+      return (
+        <FontAwesomeIcon
+          className={classNames("fa-fw", styles.long_break_icon)}
+          icon={faCookie}
+        />
+      );
     }
     default: {
-      return <Tomato />;
+      return <Tomato state={TomatoState.FRESH} />;
     }
   }
 };
@@ -325,7 +335,7 @@ export const Pomodoro: React.FC = () => {
               toggle={toggleDropdown}
               addonType="prepend"
             >
-              <DropdownToggle size="sm" caret>
+              <DropdownToggle color="light" size="sm" caret>
                 <TimerIcon mode={mode} />
               </DropdownToggle>
               <DropdownMenu>
@@ -365,12 +375,12 @@ export const Pomodoro: React.FC = () => {
             {mode !== TimerMode.FOCUS && (
               <InputGroupAddon addonType="append" onClick={stopPropagation}>
                 <Button
-                  color="info"
+                  color="light"
                   onClick={handleRetry}
                   title="Retry focusing"
                 >
-                  <FontAwesomeIcon icon={faRedo} />
-                  <Tomato />
+                  <FontAwesomeIcon icon={faRedo} className="text-muted" />
+                  <Tomato state={TomatoState.STALE} />
                 </Button>
               </InputGroupAddon>
             )}

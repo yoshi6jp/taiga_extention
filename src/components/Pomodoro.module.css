@@ -10,6 +10,10 @@
 .top :global(.card-header) :global(.input-group-text) {
   cursor: text;
 }
+.top :global(.input-group-prepend) :global(.btn-light),
+.top :global(.input-group-append) :global(.btn-light) {
+  border-color: #ced4da;
+}
 .button_group {
   margin: -10px 0;
 }
@@ -17,4 +21,10 @@
   text-align: center;
   display: inline-block;
   width: 3em;
+}
+.short_break_icon {
+  color: #8b4513;
+}
+.long_break_icon {
+  color: #d2b48c;
 }
