@@ -201,6 +201,11 @@ const ToggleNumberInput: React.FC<ToggleNumberInputProps> = ({
       setRunning(true);
     }
   }, [submitting]);
+  useEffect(() => {
+    if (loading) {
+      setChecked(false);
+    }
+  }, [loading]);
   const title = needAuthMsg(disabled);
   return (
     <Form inline onSubmit={handleSubmit}>
@@ -588,10 +593,13 @@ const ResultInput: React.FC<CustomValueInputProps> = ({ item }) => {
       setSubmitting(false);
     }
   }, [version]);
+  useEffect(() => {
+    set_used_number(0);
+  }, [pomodoro_used_number]);
   if (!custom_attr_r.id) {
     return null;
   }
-
+  
   const disabled = auth_token === "";
   const loading = !version;
   const elId = `rusult-input-${item.id}`;
