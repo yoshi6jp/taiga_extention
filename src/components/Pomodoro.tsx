@@ -396,6 +396,7 @@ export const Pomodoro: React.FC = () => {
               state={
                 i < pomodoro_used_number ? TomatoState.STALE : TomatoState.FRESH
               }
+              br={i % 2 !== pomodoro_number % 2 && i < pomodoro_number - 1}
             />
           ))}
         </div>

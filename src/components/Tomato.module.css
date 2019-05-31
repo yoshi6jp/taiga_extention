@@ -10,3 +10,9 @@
 .stale :global(.tomato) {
   color: orange;
 }
+.bl {
+  border-left: 1px solid lightgreen;
+}
+.br {
+  border-right: 1px solid lightgreen;
+}

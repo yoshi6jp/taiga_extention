@@ -8,13 +8,17 @@ export enum TomatoState {
 }
 interface TomatoProps {
   state?: TomatoState;
+  bl?: boolean;
+  br?: boolean;
 }
-export const Tomato: React.FC<TomatoProps> = ({ state }) => {
+export const Tomato: React.FC<TomatoProps> = ({ state, bl,br }) => {
   return (
     <TomatoIcon
       className={classNames("fa-fw", "svg-inline--fa", {
         [styles.fresh]: state === TomatoState.FRESH,
-        [styles.stale]: state === TomatoState.STALE
+        [styles.stale]: state === TomatoState.STALE,
+        [styles.bl]: bl,
+        [styles.br]: br,
       })}
     />
   );
