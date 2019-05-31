@@ -19,7 +19,7 @@
     "@types/react-tooltip": "^3.9.2",
     "@types/reactstrap": "^8.0.1",
     "@types/recharts": "^1.1.16",
-    "axios": "^0.18.0",
+    "axios": "^0.19.0",
     "bootstrap-css-only": "^4.3.1",
     "classnames": "^2.2.6",
     "dexie": "^2.0.4",
