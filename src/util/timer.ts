@@ -54,6 +54,7 @@ class Timer extends EventEmitter {
   checkpointElapsed: number = 0;
   expireTimeout: NodeJS.Timeout | null = null;
   tickInterval: NodeJS.Timeout | null = null;
+  tickOffsetTimeout: NodeJS.Timeout | null = null;
   restoreExpired = false;
   estimateCompletedAt: Date = new Date();
   constructor(tick: number) {
@@ -185,19 +186,27 @@ class Timer extends EventEmitter {
     }
     this.expireTimeout = null;
   }
-  setTickInterval(seconds: number, limit = 120) {
+  setTickInterval(seconds: number, adjusted = false, limit = 60) {
     const { remaining } = this.status;
     if (remaining < limit) {
       this.setSecTickInterval();
     } else {
-      this.tickInterval = setInterval(() => {
-        const status = this.status;
-        this.emit("tick", status);
-        if (status.remaining < limit) {
-          this.clearTickInterval();
-          this.setSecTickInterval();
-        }
-      }, seconds * 1000);
+      const offset = remaining % seconds;
+      if (offset > 1 && !adjusted) {
+        this.tickOffsetTimeout = setTimeout(() => {
+          this.emit("tick", this.status);
+          this.setTickInterval(seconds, true);
+        }, offset * 1000);
+      } else {
+        this.tickInterval = setInterval(() => {
+          const status = this.status;
+          this.emit("tick", status);
+          if (status.remaining < limit) {
+            this.clearTickInterval();
+            this.setSecTickInterval();
+          }
+        }, seconds * 1000);
+      }
     }
   }
   setSecTickInterval() {
@@ -210,6 +219,10 @@ class Timer extends EventEmitter {
       clearInterval(this.tickInterval);
     }
     this.tickInterval = null;
+    if (this.tickOffsetTimeout) {
+      clearTimeout(this.tickOffsetTimeout);
+    }
+    this.tickOffsetTimeout = null;
   }
   saveStorage() {
     localStorage.setItem(StorageKey.STATE, this.state);
