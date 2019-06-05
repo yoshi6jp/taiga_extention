@@ -260,13 +260,13 @@ export const Pomodoro: React.FC = () => {
     setMode(timer.mode);
     setState(timer.state);
     setRemainingAndUnit(timer.remaining);
-    if (timer.restoreExpired) {
+    if (timer.restoreExpired && auth_token) {
       _.defer(() => {
         handleExpire(timer.status);
       });
       timer.restoreExpired = false;
     }
-  }, [handleExpire, setRemainingAndUnit]);
+  }, [auth_token, handleExpire, setRemainingAndUnit]);
   useEffect(() => {
     const today = moment().format("YYYY-MM-DD");
     if (loaded && pomodoro_date !== today) {
