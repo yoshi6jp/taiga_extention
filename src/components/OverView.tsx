@@ -12,11 +12,10 @@ export const OverView: React.FC = () => {
   return (
     <>
       <UserTasks />
+      <Chart tasks={tasks} />
       <NotAssignedTasks />
       <br />
       <UnEstimatedTasks />
-      <br />
-      <Chart tasks={tasks} />
     </>
   );
 };
