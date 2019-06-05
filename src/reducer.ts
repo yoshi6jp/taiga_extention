@@ -92,6 +92,17 @@ export const reducer = (state = initialState, action: Actions) => {
       const { tasks } = action.payload;
       return { ...state, tasks };
     }
+    case ActionTypes.SET_TASK_ID: {
+      const { task_id } = action.payload;
+      return { ...state, task_id, task: null };
+    }
+    case ActionTypes.RESET_TASK_ID: {
+      return { ...state, task_id: "", task: null };
+    }
+    case ActionTypes.SET_TASK: {
+      const { task } = action.payload;
+      return { ...state, task };
+    }
     case ActionTypes.SET_USER_TASKS: {
       const { user_tasks } = action.payload;
       return { ...state, user_tasks };
@@ -218,6 +229,21 @@ export const reducer = (state = initialState, action: Actions) => {
       return {
         ...state,
         isNotifable: true
+      };
+    }
+    case ActionTypes.SET_POMODORO_STATE: {
+      const { pomodoro_state } = action.payload;
+      return {
+        ...state,
+        pomodoro_state
+      };
+    }
+
+    case ActionTypes.SET_POMODORO_MODE: {
+      const { pomodoro_mode } = action.payload;
+      return {
+        ...state,
+        pomodoro_mode
       };
     }
     default: {

@@ -8,6 +8,7 @@ import {
   IUser
 } from "./store";
 import { IPomodoroHistory, IDailyTotal } from "./AppDb";
+import { TimerState, TimerMode } from "./util/timer";
 
 export enum ActionTypes {
   SET_URL = "SET_URL",
@@ -35,6 +36,9 @@ export enum ActionTypes {
   REMOVE_BIZ_DAY = "REMOVE_BIZ_DAY",
   FETCH_TASKS = "FETCH_TASKS",
   SET_TASKS = "SET_TASKS",
+  SET_TASK_ID = "SET_TASK_ID",
+  RESET_TASK_ID = "RESET_TASK_ID",
+  SET_TASK = "SET_TASK",
   SET_USER_TASKS = "SET_USER_TASKS",
   PATCH_TASK = "PATCH_TASK",
   FETCH_TASK_STATUSES = "FETCH_TASK_STATUSES",
@@ -60,7 +64,9 @@ export enum ActionTypes {
   LOAD_POMODORO_TOTALS = "LOAD_POMODORO_TOTALS",
   SET_POMODORO_TOTALS = "SET_POMODORO_TOTALS",
   LOADED = "LOADED",
-  ALLOW_NOTIFICATION = "ALLOW_NOTIFICATION"
+  ALLOW_NOTIFICATION = "ALLOW_NOTIFICATION",
+  SET_POMODORO_STATE = "SET_POMODORO_STATE",
+  SET_POMODORO_MODE = "SET_POMODORO_MODE"
 }
 
 export interface IAction {
@@ -174,6 +180,19 @@ export interface SET_TASKS extends IAction {
   type: ActionTypes.SET_TASKS;
   payload: { tasks: ITask[] };
 }
+export interface SET_TASK_ID extends IAction {
+  type: ActionTypes.SET_TASK_ID;
+  payload: { task_id: string };
+}
+export interface RESET_TASK_ID extends IAction {
+  type: ActionTypes.RESET_TASK_ID;
+}
+
+export interface SET_TASK extends IAction {
+  type: ActionTypes.SET_TASK;
+  payload: { task: ITask };
+}
+
 export interface SET_USER_TASKS extends IAction {
   type: ActionTypes.SET_USER_TASKS;
   payload: { user_tasks: ITask[] };
@@ -295,6 +314,18 @@ export interface LOADED extends IAction {
 export interface ALLOW_NOTIFICATION extends IAction {
   type: ActionTypes.ALLOW_NOTIFICATION;
 }
+export interface SET_POMODORO_STATE extends IAction {
+  type: ActionTypes.SET_POMODORO_STATE;
+  payload: {
+    pomodoro_state: TimerState;
+  };
+}
+export interface SET_POMODORO_MODE extends IAction {
+  type: ActionTypes.SET_POMODORO_MODE;
+  payload: {
+    pomodoro_mode: TimerMode;
+  };
+}
 
 export type Actions =
   | SET_URL
@@ -324,6 +355,9 @@ export type Actions =
   | REMOVE_BIZ_DAY
   | FETCH_TASKS
   | SET_TASKS
+  | SET_TASK_ID
+  | RESET_TASK_ID
+  | SET_TASK
   | SET_USER_TASKS
   | PATCH_TASK
   | FETCH_CUSTOM_VALUE_MAP
@@ -348,4 +382,6 @@ export type Actions =
   | LOAD_POMODORO_TOTALS
   | SET_POMODORO_TOTALS
   | LOADED
-  | ALLOW_NOTIFICATION;
+  | ALLOW_NOTIFICATION
+  | SET_POMODORO_STATE
+  | SET_POMODORO_MODE;

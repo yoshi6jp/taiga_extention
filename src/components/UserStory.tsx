@@ -44,7 +44,9 @@ import {
   faUserTimes,
   faPlus,
   faMinus,
-  faEraser
+  faEraser,
+  faPause,
+  faPlay
 } from "@fortawesome/free-solid-svg-icons";
 import { InputGroupSpinner } from "./InputGroupSpinner";
 import { RootContext } from "../Provider";
@@ -66,6 +68,7 @@ import InputGroupText from "reactstrap/lib/InputGroupText";
 import { ActionTypes } from "../actions";
 import _ from "lodash";
 import { stopPropagation } from "../util/handler";
+import { timer, TimerMode, TimerState } from "../util/timer";
 export const convToTasksByUserStory = (tasks: ITask[]) =>
   _.chain(tasks)
     .groupBy("user_story")
@@ -599,7 +602,7 @@ const ResultInput: React.FC<CustomValueInputProps> = ({ item }) => {
   if (!custom_attr_r.id) {
     return null;
   }
-  
+
   const disabled = auth_token === "";
   const loading = !version;
   const elId = `rusult-input-${item.id}`;
@@ -662,7 +665,75 @@ const ResultInput: React.FC<CustomValueInputProps> = ({ item }) => {
     </>
   );
 };
-export const TaskItem = ({ item }: { item: ITask }) => {
+interface TaskItemProps {
+  item: ITask;
+}
+
+const TaskTimerButton: React.FC<TaskItemProps> = ({ item }) => {
+  const {
+    state: { task_id, pomodoro_mode, pomodoro_state },
+    dispatch
+  } = useContext(RootContext);
+  const handleStart = useCallback(() => {
+    if (Number(task_id) !== item.id) {
+      dispatch({
+        type: ActionTypes.SET_TASK_ID,
+        payload: { task_id: String(item.id) }
+      });
+    }
+    if (pomodoro_state === TimerState.STOPPED) {
+      timer.changeMode(TimerMode.FOCUS);
+      timer.start();
+    } else {
+      if (pomodoro_mode === TimerMode.FOCUS) {
+        timer.resume();
+      } else {
+        timer.changeMode(TimerMode.FOCUS);
+        timer.start();
+      }
+    }
+  }, [dispatch, item.id, pomodoro_mode, pomodoro_state, task_id]);
+  const handlePause = useCallback(() => {
+    timer.pause();
+  }, []);
+  if (Number(task_id) === item.id) {
+    if (
+      pomodoro_mode === TimerMode.FOCUS &&
+      pomodoro_state === TimerState.RUNNING
+    ) {
+      return (
+        <Button className="mr-2" color="danger" onClick={handlePause}>
+          <FontAwesomeIcon icon={faPause} />
+          <Tomato />
+        </Button>
+      );
+    } else {
+      return (
+        <Button onClick={handleStart} color="primary" className="mr-2">
+          <FontAwesomeIcon icon={faPlay} />
+          <Tomato />
+        </Button>
+      );
+    }
+  } else if (task_id === "") {
+    if (
+      pomodoro_mode === TimerMode.FOCUS &&
+      pomodoro_state !== TimerState.STOPPED
+    ) {
+      return null;
+    } else {
+      return (
+        <Button onClick={handleStart} color="primary" className="mr-2">
+          <FontAwesomeIcon icon={faPlay} />
+          <Tomato />
+        </Button>
+      );
+    }
+  } else {
+    return null;
+  }
+};
+export const TaskItem: React.FC<TaskItemProps> = ({ item }) => {
   const {
     state: { custom_value_map, custom_attr_e, custom_attr_r, auth_token }
   } = useContext(RootContext);
@@ -694,6 +765,7 @@ export const TaskItem = ({ item }: { item: ITask }) => {
           <TaskLink item={item} />
         </div>
         {inactive && <NotAssignedButton task={item} />}
+        <TaskTimerButton item={item} />
         <TaskStatusSelector task={item} disabled={disabled} />
       </div>
       <Row>

@@ -135,5 +135,13 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     init(dispatch);
   }, [dispatch]);
+  useEffect(() => {
+    if (state.task_id) {
+      const task = state.tasks.find(item => item.id === Number(state.task_id));
+      if (task) {
+        dispatch({ type: ActionTypes.SET_TASK, payload: { task } });
+      }
+    }
+  }, [dispatch, state.task_id, state.tasks]);
   return <RootContext.Provider value={value}>{children}</RootContext.Provider>;
 };

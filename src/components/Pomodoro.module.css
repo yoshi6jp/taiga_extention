@@ -17,6 +17,9 @@
 .button_group {
   margin: -10px 0;
 }
+.chip_set {
+  margin: -6px 0;
+}
 .fix_w {
   text-align: center;
   display: inline-block;

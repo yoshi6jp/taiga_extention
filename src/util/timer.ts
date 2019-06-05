@@ -188,7 +188,7 @@ class Timer extends EventEmitter {
   }
   setTickInterval(seconds: number, adjusted = false, limit = 60) {
     const { remaining } = this.status;
-    if (remaining < limit) {
+    if (remaining <= limit) {
       this.setSecTickInterval();
     } else {
       const offset = remaining % seconds;

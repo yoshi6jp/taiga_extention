@@ -3,6 +3,7 @@ import _ from "lodash";
 import moment from "moment";
 import { LinearProgress } from "@rmwc/linear-progress";
 import { ThemeProvider } from "@rmwc/theme";
+import { Chip, ChipSet } from "@rmwc/chip";
 import {
   Card,
   Collapse,
@@ -16,7 +17,8 @@ import {
   InputGroupAddon,
   InputGroupText,
   InputGroupButtonDropdown,
-  Button
+  Button,
+  Spinner
 } from "reactstrap";
 import styles from "./Pomodoro.module.css";
 import classNames from "classnames";
@@ -31,7 +33,8 @@ import {
   faPause,
   faRedo,
   faCookie,
-  faTimes
+  faTimes,
+  faTasks
 } from "@fortawesome/free-solid-svg-icons";
 import {
   TimerState,
@@ -96,6 +99,8 @@ export const Pomodoro: React.FC = () => {
       pomodoro_date,
       pomodoro_number,
       pomodoro_used_number,
+      task_id,
+      task,
       auth_token,
       isNotifable
     },
@@ -236,6 +241,9 @@ export const Pomodoro: React.FC = () => {
     timer.changeMode(TimerMode.FOCUS);
     timer.start();
   }, []);
+  const handleRemove = useCallback(() => {
+    dispatch({ type: ActionTypes.RESET_TASK_ID });
+  }, [dispatch]);
   useEffect(() => {
     timer.on("tick", handleTick);
     timer.on("start", handleState);
@@ -309,6 +317,18 @@ export const Pomodoro: React.FC = () => {
     const val = unit === "min" ? remaining * 60 : remaining;
     setProgress(0.01 + ((duration - val) * 99) / duration / 100);
   }, [mode, remaining, unit]);
+  useEffect(() => {
+    dispatch({
+      type: ActionTypes.SET_POMODORO_STATE,
+      payload: { pomodoro_state: state }
+    });
+  }, [dispatch, state]);
+  useEffect(() => {
+    dispatch({
+      type: ActionTypes.SET_POMODORO_MODE,
+      payload: { pomodoro_mode: mode }
+    });
+  }, [dispatch, mode]);
   const handleToggle = useCallback(() => {
     setIsOpen(prev => !prev);
   }, []);
@@ -316,6 +336,12 @@ export const Pomodoro: React.FC = () => {
   if (!auth_token) {
     return null;
   }
+  const taskTitle = task
+    ? `#${task.ref} ${task.user_story_extra_info.subject} / ${task.subject}`
+    : "";
+  const taskSubject = task
+    ? _.truncate(`#${task.ref} ${task.subject}`, { length: 10 })
+    : "";
   return (
     <Card className={classNames(styles.top)}>
       <ThemeProvider
@@ -381,6 +407,22 @@ export const Pomodoro: React.FC = () => {
                   <Tomato state={TomatoState.STALE} />
                 </Button>
               </InputGroupAddon>
+            )}
+
+            {task_id && (
+              <ChipSet
+                onClick={stopPropagation}
+                className={classNames(styles.chip_set)}
+              >
+                <Chip
+                  icon={<FontAwesomeIcon icon={faTasks} />}
+                  onRemove={handleRemove}
+                  title={taskTitle}
+                  trailingIcon={<FontAwesomeIcon icon={faTimes} />}
+                >
+                  {taskSubject ? taskSubject : <Spinner type="grow" />}
+                </Chip>
+              </ChipSet>
             )}
           </InputGroup>
           {pomodoro_number > 0 && (

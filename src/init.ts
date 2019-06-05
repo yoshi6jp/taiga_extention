@@ -29,6 +29,7 @@ const syncStorage = (dispatch: Dispatch<Actions>) => {
   const pomodoro_used_number = Number(
     getFromStorage(StorageKey.POMODORO_USED_NUMBER) || "0"
   );
+  const task_id = getFromStorage(StorageKey.TASK_ID);
   url && dispatch({ type: ActionTypes.SET_URL, payload: { url } });
   pid && dispatch({ type: ActionTypes.SET_PID, payload: { pid } });
   mid && dispatch({ type: ActionTypes.SET_MID, payload: { mid } });
@@ -44,6 +45,7 @@ const syncStorage = (dispatch: Dispatch<Actions>) => {
       payload: { reject_task_status_ids }
     });
 
+  task_id && dispatch({ type: ActionTypes.SET_TASK_ID, payload: { task_id } });
   isOpen && dispatch({ type: ActionTypes.OPEN_CONTROLLER });
   pomodoro_date &&
     dispatch({

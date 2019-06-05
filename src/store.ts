@@ -1,4 +1,5 @@
 import { IDailyTotal } from "./AppDb";
+import { TimerMode, TimerState } from "./util/timer";
 export interface ICustomAttr {
   id: number;
   name: string;
@@ -102,6 +103,8 @@ export interface IState {
   milestones: IMilestone[]; // pid
   milestone: IMilestone;
   tasks: ITask[]; //mid
+  task_id: string;
+  task: ITask | null;
   user_tasks: ITask[];
   task_statuses: ITaskStatus[];
   active_task_statuses: ITaskStatus[];
@@ -115,12 +118,15 @@ export interface IState {
   loaded: boolean;
   isNotifable: boolean;
   pomodoro_daily_totals: IDailyTotal[];
+  pomodoro_state: TimerState;
+  pomodoro_mode: TimerMode;
 }
 
 export enum StorageKey {
   URL = "taiga_url",
   PID = "taiga_pid",
   MID = "taiga_mid",
+  TASK_ID = "taiga_task_id",
   CUSTOM_EID = "taiga_custom_eid",
   CUSTOM_RID = "taiga_custom_rid",
   BIZ_DAYS = "taiga_biz_days",
@@ -165,6 +171,8 @@ export const initialState: IState = {
   milestones: [],
   milestone: {} as IMilestone,
   tasks: [],
+  task_id: "",
+  task: null,
   user_tasks: [],
   task_statuses: [],
   active_task_statuses: [],
@@ -177,5 +185,7 @@ export const initialState: IState = {
   pomodoro_used_number: 0,
   loaded: false,
   isNotifable: false,
-  pomodoro_daily_totals: []
+  pomodoro_daily_totals: [],
+  pomodoro_state: TimerState.STOPPED,
+  pomodoro_mode: TimerMode.FOCUS
 };
