@@ -715,7 +715,7 @@ const TaskTimerButton: React.FC<TaskItemProps> = ({ item }) => {
         </Button>
       );
     }
-  } else if (task_id === "") {
+  } else if (task_id === "" && !item.is_closed) {
     if (
       pomodoro_mode === TimerMode.FOCUS &&
       pomodoro_state !== TimerState.STOPPED
