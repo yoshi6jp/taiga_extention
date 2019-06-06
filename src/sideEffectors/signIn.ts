@@ -1,6 +1,7 @@
 import { IAuthToken, StorageKey, setToStorage } from "../store";
 import { ISideEffector, postData, ActionTypes, errToastr } from ".";
 import { toastr } from "../util/toastr";
+import _ from "lodash";
 export const signIn: ISideEffector = async (action, dispatch, state) => {
   if (action.type === ActionTypes.SIGN_IN) {
     try {
@@ -21,7 +22,9 @@ export const signIn: ISideEffector = async (action, dispatch, state) => {
       }
     } catch (e) {
       dispatch({ type: ActionTypes.SET_AUTH_ERROR });
-      dispatch({ type: ActionTypes.SIGN_OUT });
+      if (_.get(e, "response.data._err_message")) {
+        dispatch({ type: ActionTypes.SIGN_OUT });
+      }
       errToastr(e);
     }
   }
