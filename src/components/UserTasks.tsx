@@ -33,7 +33,6 @@ import { SignInForm } from "./SignInForm";
 
 const barStyles = ["success", "warning", "info", "danger"];
 const getTasksByUser = (items: ITask[]) => _.groupBy(items, "assigned_to");
-const getClosedTasks = (items: ITask[]) => items.filter(item => item.is_closed);
 export const AvatarSquare: React.FC<AvatarProps> = props => {
   const src = props.src || `http://i.pravatar.cc/80?u=${Math.random()}`;
   return <Avatar {...props} src={src} square className="mr-1" />;
@@ -343,9 +342,7 @@ export const UserTasks = () => {
       ) > 0,
     [biz_days, isPlanning]
   );
-  const tasksByUser = useMemo(() => getTasksByUser(getClosedTasks(tasks)), [
-    tasks
-  ]);
+  const tasksByUser = useMemo(() => getTasksByUser(tasks), [tasks]);
   if (!custom_attr_e.id || !custom_attr_r.id || biz_days.length <= 1) {
     return null;
   }
