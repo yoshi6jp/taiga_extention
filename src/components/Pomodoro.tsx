@@ -337,7 +337,11 @@ export const Pomodoro: React.FC = () => {
     return null;
   }
   const taskTitle = task
-    ? `#${task.ref} ${task.user_story_extra_info.subject} / ${task.subject}`
+    ? `#${task.ref} ${_.get(
+        task,
+        "user_story_extra_info.subject",
+        "Unassigned tasks"
+      )} / ${task.subject}`
     : "";
   const taskSubject = task
     ? _.truncate(`#${task.ref} ${task.subject}`, { length: 10 })
