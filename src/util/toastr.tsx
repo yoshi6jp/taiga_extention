@@ -22,6 +22,22 @@ const MessageWithIcon: React.FC<MessageWithIconProps> = ({ icon, message }) => {
     </div>
   );
 };
+interface NotifyProps {
+  title: string;
+  body: string;
+  icon: string;
+}
+const Notify: React.FC<NotifyProps> = ({ title, body, icon }) => {
+  return (
+    <div className="d-flex">
+      <img src={icon} style={{ width: "48px", height: "48px" }} alt="" />
+      <div className="ml-2">
+        <h5>{title}</h5>
+        <p>{body}</p>
+      </div>
+    </div>
+  );
+};
 export const toastr = {
   info: (message: string) => {
     toast.info(<MessageWithIcon icon={faInfoCircle} message={message} />);
@@ -36,5 +52,8 @@ export const toastr = {
   },
   error: (message: string) => {
     toast.error(<MessageWithIcon icon={faCheckCircle} message={message} />);
+  },
+  notify: ({ title, body, icon }: NotifyProps) => {
+    toast(<Notify title={title} body={body} icon={icon} />);
   }
 };

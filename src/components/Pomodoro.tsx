@@ -46,6 +46,7 @@ import {
 import { RootContext } from "../Provider";
 import { PomodoroHeatmap } from "./PomodoroHeatmap";
 import { ActionTypes } from "../sideEffectors";
+import { notify, NotifyClickHandler } from "../util/notify";
 const Favico = require("favico.js-slevomat");
 const favico = new Favico({ type: "rectangle" });
 const secToMin = (seconds: number) => Math.ceil(seconds / 60);
@@ -92,6 +93,19 @@ const TimerItem: React.FC<TimerItemProps> = ({ mode, onSelect }) => {
     </DropdownItem>
   );
 };
+const clickToClose: NotifyClickHandler = closeFn => {
+  timer.start();
+  closeFn();
+};
+const clickToWaitClose: NotifyClickHandler = closeFn => {
+  timer.start();
+  closeFn(2);
+};
+const clickToChangeFocus: NotifyClickHandler = closeFn => {
+  timer.changeMode(TimerMode.FOCUS);
+  timer.start();
+  closeFn();
+};
 export const Pomodoro: React.FC = () => {
   const {
     state: {
@@ -101,8 +115,7 @@ export const Pomodoro: React.FC = () => {
       pomodoro_used_number,
       task_id,
       task,
-      auth_token,
-      isNotifable
+      auth_token
     },
     dispatch
   } = useContext(RootContext);
@@ -182,60 +195,42 @@ export const Pomodoro: React.FC = () => {
       } else {
         timer.changeMode(TimerMode.FOCUS);
       }
-      if (isNotifable) {
-        let title: string = "";
-        let body: string;
-        let clickCount = 0;
-        let closeTimer: NodeJS.Timeout | null = null;
-        body = `${num} Pomodoros today!`;
-        switch (timer.mode) {
-          case TimerMode.FOCUS: {
-            title = "Start Focusing.";
-            break;
-          }
-          case TimerMode.SHORT: {
-            title = "Take a Short Break.";
-            body = `${body} Retry focusing if double click.`;
-            break;
-          }
-          case TimerMode.LONG: {
-            title = "Take a Long Break.";
-            body = `${body} Retry focusing if double click.`;
-            break;
-          }
+      let title: string = "";
+      let body: string;
+      let option: string | undefined = undefined;
+      let onClick = clickToClose;
+      let onDblclick: NotifyClickHandler | undefined = undefined;
+      body = `${num} Pomodoros today!`;
+      switch (timer.mode) {
+        case TimerMode.FOCUS: {
+          title = "Start Focusing.";
+          break;
         }
-        const notify = new Notification(title, {
-          body,
-          icon: tomatoIcon
-        });
-        notify.onclick = () => {
-          if (timer.mode === TimerMode.FOCUS) {
-            timer.start();
-            notify.close();
-          } else {
-            if (clickCount === 0) {
-              timer.start();
-              closeTimer = setTimeout(() => {
-                clickCount = 0;
-                closeTimer = null;
-                notify.close();
-              }, 2000);
-              clickCount++;
-            } else {
-              if (closeTimer) {
-                clearTimeout(closeTimer);
-                closeTimer = null;
-              }
-              clickCount = 0;
-              timer.changeMode(TimerMode.FOCUS);
-              timer.start();
-              notify.close();
-            }
-          }
-        };
+        case TimerMode.SHORT: {
+          title = "Take a Short Break.";
+          option = "Retry focusing if double click.";
+          onClick = clickToWaitClose;
+          onDblclick = clickToChangeFocus;
+          break;
+        }
+        case TimerMode.LONG: {
+          title = "Take a Long Break.";
+          option = "Retry focusing if double click.";
+          onClick = clickToWaitClose;
+          onDblclick = clickToChangeFocus;
+          break;
+        }
       }
+      notify({
+        title,
+        body,
+        option,
+        icon: tomatoIcon,
+        onClick,
+        onDblclick
+      });
     },
-    [dispatch, handleState, isNotifable, pomodoro_number]
+    [dispatch, handleState, pomodoro_number]
   );
   const handleRetry = useCallback(() => {
     timer.changeMode(TimerMode.FOCUS);
@@ -279,11 +274,7 @@ export const Pomodoro: React.FC = () => {
   }, [dispatch, loaded, pomodoro_date]);
   useEffect(() => {
     if (Notification.permission !== "denied") {
-      Notification.requestPermission(permission => {
-        if (permission === "granted") {
-          dispatch({ type: ActionTypes.ALLOW_NOTIFICATION });
-        }
-      });
+      Notification.requestPermission();
     }
   }, [dispatch]);
   useEffect(() => {

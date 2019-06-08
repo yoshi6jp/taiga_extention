@@ -225,12 +225,6 @@ export const reducer = (state = initialState, action: Actions) => {
         loaded: true
       };
     }
-    case ActionTypes.ALLOW_NOTIFICATION: {
-      return {
-        ...state,
-        isNotifable: true
-      };
-    }
     case ActionTypes.SET_POMODORO_STATE: {
       const { pomodoro_state } = action.payload;
       return {

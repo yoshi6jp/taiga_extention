@@ -64,7 +64,6 @@ export enum ActionTypes {
   LOAD_POMODORO_TOTALS = "LOAD_POMODORO_TOTALS",
   SET_POMODORO_TOTALS = "SET_POMODORO_TOTALS",
   LOADED = "LOADED",
-  ALLOW_NOTIFICATION = "ALLOW_NOTIFICATION",
   SET_POMODORO_STATE = "SET_POMODORO_STATE",
   SET_POMODORO_MODE = "SET_POMODORO_MODE"
 }
@@ -311,9 +310,6 @@ export interface SET_POMODORO_TOTALS extends IAction {
 export interface LOADED extends IAction {
   type: ActionTypes.LOADED;
 }
-export interface ALLOW_NOTIFICATION extends IAction {
-  type: ActionTypes.ALLOW_NOTIFICATION;
-}
 export interface SET_POMODORO_STATE extends IAction {
   type: ActionTypes.SET_POMODORO_STATE;
   payload: {
@@ -382,6 +378,5 @@ export type Actions =
   | LOAD_POMODORO_TOTALS
   | SET_POMODORO_TOTALS
   | LOADED
-  | ALLOW_NOTIFICATION
   | SET_POMODORO_STATE
   | SET_POMODORO_MODE;

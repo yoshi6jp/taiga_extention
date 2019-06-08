@@ -116,7 +116,6 @@ export interface IState {
   pomodoro_date: string;
   pomodoro_used_number: number;
   loaded: boolean;
-  isNotifable: boolean;
   pomodoro_daily_totals: IDailyTotal[];
   pomodoro_state: TimerState;
   pomodoro_mode: TimerMode;
@@ -184,7 +183,6 @@ export const initialState: IState = {
   pomodoro_number: 0,
   pomodoro_used_number: 0,
   loaded: false,
-  isNotifable: false,
   pomodoro_daily_totals: [],
   pomodoro_state: TimerState.STOPPED,
   pomodoro_mode: TimerMode.FOCUS
