@@ -49,6 +49,7 @@ const getTaskCreated = (tasks: ITask[], date: string) =>
   tasks.filter(
     task =>
       moment(date)
+        .local()
         .endOf("days")
         .diff(moment(task.created_date)) > 0
   );
