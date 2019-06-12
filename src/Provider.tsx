@@ -58,7 +58,7 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [state.url, state.pid, dispatch]);
   useEffect(() => {
-    if (state.url && state.mid) {
+    if (state.url && state.mid && state.milestone.id) {
       dispatch({
         type: ActionTypes.FETCH_TASKS,
         payload: {
@@ -72,7 +72,8 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
     state.mid,
     state.updated_time,
     state.reject_task_status_ids,
-    dispatch
+    dispatch,
+    state.milestone.id
   ]);
   useEffect(() => {
     dispatch({
