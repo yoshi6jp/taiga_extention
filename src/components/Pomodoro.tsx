@@ -338,7 +338,7 @@ export const Pomodoro: React.FC = () => {
     ? _.truncate(`#${task.ref} ${task.subject}`, { length: 10 })
     : "";
   return (
-    <Card className={classNames(styles.top)}>
+    <Card className={classNames(styles.top,"sticky-top")}>
       <ThemeProvider
         options={{ primary: mode === TimerMode.FOCUS ? "red" : "green" }}
       >
