@@ -13,17 +13,22 @@ export const fetchTasks: ISideEffector = async (action, dispatch, state) => {
       const { milestone } = action.payload;
       const startM = moment(estimated_start)
         .local()
-        .startOf("day");
+        .startOf("day")
+        .add(12, "hours");
       if (url && milestone) {
         const { data } = await fetchData<ITask[]>(url, "tasks", {
           headers: { "x-disable-pagination": true },
           params: { milestone }
         });
-        const tasks = data
-          .filter(
-            item => !_.includes(reject_task_status_ids, String(item.status))
+        const tasks = _.chain(data)
+          .reject(item =>
+            _.includes(reject_task_status_ids, String(item.status))
           )
-          .filter(item => moment(item.finished_date).diff(startM) > 0);
+          .reject(
+            item =>
+              item.is_closed && moment(item.finished_date).diff(startM) < 0
+          )
+          .value();
 
         dispatch({ type: ActionTypes.SET_TASKS, payload: { tasks } });
       }
