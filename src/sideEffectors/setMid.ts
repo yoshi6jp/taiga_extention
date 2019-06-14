@@ -13,5 +13,13 @@ export const setMid: ISideEffector = (action, dispatch, state) => {
     if (beforeMid && mid !== beforeMid) {
       dispatch({ type: ActionTypes.RESET_TASK_ID });
     }
+    const timelimit_close_task = getFromStorageWithSubkey(
+      StorageKey.TIMELIMIT_CLOSE_TASK,
+      mid
+    );
+    dispatch({
+      type: ActionTypes.SET_TIMELIMIT_CLOSE_TASK,
+      payload: { timelimit_close_task }
+    });
   }
 };

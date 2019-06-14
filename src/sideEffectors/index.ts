@@ -27,6 +27,7 @@ import { addPomodoro } from "./addPomodoro";
 import { calcPomodoroTotal } from "./calcPomodoroTotal";
 import { loadPomodoroTotals } from "./loadPomodoroTotals";
 import { syncTaskId } from "./syncTaskId";
+import { setTimelineCloseTask } from "./setTimelineCloseTask";
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
 import { toastr } from "../util/toastr";
 export { ActionTypes };
@@ -171,6 +172,10 @@ export const rootSideEffector = (
     case ActionTypes.SET_TASK_ID:
     case ActionTypes.RESET_TASK_ID: {
       syncTaskId(action, dispatch, state);
+      break;
+    }
+    case ActionTypes.SET_TIMELIMIT_CLOSE_TASK: {
+      setTimelineCloseTask(action, dispatch, state);
       break;
     }
     default: {

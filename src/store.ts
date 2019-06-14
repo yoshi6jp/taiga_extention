@@ -119,6 +119,7 @@ export interface IState {
   pomodoro_daily_totals: IDailyTotal[];
   pomodoro_state: TimerState;
   pomodoro_mode: TimerMode;
+  timelimit_close_task: string;
 }
 
 export enum StorageKey {
@@ -134,7 +135,8 @@ export enum StorageKey {
   PASSWORD = "taiga_password",
   POMODORO_DATE = "taiga_pomodoro_date",
   POMODORO_NUMBER = "taiga_pomodoro_number",
-  POMODORO_USED_NUMBER = "taiga_pomodoro_used_number"
+  POMODORO_USED_NUMBER = "taiga_pomodoro_used_number",
+  TIMELIMIT_CLOSE_TASK = "taiga_timelimit_close_task"
 }
 
 const _getFromStorage = (key: string) => localStorage.getItem(key) || "";
@@ -185,5 +187,6 @@ export const initialState: IState = {
   loaded: false,
   pomodoro_daily_totals: [],
   pomodoro_state: TimerState.STOPPED,
-  pomodoro_mode: TimerMode.FOCUS
+  pomodoro_mode: TimerMode.FOCUS,
+  timelimit_close_task: ""
 };

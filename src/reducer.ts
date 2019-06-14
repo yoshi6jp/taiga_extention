@@ -240,6 +240,13 @@ export const reducer = (state = initialState, action: Actions) => {
         pomodoro_mode
       };
     }
+    case ActionTypes.SET_TIMELIMIT_CLOSE_TASK: {
+      const { timelimit_close_task } = action.payload;
+      return {
+        ...state,
+        timelimit_close_task
+      };
+    }
     default: {
       return state;
     }

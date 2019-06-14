@@ -1,5 +1,6 @@
 import React, { createContext, useReducer, useEffect } from "react";
 import _ from "lodash";
+import moment from "moment";
 import { ActionTypes } from "./actions";
 import { initialState, ICustomAttr, IMilestone, ITask } from "./store";
 import { reducer } from "./reducer";
@@ -58,12 +59,18 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [state.url, state.pid, dispatch]);
   useEffect(() => {
-    if (state.url && state.mid && state.milestone.id) {
+    if (
+      state.url &&
+      state.mid &&
+      state.milestone.id &&
+      state.timelimit_close_task
+    ) {
       dispatch({
         type: ActionTypes.FETCH_TASKS,
         payload: {
           milestone: state.mid,
-          reject_task_status_ids: state.reject_task_status_ids
+          reject_task_status_ids: state.reject_task_status_ids,
+          timelimit_close_task: state.timelimit_close_task
         }
       });
     }
@@ -73,7 +80,8 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
     state.updated_time,
     state.reject_task_status_ids,
     dispatch,
-    state.milestone.id
+    state.milestone.id,
+    state.timelimit_close_task
   ]);
   useEffect(() => {
     dispatch({
@@ -144,5 +152,18 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
       }
     }
   }, [dispatch, state.task_id, state.tasks]);
+  useEffect(() => {
+    const firstDay = state.biz_days[0];
+    if (firstDay && !state.timelimit_close_task) {
+      const timelimit_close_task = `${moment(firstDay)
+        .local()
+        .startOf("day")
+        .format("YYYY-MM-DD")}T12:00`;
+      dispatch({
+        type: ActionTypes.SET_TIMELIMIT_CLOSE_TASK,
+        payload: { timelimit_close_task }
+      });
+    }
+  }, [dispatch, state.biz_days, state.milestone, state.timelimit_close_task]);
   return <RootContext.Provider value={value}>{children}</RootContext.Provider>;
 };

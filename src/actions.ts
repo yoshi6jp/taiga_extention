@@ -65,7 +65,8 @@ export enum ActionTypes {
   SET_POMODORO_TOTALS = "SET_POMODORO_TOTALS",
   LOADED = "LOADED",
   SET_POMODORO_STATE = "SET_POMODORO_STATE",
-  SET_POMODORO_MODE = "SET_POMODORO_MODE"
+  SET_POMODORO_MODE = "SET_POMODORO_MODE",
+  SET_TIMELIMIT_CLOSE_TASK = "SET_TIMELIMIT_CLOSE_TASK"
 }
 
 export interface IAction {
@@ -173,7 +174,11 @@ export interface REMOVE_BIZ_DAY extends IAction {
 
 export interface FETCH_TASKS extends IAction {
   type: ActionTypes.FETCH_TASKS;
-  payload: { milestone: string; reject_task_status_ids: string[] };
+  payload: {
+    milestone: string;
+    reject_task_status_ids: string[];
+    timelimit_close_task: string;
+  };
 }
 export interface SET_TASKS extends IAction {
   type: ActionTypes.SET_TASKS;
@@ -322,6 +327,15 @@ export interface SET_POMODORO_MODE extends IAction {
     pomodoro_mode: TimerMode;
   };
 }
+export interface SET_TIMELIMIT_CLOSE_TASK extends IAction {
+  type: ActionTypes.SET_TIMELIMIT_CLOSE_TASK;
+  payload: {
+    timelimit_close_task: string;
+  };
+  meta?: {
+    customize: boolean;
+  };
+}
 
 export type Actions =
   | SET_URL
@@ -379,4 +393,5 @@ export type Actions =
   | SET_POMODORO_TOTALS
   | LOADED
   | SET_POMODORO_STATE
-  | SET_POMODORO_MODE;
+  | SET_POMODORO_MODE
+  | SET_TIMELIMIT_CLOSE_TASK;

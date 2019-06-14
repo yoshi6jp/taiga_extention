@@ -5,17 +5,14 @@ import moment from "moment";
 export const fetchTasks: ISideEffector = async (action, dispatch, state) => {
   if (action.type === ActionTypes.FETCH_TASKS) {
     try {
+      const { url } = state();
       const {
-        url,
+        milestone,
         reject_task_status_ids,
-        milestone: { estimated_start }
-      } = state();
-      const { milestone } = action.payload;
-      const startM = moment(estimated_start)
-        .local()
-        .startOf("day")
-        .add(12, "hours");
-      if (url && milestone) {
+        timelimit_close_task
+      } = action.payload;
+      if (url && milestone && timelimit_close_task) {
+        const startM = moment(timelimit_close_task);
         const { data } = await fetchData<ITask[]>(url, "tasks", {
           headers: { "x-disable-pagination": true },
           params: { milestone }

@@ -24,6 +24,7 @@ import { MilestoneSelector } from "./MilestoneSelector";
 import { CustomValuesSelector } from "./CustomValuesSelector";
 import { DaysSelector } from "./DaysSelector";
 import { TaskStatusSelector } from "./TaskStatusSelector";
+import { TimelimitCloseTask } from "./TimelimitCloseTask";
 import { IMilestone } from "../store";
 import styles from "./Controller.module.css";
 import { ActionTypes } from "../actions";
@@ -134,6 +135,7 @@ export const Controller = () => {
           <MilestoneSelector />
         </div>
         <CustomValuesSelector />
+        <TimelimitCloseTask />
         <DaysSelector />
         <TaskStatusSelector />
       </Collapse>
