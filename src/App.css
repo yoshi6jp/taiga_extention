@@ -4,3 +4,40 @@
 .toast-top {
   top: 2.5em;
 }
+.bg-grass {
+  background: url("./grass.png") repeat;
+}
+.bg-grass .react-calendar-heatmap text {
+  fill: yellow;
+}
+rect.style-pomodoro {
+  rx: 6;
+  ry: 6;
+}
+.color-pomodoro-8 {
+  fill: hsl(0, 100%, 50%);
+}
+.color-pomodoro-7 {
+  fill: hsl(0, 100%, 55%);
+}
+.color-pomodoro-6 {
+  fill: hsl(0, 100%, 60%);
+}
+.color-pomodoro-5 {
+  fill: hsl(0, 100%, 65%);
+}
+.color-pomodoro-4 {
+  fill: hsl(0, 100%, 70%);
+}
+.color-pomodoro-3 {
+  fill: hsl(0, 100%, 75%);
+}
+.color-pomodoro-2 {
+  fill: hsl(0, 100%, 80%);
+}
+.color-pomodoro-1 {
+  fill: hsl(0, 100%, 85%);
+}
+.empty-pomodoro {
+  fill: transparent;
+}

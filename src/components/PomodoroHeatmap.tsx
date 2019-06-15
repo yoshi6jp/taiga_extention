@@ -27,8 +27,10 @@ export const PomodoroHeatmap: React.FC = () => {
   const classForValue = useCallback(
     (item: IItem) =>
       item
-        ? `color-github-${Math.ceil(((item.value || 0) * 4) / maxVal)}`
-        : "color-empty",
+        ? `style-pomodoro color-pomodoro-${Math.ceil(
+            ((item.value || 0) * 8) / maxVal
+          )}`
+        : "style-pomodoro empty-pomodoro",
     [maxVal]
   );
   const tooltipDataAttrs = useCallback(

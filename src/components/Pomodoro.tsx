@@ -338,7 +338,7 @@ export const Pomodoro: React.FC = () => {
     ? _.truncate(`#${task.ref} ${task.subject}`, { length: 10 })
     : "";
   return (
-    <Card className={classNames(styles.top,"sticky-top")}>
+    <Card className={classNames(styles.top, "sticky-top")}>
       <ThemeProvider
         options={{ primary: mode === TimerMode.FOCUS ? "red" : "green" }}
       >
@@ -437,7 +437,7 @@ export const Pomodoro: React.FC = () => {
         </div>
       </CardHeader>
       <Collapse isOpen={isOpen}>
-        <CardBody>
+        <CardBody className="bg-grass">
           <PomodoroHeatmap />
         </CardBody>
       </Collapse>
