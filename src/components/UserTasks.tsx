@@ -22,7 +22,9 @@ import {
   faGrinBeam,
   faGrinBeamSweat,
   faDizzy,
-  faGhost
+  faGhost,
+  faBurn,
+  faLevelDownAlt
 } from "@fortawesome/free-solid-svg-icons";
 import { UpdateButton } from "./UpdateButton";
 import styles from "./UserTasks.module.css";
@@ -31,6 +33,9 @@ import { Link } from "react-router-dom";
 import { preventDefault } from "../util/handler";
 import { SignInForm } from "./SignInForm";
 
+interface ISortedUser extends IUser {
+  burn_down: number;
+}
 const barStyles = ["success", "warning", "info", "danger"];
 const getTasksByUser = (items: ITask[]) => _.groupBy(items, "assigned_to");
 export const AvatarSquare: React.FC<AvatarProps> = props => {
@@ -70,6 +75,12 @@ export const getSumCustomVal = (
     .sum()
     .value();
 
+const getSumCustomValClosed = (
+  custom_value_map: ICustomValueMap,
+  tasks: ITask[],
+  id: number
+) =>
+  getSumCustomVal(custom_value_map, tasks.filter(item => item.is_closed), id);
 export const getCustomValVersion = (
   custon_value_map: ICustomValueMap,
   task: ITask
@@ -221,7 +232,7 @@ const UserRow = ({
   hpd,
   tasks
 }: {
-  item: IUser;
+  item: ISortedUser;
   sums: { [key: string]: { e: number; r: number } };
   isPast: boolean;
   total: number;
@@ -268,6 +279,7 @@ const UserRow = ({
             <AvatarSquare src={item.photo} />
             <Link to={`/${item.id}`}>{item.username}</Link>
           </td>
+          <td className="text-right">{item.burn_down || ""}</td>
           <td className="text-right">{e}</td>
           <td className="text-right">{r}</td>
           <td>{_.isNumber(e) && <TaskProgress tasks={tasks} />}</td>
@@ -343,6 +355,22 @@ export const UserTasks = () => {
     [biz_days, isPlanning]
   );
   const tasksByUser = useMemo(() => getTasksByUser(tasks), [tasks]);
+  const sortedMembers = useMemo(
+    () =>
+      _.chain(members)
+        .map(member => ({
+          ...member,
+          burn_down: getSumCustomValClosed(
+            custom_value_map,
+            tasksByUser[member.id] || [],
+            Number(custom_eid)
+          )
+        }))
+        .sortBy("burn_down")
+        .reverse()
+        .value(),
+    [custom_eid, custom_value_map, members, tasksByUser]
+  );
   if (!custom_attr_e.id || !custom_attr_r.id || biz_days.length <= 1) {
     return null;
   }
@@ -382,6 +410,12 @@ export const UserTasks = () => {
         <thead>
           <tr>
             <th>Name</th>
+            {!isPlanning && (
+              <th className="text-danger">
+                <FontAwesomeIcon icon={faLevelDownAlt} />
+                <FontAwesomeIcon icon={faBurn} />
+              </th>
+            )}
             <th>{custom_attr_e.name}</th>
             {isPlanning ? (
               <>
@@ -397,7 +431,7 @@ export const UserTasks = () => {
           </tr>
         </thead>
         <tbody>
-          {(members || []).map(item => (
+          {(sortedMembers || []).map(item => (
             <UserRow
               key={item.id}
               isPast={isPast}
@@ -413,6 +447,7 @@ export const UserTasks = () => {
               <FontAwesomeIcon icon={faGhost} className="ml-1 mr-2 fa-lg" />
               Not assigned
             </td>
+            {!isPlanning && <td />}
             <td className="text-right text-danger">{notAssignedSum}</td>
             <td />
             <td />
