@@ -66,7 +66,8 @@ export enum ActionTypes {
   LOADED = "LOADED",
   SET_POMODORO_STATE = "SET_POMODORO_STATE",
   SET_POMODORO_MODE = "SET_POMODORO_MODE",
-  SET_TIMELIMIT_CLOSE_TASK = "SET_TIMELIMIT_CLOSE_TASK"
+  SET_TIMELIMIT_CLOSE_TASK = "SET_TIMELIMIT_CLOSE_TASK",
+  SET_IN_PROGRESS_TASK_STATUS_ID = "SET_IN_PROGRESS_TASK_STATUS_ID"
 }
 
 export interface IAction {
@@ -336,6 +337,12 @@ export interface SET_TIMELIMIT_CLOSE_TASK extends IAction {
     customize: boolean;
   };
 }
+export interface SET_IN_PROGRESS_TASK_STATUS_ID extends IAction {
+  type: ActionTypes.SET_IN_PROGRESS_TASK_STATUS_ID;
+  payload: {
+    task_status_id: string;
+  };
+}
 
 export type Actions =
   | SET_URL
@@ -394,4 +401,5 @@ export type Actions =
   | LOADED
   | SET_POMODORO_STATE
   | SET_POMODORO_MODE
-  | SET_TIMELIMIT_CLOSE_TASK;
+  | SET_TIMELIMIT_CLOSE_TASK
+  | SET_IN_PROGRESS_TASK_STATUS_ID;

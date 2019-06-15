@@ -247,6 +247,13 @@ export const reducer = (state = initialState, action: Actions) => {
         timelimit_close_task
       };
     }
+    case ActionTypes.SET_IN_PROGRESS_TASK_STATUS_ID: {
+      const { task_status_id } = action.payload;
+      return {
+        ...state,
+        in_progress_task_status_id: task_status_id
+      };
+    }
     default: {
       return state;
     }

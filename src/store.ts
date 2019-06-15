@@ -120,6 +120,7 @@ export interface IState {
   pomodoro_state: TimerState;
   pomodoro_mode: TimerMode;
   timelimit_close_task: string;
+  in_progress_task_status_id: string;
 }
 
 export enum StorageKey {
@@ -188,5 +189,6 @@ export const initialState: IState = {
   pomodoro_daily_totals: [],
   pomodoro_state: TimerState.STOPPED,
   pomodoro_mode: TimerMode.FOCUS,
-  timelimit_close_task: ""
+  timelimit_close_task: "",
+  in_progress_task_status_id: ""
 };

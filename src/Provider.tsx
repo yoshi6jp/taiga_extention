@@ -165,5 +165,17 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
       });
     }
   }, [dispatch, state.biz_days, state.milestone, state.timelimit_close_task]);
+  useEffect(() => {
+    if (state.task_statuses.length > 0) {
+      const task_status = state.task_statuses.find(
+        item => item.slug === "in-progress"
+      );
+      task_status &&
+        dispatch({
+          type: ActionTypes.SET_IN_PROGRESS_TASK_STATUS_ID,
+          payload: { task_status_id: String(task_status.id) }
+        });
+    }
+  }, [dispatch, state.task_statuses, state.task_statuses.length]);
   return <RootContext.Provider value={value}>{children}</RootContext.Provider>;
 };
