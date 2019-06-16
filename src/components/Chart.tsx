@@ -10,13 +10,12 @@ import {
   TooltipFormatter,
   LegendValueFormatter
 } from "recharts";
-import { ITask, ICustomValueMap } from "../store";
-import _ from "lodash";
+import { ITask } from "../store";
 import moment from "moment";
 import { RootContext } from "../Provider";
 import { dayNameFromIdx } from "./DaysSelector";
-import { getCustomVal } from "./UserTasks";
 import { Card, CardHeader } from "reactstrap";
+import { getSumCustomVal } from "./UserTasks";
 interface IChartItem {
   label: string;
   estimate: number;
@@ -53,17 +52,6 @@ const getTaskCreated = (tasks: ITask[], date: string) =>
         .endOf("days")
         .diff(moment(task.created_date)) > 0
   );
-
-const getSumVal = (
-  custom_value_map: ICustomValueMap,
-  tasks: ITask[],
-  custom_eid: string
-) => {
-  return _.chain(tasks)
-    .map(task => getCustomVal(custom_value_map, task, Number(custom_eid)))
-    .sum()
-    .value();
-};
 export const Chart = ({ tasks }: { tasks: ITask[] }) => {
   const [data, setData] = useState<IChartItem[]>([]);
   const {
@@ -77,11 +65,12 @@ export const Chart = ({ tasks }: { tasks: ITask[] }) => {
   } = useContext(RootContext);
   useEffect(() => {
     const days_len = biz_days.length;
+    const eid = Number(custom_eid);
     if (days_len > 0 && tasks.length > 0 && custom_eid) {
-      const allTaskVal = getSumVal(
+      const allTaskVal = getSumCustomVal(
         custom_value_map,
         getTaskCreated(tasks, biz_days[0]),
-        custom_eid
+        eid
       );
       const data = biz_days.map((day, idx) => {
         const label = dayNameFromIdx(day, idx);
@@ -95,23 +84,15 @@ export const Chart = ({ tasks }: { tasks: ITask[] }) => {
           const add =
             idx === 0
               ? 0
-              : getSumVal(
+              : getSumCustomVal(
                   custom_value_map,
                   getTaskCreatedToday(tasks, day),
-                  custom_eid
+                  eid
                 );
           const result =
-            getSumVal(
-              custom_value_map,
-              getTaskCreated(tasks, day),
-              custom_eid
-            ) -
+            getSumCustomVal(custom_value_map, getTaskCreated(tasks, day), eid) -
             add -
-            getSumVal(
-              custom_value_map,
-              getTaskFinished(tasks, day),
-              custom_eid
-            );
+            getSumCustomVal(custom_value_map, getTaskFinished(tasks, day), eid);
           return { label, estimate, result, add };
         } else {
           return { label, estimate };

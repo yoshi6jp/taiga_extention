@@ -294,7 +294,7 @@ const UserRow = ({
     </tr>
   );
 };
-const getTaskSumByUser = (
+export const getTaskSumByUser = (
   items: ITask[],
   custom_value_map: ICustomValueMap,
   custom_eid: string,

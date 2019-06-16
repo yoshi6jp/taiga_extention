@@ -7,6 +7,7 @@ import "@material/form-field/dist/mdc.form-field.css";
 import "@rmwc/avatar/avatar.css";
 import "@material/chips/dist/mdc.chips.css";
 import "@material/linear-progress/dist/mdc.linear-progress.css";
+import "@material/elevation/dist/mdc.elevation.css";
 import "react-toastify/dist/ReactToastify.css";
 import "react-calendar-heatmap/dist/styles.css";
 import App from "./App";
