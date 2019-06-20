@@ -227,6 +227,7 @@ export interface PATCH_CUSTOM_VALUE extends IAction {
     use_pomodoro?: {
       used_number: number;
     };
+    update_status?: boolean;
   };
 }
 export interface FETCH_TASK_STATUSES extends IAction {

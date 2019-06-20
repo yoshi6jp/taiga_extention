@@ -27,6 +27,8 @@ export const patchCustomValue: ISideEffector = async (
             version
           });
           if (
+            action.meta &&
+            action.meta.update_status &&
             value > 0 &&
             in_progress_task_status_id &&
             !task.is_closed &&

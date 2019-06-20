@@ -535,6 +535,8 @@ const ResultInput: React.FC<CustomValueInputProps> = ({ item }) => {
   }, [isOpen]);
   const handleSubmit = useCallback(
     (value: number, used_number?: number) => {
+      const update_status = value > 0;
+      const use_pomodoro = used_number ? { used_number } : undefined;
       if (version) {
         dispatch({
           type: ActionTypes.PATCH_CUSTOM_VALUE,
@@ -544,7 +546,7 @@ const ResultInput: React.FC<CustomValueInputProps> = ({ item }) => {
             value,
             version
           },
-          meta: used_number ? { use_pomodoro: { used_number } } : undefined
+          meta: { use_pomodoro, update_status }
         });
         setSubmitting(true);
       }
