@@ -66,7 +66,7 @@ interface HeroItemProps {
 }
 const HeroItem: React.FC<HeroItemProps> = ({ name, src, value, ranking }) => {
   return (
-    <Col>
+    <Col sm={4}>
       <Card>
         <CardHeader
           className={classNames(
@@ -79,7 +79,7 @@ const HeroItem: React.FC<HeroItemProps> = ({ name, src, value, ranking }) => {
         </CardHeader>
         <CardBody>
           <CardTitle>
-            <h2>
+            <h2 className="text-truncate" title={name}>
               <AvatarSquare src={src} size="xlarge" />
               {name}
             </h2>
