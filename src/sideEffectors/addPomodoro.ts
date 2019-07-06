@@ -28,7 +28,7 @@ export const addPomodoro: ISideEffector = async (action, dispatch, state) => {
             value,
             version
           },
-          meta: { use_pomodoro: { used_number: 1 } }
+          meta: { use_pomodoro: { used_number: 1 }, update_status: true }
         });
       }
     }
