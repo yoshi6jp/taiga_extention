@@ -239,18 +239,59 @@ export const Pomodoro: React.FC = () => {
   const handleRemove = useCallback(() => {
     dispatch({ type: ActionTypes.RESET_TASK_ID });
   }, [dispatch]);
+  const handleAddFBTimer: TimerEventListener = useCallback(
+    status => {
+      let title: string = " from firebase!";
+      let num = pomodoro_number;
+      const { remaining } = status;
+
+      if (status.mode === TimerMode.FOCUS) {
+        num++;
+        if (num % 4 === 0) {
+          title = `Take a Long Break ${title}`;
+        } else {
+          title = `Take a Short Break ${title}`;
+        }
+      } else {
+        title = `Start Focusing ${title}`;
+      }
+      const body = `${num} Pomodoros today!`;
+      dispatch({
+        type: ActionTypes.ADD_FB_TIMER,
+        payload: {
+          title,
+          body,
+          remaining
+        }
+      });
+    },
+    [dispatch, pomodoro_number]
+  );
+  const handleDelFBTimer: TimerEventListener = useCallback(
+    status => {
+      dispatch({
+        type: ActionTypes.DEL_FB_TIMER
+      });
+    },
+    [dispatch]
+  );
+
   useEffect(() => {
     timer.on("tick", handleTick);
     timer.on("start", handleState);
+    timer.on("start", handleAddFBTimer);
     timer.on("stop", handleState);
+    timer.on("stop", handleDelFBTimer);
     timer.on("pause", handleState);
+    timer.on("pause", handleDelFBTimer);
     timer.on("resume", handleState);
+    timer.on("resume", handleAddFBTimer);
     timer.on("expire", handleExpire);
     timer.on("change_mode", handleMode);
     return () => {
       timer.removeAllListeners();
     };
-  }, [handleExpire, handleMode, handleState, handleTick]);
+  }, [handleExpire, handleMode, handleState, handleTick, handleAddFBTimer, handleDelFBTimer]);
   useEffect(() => {
     setMode(timer.mode);
     setState(timer.state);

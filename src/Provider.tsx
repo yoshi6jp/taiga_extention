@@ -8,6 +8,7 @@ import { Actions } from "./actions";
 import { useSideEffector } from "./util/useSideEffector";
 import { rootSideEffector } from "./sideEffectors";
 import { init } from "./init";
+import { messaging } from "./util/firebase";
 export const baseUrl = (url: string) => `${url.replace(/[¥/]$/, "")}/api/v1`;
 const getCustomAttr = (items: ICustomAttr[], id: number) =>
   _.find(items, { id });
@@ -177,5 +178,20 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
         });
     }
   }, [dispatch, state.task_statuses, state.task_statuses.length]);
+  useEffect(() => {
+    messaging.onTokenRefresh(async () => {
+      const token = await messaging.getToken();
+      dispatch({
+        type: ActionTypes.SET_TOKEN,
+        payload: { token }
+      });
+    });
+    messaging.getToken().then(token => {
+      dispatch({
+        type: ActionTypes.SET_TOKEN,
+        payload: { token }
+      });
+    });
+  }, [dispatch]);
   return <RootContext.Provider value={value}>{children}</RootContext.Provider>;
 };

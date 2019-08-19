@@ -9,6 +9,7 @@ const signIn = (dispatch: Dispatch<Actions>) => {
 };
 const syncStorage = (dispatch: Dispatch<Actions>) => {
   const url = getFromStorage(StorageKey.URL);
+  const timer_id = getFromStorage(StorageKey.TIMER_ID);
   const pid = getFromStorage(StorageKey.PID);
   const mid = getFromStorage(StorageKey.MID);
   const custom_eid = getFromStorageWithSubkey(StorageKey.CUSTOM_EID, pid);
@@ -30,6 +31,8 @@ const syncStorage = (dispatch: Dispatch<Actions>) => {
     getFromStorage(StorageKey.POMODORO_USED_NUMBER) || "0"
   );
   const task_id = getFromStorage(StorageKey.TASK_ID);
+  timer_id &&
+    dispatch({ type: ActionTypes.SET_TIMER_ID, payload: { timer_id } });
   url && dispatch({ type: ActionTypes.SET_URL, payload: { url } });
   pid && dispatch({ type: ActionTypes.SET_PID, payload: { pid } });
   mid && dispatch({ type: ActionTypes.SET_MID, payload: { mid } });

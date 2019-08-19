@@ -84,6 +84,8 @@ export interface IProject {
 }
 export type ICustomValueMap = WeakMap<ITask, ICustomValue>;
 export interface IState {
+  token: string | null;
+  timer_id: string | null;
   url: string;
   auth_token: string;
   auth_error: boolean;
@@ -125,6 +127,7 @@ export interface IState {
 
 export enum StorageKey {
   URL = "taiga_url",
+  TIMER_ID = "taiga_timer_id",
   PID = "taiga_pid",
   MID = "taiga_mid",
   TASK_ID = "taiga_task_id",
@@ -154,6 +157,8 @@ export const setToStorageWithSubkey = (
   item: string
 ) => (subkey ? setToStorage(`${subkey}/${key}`, item) : null);
 export const initialState: IState = {
+  token: null,
+  timer_id: null,
   url: "",
   auth_token: "",
   auth_error: false,

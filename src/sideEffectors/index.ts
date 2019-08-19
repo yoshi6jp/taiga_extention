@@ -28,6 +28,9 @@ import { calcPomodoroTotal } from "./calcPomodoroTotal";
 import { loadPomodoroTotals } from "./loadPomodoroTotals";
 import { syncTaskId } from "./syncTaskId";
 import { setTimelineCloseTask } from "./setTimelineCloseTask";
+import { addFBTimer } from "./addFBTimer";
+import { delFBTimer } from "./dellFBTimer";
+import { setTimerId } from "./setTimerId";
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
 import { toastr } from "../util/toastr";
 export { ActionTypes };
@@ -176,6 +179,18 @@ export const rootSideEffector = (
     }
     case ActionTypes.SET_TIMELIMIT_CLOSE_TASK: {
       setTimelineCloseTask(action, dispatch, state);
+      break;
+    }
+    case ActionTypes.ADD_FB_TIMER: {
+      addFBTimer(action, dispatch, state);
+      break;
+    }
+    case ActionTypes.DEL_FB_TIMER: {
+      delFBTimer(action, dispatch, state);
+      break;
+    }
+    case ActionTypes.SET_TIMER_ID: {
+      setTimerId(action, dispatch, state);
       break;
     }
     default: {

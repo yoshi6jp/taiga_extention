@@ -11,6 +11,10 @@ import { IPomodoroHistory, IDailyTotal } from "./AppDb";
 import { TimerState, TimerMode } from "./util/timer";
 
 export enum ActionTypes {
+  SET_TOKEN = "SET_TOKEN",
+  SET_TIMER_ID = "SET_TIMER_ID",
+  ADD_FB_TIMER = "ADD_FB_TIMER",
+  DEL_FB_TIMER = "DEL_FB_TIMER",
   SET_URL = "SET_URL",
   SIGN_IN = "SIGN_IN",
   SET_AUTH_TOKEN = "SET_AUTH_TOKEN",
@@ -75,7 +79,21 @@ export interface IAction {
   payload?: any;
   meta?: { [key: string]: any };
 }
-
+export interface SET_TOKEN extends IAction {
+  type: ActionTypes.SET_TOKEN;
+  payload: { token: string | null };
+}
+export interface SET_TIMER_ID extends IAction {
+  type: ActionTypes.SET_TIMER_ID;
+  payload: { timer_id: string | null };
+}
+export interface ADD_FB_TIMER extends IAction {
+  type: ActionTypes.ADD_FB_TIMER;
+  payload: { title: string; body: string; remaining: number };
+}
+export interface DEL_FB_TIMER extends IAction {
+  type: ActionTypes.DEL_FB_TIMER;
+}
 export interface SET_URL extends IAction {
   type: ActionTypes.SET_URL;
   payload: { url: string };
@@ -346,6 +364,10 @@ export interface SET_IN_PROGRESS_TASK_STATUS_ID extends IAction {
 }
 
 export type Actions =
+  | SET_TOKEN
+  | SET_TIMER_ID
+  | ADD_FB_TIMER
+  | DEL_FB_TIMER
   | SET_URL
   | SIGN_IN
   | SET_AUTH_TOKEN

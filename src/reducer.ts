@@ -3,6 +3,14 @@ import { initialState, IProject, ICustomValueMap, IMilestone } from "./store";
 import { ActionTypes, Actions } from "./actions";
 export const reducer = (state = initialState, action: Actions) => {
   switch (action.type) {
+    case ActionTypes.SET_TOKEN: {
+      const { token } = action.payload;
+      return { ...state, token };
+    }
+    case ActionTypes.SET_TIMER_ID: {
+      const { timer_id } = action.payload;
+      return { ...state, timer_id };
+    }
     case ActionTypes.SET_URL: {
       const { url } = action.payload;
       return { ...state, url };

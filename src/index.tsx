@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "react-calendar-heatmap/dist/styles.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
+import "./util/firebase";
 
 ReactDOM.render(<App />, document.getElementById("root"));
 
