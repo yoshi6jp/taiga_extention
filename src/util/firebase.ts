@@ -64,7 +64,7 @@ export const addTimer = async (
     body,
     remaining,
     token,
-    icon: "/tomato.png",
+    icon: "./tomato.png",
     click_action: window.location.href
   });
   return id;
