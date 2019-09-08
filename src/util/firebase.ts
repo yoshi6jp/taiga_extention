@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import _ from "lodash";
 import firebase from "firebase/app";
 import "firebase/messaging";
 import "firebase/firestore";
@@ -24,17 +25,24 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 export const messaging = firebase.messaging();
+let token: string | null = null;
+navigator.serviceWorker
+  .register("./firebase-messaging-sw.js")
+  .then(registration => {
+    if (!_.get(messaging, "registrationToUse")) {
+      messaging.useServiceWorker(registration);
+    }
+    messaging.usePublicVapidKey(VapidKey || "");
+    messaging.onTokenRefresh(async () => {
+      token = await messaging.getToken();
+    });
+    messaging.getToken().then(val => {
+      token = val;
+    });
+  });
 const db = firebase.firestore();
 export const Timers = db.collection("timers");
-messaging.usePublicVapidKey(VapidKey || "");
-let token: string | null = null;
 export const getToken = () => token;
-messaging.onTokenRefresh(async () => {
-  token = await messaging.getToken();
-});
-messaging.getToken().then(val => {
-  token = val;
-});
 
 messaging
   .requestPermission()
