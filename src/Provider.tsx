@@ -8,7 +8,8 @@ import { Actions } from "./actions";
 import { useSideEffector } from "./util/useSideEffector";
 import { rootSideEffector } from "./sideEffectors";
 import { init } from "./init";
-import { messaging } from "./util/firebase";
+import { messaging, Timers } from "./util/firebase";
+import { TimerMode } from "./util/timer";
 export const baseUrl = (url: string) => `${url.replace(/[¥/]$/, "")}/api/v1`;
 const getCustomAttr = (items: ICustomAttr[], id: number) =>
   _.find(items, { id });
@@ -190,6 +191,16 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
       dispatch({
         type: ActionTypes.SET_TOKEN,
         payload: { token }
+      });
+    });
+  }, [dispatch]);
+  useEffect(() => {
+    Object.values(TimerMode).forEach(mode => {
+      Timers.where("mode", "==", mode).onSnapshot(docs => {
+        dispatch({
+          type: ActionTypes.SET_POMODORO_LIVE_COUNT,
+          payload: { mode, value: docs.size }
+        });
       });
     });
   }, [dispatch]);

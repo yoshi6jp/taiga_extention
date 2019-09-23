@@ -262,6 +262,16 @@ export const reducer = (state = initialState, action: Actions) => {
         in_progress_task_status_id: task_status_id
       };
     }
+    case ActionTypes.SET_POMODORO_LIVE_COUNT: {
+      const { mode, value } = action.payload;
+      return {
+        ...state,
+        pomodoro_live_counts: {
+          ...state.pomodoro_live_counts,
+          [mode]: value
+        }
+      };
+    }
     default: {
       return state;
     }

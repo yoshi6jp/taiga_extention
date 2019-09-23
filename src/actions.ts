@@ -71,7 +71,8 @@ export enum ActionTypes {
   SET_POMODORO_STATE = "SET_POMODORO_STATE",
   SET_POMODORO_MODE = "SET_POMODORO_MODE",
   SET_TIMELIMIT_CLOSE_TASK = "SET_TIMELIMIT_CLOSE_TASK",
-  SET_IN_PROGRESS_TASK_STATUS_ID = "SET_IN_PROGRESS_TASK_STATUS_ID"
+  SET_IN_PROGRESS_TASK_STATUS_ID = "SET_IN_PROGRESS_TASK_STATUS_ID",
+  SET_POMODORO_LIVE_COUNT = "SET_POMODORO_LIVE_COUNT"
 }
 
 export interface IAction {
@@ -362,6 +363,13 @@ export interface SET_IN_PROGRESS_TASK_STATUS_ID extends IAction {
     task_status_id: string;
   };
 }
+export interface SET_POMODORO_LIVE_COUNT extends IAction {
+  type: ActionTypes.SET_POMODORO_LIVE_COUNT;
+  payload: {
+    mode: TimerMode;
+    value: number;
+  };
+}
 
 export type Actions =
   | SET_TOKEN
@@ -425,4 +433,5 @@ export type Actions =
   | SET_POMODORO_STATE
   | SET_POMODORO_MODE
   | SET_TIMELIMIT_CLOSE_TASK
-  | SET_IN_PROGRESS_TASK_STATUS_ID;
+  | SET_IN_PROGRESS_TASK_STATUS_ID
+  | SET_POMODORO_LIVE_COUNT;

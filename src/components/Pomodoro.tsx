@@ -34,7 +34,8 @@ import {
   faRedo,
   faCookie,
   faTimes,
-  faTasks
+  faTasks,
+  faUserFriends
 } from "@fortawesome/free-solid-svg-icons";
 import {
   TimerState,
@@ -115,7 +116,8 @@ export const Pomodoro: React.FC = () => {
       pomodoro_used_number,
       task_id,
       task,
-      auth_token
+      auth_token,
+      pomodoro_live_counts
     },
     dispatch
   } = useContext(RootContext);
@@ -234,7 +236,9 @@ export const Pomodoro: React.FC = () => {
   );
   const handleRetry = useCallback(() => {
     timer.changeMode(TimerMode.FOCUS);
-    timer.start();
+    _.defer(() => {
+      timer.start();
+    });
   }, []);
   const handleRemove = useCallback(() => {
     dispatch({ type: ActionTypes.RESET_TASK_ID });
@@ -291,7 +295,14 @@ export const Pomodoro: React.FC = () => {
     return () => {
       timer.removeAllListeners();
     };
-  }, [handleExpire, handleMode, handleState, handleTick, handleAddFBTimer, handleDelFBTimer]);
+  }, [
+    handleExpire,
+    handleMode,
+    handleState,
+    handleTick,
+    handleAddFBTimer,
+    handleDelFBTimer
+  ]);
   useEffect(() => {
     setMode(timer.mode);
     setState(timer.state);
@@ -378,6 +389,7 @@ export const Pomodoro: React.FC = () => {
   const taskSubject = task
     ? _.truncate(`#${task.ref} ${task.subject}`, { length: 10 })
     : "";
+  const displayLive = Object.values(pomodoro_live_counts).some(val => val > 0);
   return (
     <Card className={classNames(styles.top, "sticky-top")}>
       <ThemeProvider
@@ -459,6 +471,37 @@ export const Pomodoro: React.FC = () => {
                   {taskSubject ? taskSubject : <Spinner type="grow" />}
                 </Chip>
               </ChipSet>
+            )}
+            {displayLive && (
+              <div className="ml-1">
+                <div
+                  className={classNames(
+                    "w-100",
+                    "text-light",
+                    "bg-danger",
+                    "text-center",
+                    "rounded",
+                    "shadow",
+                    "font-weight-bold",
+                    styles.live
+                  )}
+                >
+                  <FontAwesomeIcon
+                    className="ml-1"
+                    icon={faUserFriends}
+                  ></FontAwesomeIcon>
+                  <span className="mx-1">LIVE</span>
+                </div>
+                <div>
+                  {Object.entries(pomodoro_live_counts)
+                    .filter(([mode, val]) => val > 0)
+                    .map(([mode, val]) => (
+                      <Badge key={mode} color="light" className="border">
+                        <TimerIcon mode={mode as TimerMode} />:{val}
+                      </Badge>
+                    ))}
+                </div>
+              </div>
             )}
           </InputGroup>
           {pomodoro_number > 0 && (

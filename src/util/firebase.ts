@@ -3,6 +3,7 @@ import _ from "lodash";
 import firebase from "firebase/app";
 import "firebase/messaging";
 import "firebase/firestore";
+import { TimerMode } from "./timer";
 dotenv.config();
 const {
   REACT_APP_apiKey: apiKey,
@@ -57,7 +58,8 @@ export const addTimer = async (
   title: string,
   body: string,
   remaining: number,
-  token: string
+  token: string,
+  mode: TimerMode
 ) => {
   const { id } = await Timers.add({
     title,
@@ -65,7 +67,8 @@ export const addTimer = async (
     remaining,
     token,
     icon: "./tomato.png",
-    click_action: window.location.href
+    click_action: window.location.href,
+    mode
   });
   return id;
 };

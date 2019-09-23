@@ -4,6 +4,11 @@ export interface ICustomAttr {
   id: number;
   name: string;
 }
+interface IPomodoroCounts {
+  [TimerMode.FOCUS]: number;
+  [TimerMode.SHORT]: number;
+  [TimerMode.LONG]: number;
+}
 export interface IAuthToken {
   auth_token: string;
 }
@@ -123,6 +128,7 @@ export interface IState {
   pomodoro_mode: TimerMode;
   timelimit_close_task: string;
   in_progress_task_status_id: string;
+  pomodoro_live_counts: IPomodoroCounts;
 }
 
 export enum StorageKey {
@@ -156,6 +162,7 @@ export const setToStorageWithSubkey = (
   subkey: string,
   item: string
 ) => (subkey ? setToStorage(`${subkey}/${key}`, item) : null);
+
 export const initialState: IState = {
   token: null,
   timer_id: null,
@@ -195,5 +202,10 @@ export const initialState: IState = {
   pomodoro_state: TimerState.STOPPED,
   pomodoro_mode: TimerMode.FOCUS,
   timelimit_close_task: "",
-  in_progress_task_status_id: ""
+  in_progress_task_status_id: "",
+  pomodoro_live_counts: {
+    [TimerMode.FOCUS]: 0,
+    [TimerMode.SHORT]: 0,
+    [TimerMode.LONG]: 0
+  }
 };
