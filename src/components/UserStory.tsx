@@ -122,9 +122,7 @@ const TaskLink = ({ item }: { item: ITask }) => {
     state: { url }
   } = useContext(RootContext);
   const taskName = `#${item.ref} ${item.subject}`;
-  const href = `${url}/project/${item.project_extra_info.slug}/task/${
-    item.ref
-  }`;
+  const href = `${url}/project/${item.project_extra_info.slug}/task/${item.ref}`;
   return (
     <a href={href} target="_blank" rel="noopener noreferrer" title={taskName}>
       <FontAwesomeIcon icon={faExternalLinkAlt} /> {taskName}
@@ -684,14 +682,12 @@ const TaskTimerButton: React.FC<TaskItemProps> = ({ item }) => {
       });
     }
     if (pomodoro_state === TimerState.STOPPED) {
-      timer.changeMode(TimerMode.FOCUS);
-      timer.start();
+      timer.changeMode(TimerMode.FOCUS, true);
     } else {
       if (pomodoro_mode === TimerMode.FOCUS) {
         timer.resume();
       } else {
-        timer.changeMode(TimerMode.FOCUS);
-        timer.start();
+        timer.changeMode(TimerMode.FOCUS, true);
       }
     }
   }, [dispatch, item.id, pomodoro_mode, pomodoro_state, task_id]);

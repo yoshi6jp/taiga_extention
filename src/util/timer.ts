@@ -165,7 +165,7 @@ class Timer extends EventEmitter {
     this.stop();
     this.start();
   }
-  changeMode(mode: TimerMode) {
+  changeMode(mode: TimerMode, start?: boolean) {
     this.stop();
     this.mode = mode;
     this.duration = TimerDurationMin[mode] * 60;
@@ -173,6 +173,11 @@ class Timer extends EventEmitter {
     this.emit("change_mode", this.status);
 
     this.saveStorage();
+    if (start) {
+      _.defer(() => {
+        this.start();
+      });
+    }
   }
   setExpireTimeout(seconds: number) {
     this.expireTimeout = setTimeout(() => {

@@ -235,10 +235,7 @@ export const Pomodoro: React.FC = () => {
     [dispatch, handleState, pomodoro_number]
   );
   const handleRetry = useCallback(() => {
-    timer.changeMode(TimerMode.FOCUS);
-    _.defer(() => {
-      timer.start();
-    });
+    timer.changeMode(TimerMode.FOCUS, true);
   }, []);
   const handleRemove = useCallback(() => {
     dispatch({ type: ActionTypes.RESET_TASK_ID });
