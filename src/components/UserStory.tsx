@@ -57,7 +57,8 @@ import {
   isCustomValInvalid,
   isCustomValValid,
   Medal,
-  AvatarSquare
+  AvatarSquare,
+  getSumCustomVal
 } from "./UserTasks";
 import { ToggleIcon } from "./Controller";
 import ListGroup from "reactstrap/lib/ListGroup";
@@ -700,14 +701,22 @@ const TaskTimerButton: React.FC<TaskItemProps> = ({ item }) => {
       pomodoro_state === TimerState.RUNNING
     ) {
       return (
-        <Button className="mr-2" color="danger" onClick={handlePause}>
+        <Button
+          className={classNames("mr-2", styles.task_timer_btn)}
+          color="danger"
+          onClick={handlePause}
+        >
           <FontAwesomeIcon icon={faPause} />
           <Tomato />
         </Button>
       );
     } else {
       return (
-        <Button onClick={handleStart} color="primary" className="mr-2">
+        <Button
+          onClick={handleStart}
+          color="primary"
+          className={classNames("mr-2", styles.task_timer_btn)}
+        >
           <FontAwesomeIcon icon={faPlay} />
           <Tomato />
         </Button>
@@ -840,12 +849,24 @@ export const UserStoryWithTaskUser: React.FC<UserStoryProps> = ({ item }) => {
 
 export const UserStory: React.FC<UserStoryProps> = ({ item }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const {
+    state: { custom_value_map, custom_attr_e, custom_attr_r }
+  } = useContext(RootContext);
   const toggle = useCallback(() => {
     setIsOpen(!isOpen);
   }, [isOpen, setIsOpen]);
   useEffect(() => {
     setIsOpen(!item.is_closed);
   }, [item.is_closed, setIsOpen]);
+  const e = useMemo(
+    () => getSumCustomVal(custom_value_map, item.tasks, custom_attr_e.id),
+    [custom_attr_e.id, custom_value_map, item.tasks]
+  );
+  const r = useMemo(
+    () => getSumCustomVal(custom_value_map, item.tasks, custom_attr_r.id),
+    [custom_attr_r.id, custom_value_map, item.tasks]
+  );
+  const loading = !custom_value_map.has(item.tasks[0]);
   return (
     <Card>
       <CardHeader
@@ -854,11 +875,31 @@ export const UserStory: React.FC<UserStoryProps> = ({ item }) => {
         })}
         onClick={toggle}
       >
-        <ToggleIcon isOpen={isOpen} />
-        <UserStoryLink
-          user_story_extra_info={item.user_story_extra_info}
-          project_extra_info={item.project_extra_info}
-        />
+        <Row>
+          <Col xs={12} md={8} className="text-truncate">
+            <ToggleIcon isOpen={isOpen} />
+            <UserStoryLink
+              user_story_extra_info={item.user_story_extra_info}
+              project_extra_info={item.project_extra_info}
+            />
+          </Col>
+          <Col xs={6} md={2}>
+            <InputGroup size="sm" className="my-n1">
+              <InputGroupAddon addonType="prepend">
+                {custom_attr_e.name}
+              </InputGroupAddon>
+              {loading ? <InputGroupSpinner /> : <Input readOnly value={e} />}
+            </InputGroup>
+          </Col>
+          <Col xs={6} md={2}>
+            <InputGroup size="sm" className="my-n1">
+              <InputGroupAddon addonType="prepend">
+                {custom_attr_r.name}
+              </InputGroupAddon>
+              {loading ? <InputGroupSpinner /> : <Input readOnly value={r} />}
+            </InputGroup>
+          </Col>
+        </Row>
       </CardHeader>
       <Collapse isOpen={isOpen}>
         <ListGroup>

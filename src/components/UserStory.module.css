@@ -16,3 +16,6 @@
 .is_closed {
   background-color: #d6d8db;
 }
+.task_timer_btn {
+  min-width: 4rem;
+}

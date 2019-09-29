@@ -14,13 +14,14 @@ import {
 import classNames from "classnames";
 import { InputGroupSpinner } from "./InputGroupSpinner";
 import {
-  getCustomVal,
   getCustomValVersion,
   isCustomValInvalid,
   isCustomValValid,
-  TaskProgress
+  TaskProgress,
+  getSumCustomVal
 } from "./UserTasks";
 import { UserStory, Grade, convToTasksByUserStory } from "./UserStory";
+
 export const PersonalTasks: React.FC = () => {
   const {
     state: {
@@ -34,18 +35,13 @@ export const PersonalTasks: React.FC = () => {
   const userStories = useMemo(() => convToTasksByUserStory(user_tasks), [
     user_tasks
   ]);
-  const [e, r] = useMemo(
-    () =>
-      user_tasks.reduce(
-        (result, item) => {
-          return [
-            result[0] + getCustomVal(custom_value_map, item, custom_attr_e.id),
-            result[1] + getCustomVal(custom_value_map, item, custom_attr_r.id)
-          ];
-        },
-        [0, 0]
-      ),
-    [custom_attr_e.id, custom_attr_r.id, custom_value_map, user_tasks]
+  const e = useMemo(
+    () => getSumCustomVal(custom_value_map, user_tasks, custom_attr_e.id),
+    [custom_attr_e.id, custom_value_map, user_tasks]
+  );
+  const r = useMemo(
+    () => getSumCustomVal(custom_value_map, user_tasks, custom_attr_r.id),
+    [custom_attr_r.id, custom_value_map, user_tasks]
   );
   const valid = useMemo(
     () => isCustomValValid(e, r, userStories.every(item => item.is_closed)),
