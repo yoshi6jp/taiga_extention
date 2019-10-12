@@ -6,10 +6,9 @@ import { RootContext } from "../Provider";
 import { Chart } from "./Chart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowCircleLeft } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ActionTypes } from "../actions";
 import { UpdateButton } from "./UpdateButton";
-import useRouter from "use-react-router";
 import { SignInForm } from "./SignInForm";
 
 export const PersonalPage: React.FC = () => {
@@ -17,11 +16,7 @@ export const PersonalPage: React.FC = () => {
     state: { user, user_tasks, url },
     dispatch
   } = useContext(RootContext);
-  const {
-    match: {
-      params: { uid }
-    }
-  } = useRouter();
+  const { uid } = useParams();
   useEffect(() => {
     if (uid && url) {
       dispatch({ type: ActionTypes.FETCH_USER, payload: { uid } });
