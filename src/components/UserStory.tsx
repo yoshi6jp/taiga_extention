@@ -13,7 +13,6 @@ import {
   Collapse,
   Row,
   Col,
-  Input,
   InputGroup,
   InputGroupAddon,
   UncontrolledDropdown,
@@ -21,13 +20,14 @@ import {
   DropdownItem,
   DropdownMenu,
   Spinner,
-  Form,
   Popover,
   PopoverHeader,
   PopoverBody
 } from "reactstrap";
+import { ToggleNumberInput } from "./common/ToggleNumberInput";
 import classNames from "classnames";
 import { TaskTimerButton } from "./task/TaskTimerButton";
+import { InputGroupDisplayNumber } from "./common/InputGroupDisplayNumber";
 import {
   ITasksByUserStory,
   ITask,
@@ -40,14 +40,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faExternalLinkAlt,
   faCloudUploadAlt,
-  faEdit,
-  faHandPointRight,
   faUserTimes,
   faPlus,
   faMinus,
-  faEraser,
+  faEraser
 } from "@fortawesome/free-solid-svg-icons";
-import { InputGroupSpinner } from "./InputGroupSpinner";
 import { RootContext } from "../Provider";
 import { Tomato, TomatoState } from "./Tomato";
 import {
@@ -63,7 +60,6 @@ import { ToggleIcon } from "./Controller";
 import ListGroup from "reactstrap/lib/ListGroup";
 import ListGroupItem from "reactstrap/lib/ListGroupItem";
 import styles from "./UserStory.module.css";
-import { Switch } from "@rmwc/switch";
 import InputGroupText from "reactstrap/lib/InputGroupText";
 import { ActionTypes } from "../actions";
 import _ from "lodash";
@@ -79,8 +75,9 @@ export const convToTasksByUserStory = (tasks: ITask[]) =>
       is_closed: items.every(task => task.is_closed)
     }))
     .value();
+const AuthMsg = "Need sign in!";
 const needAuthMsg = (disabled: boolean | undefined) =>
-  disabled ? "Need sign in!" : "";
+  disabled ? AuthMsg : "";
 const UserStoryLink = ({
   user_story_extra_info,
   project_extra_info
@@ -129,145 +126,6 @@ const TaskLink = ({ item }: { item: ITask }) => {
   );
 };
 
-interface ToggleNumberInputProps {
-  label: string;
-  value: number;
-  onSubmit?: (value: number) => void;
-  onEditable?: (value: boolean) => void;
-  onValueChange?: (value: number) => void;
-  valid?: boolean;
-  invalid?: boolean;
-  disabled?: boolean;
-  loading?: boolean;
-  id?: string;
-  submitting?: boolean;
-}
-const ToggleNumberInput: React.FC<ToggleNumberInputProps> = ({
-  label,
-  value,
-  onSubmit,
-  onEditable,
-  onValueChange,
-  valid,
-  invalid,
-  disabled,
-  loading,
-  id,
-  submitting
-}) => {
-  const [checked, setChecked] = useState(false);
-  const [val, setVal] = useState("");
-  const [running, setRunning] = useState(false);
-  const onChange = useCallback(
-    (evt: React.FormEvent<any>) => {
-      setChecked(evt.currentTarget.checked);
-    },
-    [setChecked]
-  );
-  const handleVal = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = e.target;
-      setVal(value);
-      onValueChange && onValueChange(Number(value));
-    },
-    [onValueChange]
-  );
-  const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
-      const num = Number(val);
-      if (checked && val !== "" && num >= 0 && onSubmit) {
-        onSubmit(num);
-        setChecked(false);
-        setRunning(true);
-      }
-      e.preventDefault();
-    },
-    [checked, val, onSubmit, setChecked]
-  );
-  useEffect(() => {
-    if (disabled) {
-      setChecked(false);
-    }
-  }, [setChecked, disabled]);
-  useEffect(() => {
-    setRunning(false);
-  }, [value]);
-  useEffect(() => {
-    onEditable && onEditable(checked);
-  }, [checked, onEditable]);
-  useEffect(() => {
-    if (submitting) {
-      setChecked(false);
-      setRunning(true);
-    }
-  }, [submitting]);
-  useEffect(() => {
-    if (loading) {
-      setChecked(false);
-    }
-  }, [loading]);
-  const title = needAuthMsg(disabled);
-  return (
-    <Form inline onSubmit={handleSubmit}>
-      <InputGroup className={styles.toggle_input}>
-        <InputGroupAddon addonType="prepend">{label}</InputGroupAddon>
-        {loading ? (
-          <InputGroupSpinner />
-        ) : (
-          <>
-            {checked ? (
-              <>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>{value}</InputGroupText>
-                </InputGroupAddon>
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <FontAwesomeIcon
-                      className="text-info"
-                      icon={faHandPointRight}
-                    />
-                  </InputGroupText>
-                </InputGroupAddon>
-                <Input
-                  onInput={handleVal}
-                  onChange={handleVal}
-                  defaultValue={String(value)}
-                  type="number"
-                  step="0.5"
-                  min="0"
-                  id={id}
-                />
-                <InputGroupAddon addonType="append">
-                  <Button color="info">
-                    <FontAwesomeIcon icon={faCloudUploadAlt} />
-                  </Button>
-                </InputGroupAddon>
-              </>
-            ) : (
-              <>
-                {running ? (
-                  <InputGroupSpinner />
-                ) : (
-                  <Input
-                    valid={valid}
-                    invalid={invalid}
-                    readOnly
-                    value={value}
-                  />
-                )}
-              </>
-            )}
-            <InputGroupAddon addonType="append" title={title}>
-              <Switch disabled={disabled} checked={checked} onChange={onChange}>
-                <FontAwesomeIcon className="text-info" icon={faEdit} />
-              </Switch>
-            </InputGroupAddon>
-          </>
-        )}
-      </InputGroup>
-    </Form>
-  );
-};
 interface GradeProps {
   e: number;
   r: number;
@@ -506,6 +364,7 @@ const EstimateInput: React.FC<CustomValueInputProps> = ({ item }) => {
       invalid={unEstimated}
       disabled={disabled}
       loading={loading}
+      disabledMessage={AuthMsg}
     />
   );
 };
@@ -812,20 +671,20 @@ export const UserStory: React.FC<UserStoryProps> = ({ item }) => {
             />
           </Col>
           <Col xs={6} md={2}>
-            <InputGroup size="sm" className="my-n1">
-              <InputGroupAddon addonType="prepend">
-                {custom_attr_e.name}
-              </InputGroupAddon>
-              {loading ? <InputGroupSpinner /> : <Input readOnly value={e} />}
-            </InputGroup>
+            <InputGroupDisplayNumber
+              label={custom_attr_e.name}
+              loading={loading}
+              value={e}
+              size="sm"
+            />
           </Col>
           <Col xs={6} md={2}>
-            <InputGroup size="sm" className="my-n1">
-              <InputGroupAddon addonType="prepend">
-                {custom_attr_r.name}
-              </InputGroupAddon>
-              {loading ? <InputGroupSpinner /> : <Input readOnly value={r} />}
-            </InputGroup>
+            <InputGroupDisplayNumber
+              label={custom_attr_r.name}
+              loading={loading}
+              value={r}
+              size="sm"
+            />
           </Col>
         </Row>
       </CardHeader>

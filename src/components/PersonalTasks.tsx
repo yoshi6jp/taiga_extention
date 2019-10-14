@@ -1,18 +1,8 @@
 import React, { useContext, useMemo } from "react";
 import { RootContext } from "../Provider";
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  Row,
-  Col
-} from "reactstrap";
+import { InputGroupDisplayNumber } from "./common/InputGroupDisplayNumber";
+import { Card, CardHeader, CardBody, CardFooter, Row, Col } from "reactstrap";
 import classNames from "classnames";
-import { InputGroupSpinner } from "./InputGroupSpinner";
 import {
   getCustomValVersion,
   isCustomValInvalid,
@@ -66,24 +56,20 @@ export const PersonalTasks: React.FC = () => {
         <CardBody>
           <Row>
             <Col>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  {custom_attr_e.name}
-                </InputGroupAddon>
-                {loading ? <InputGroupSpinner /> : <Input readOnly value={e} />}
-              </InputGroup>
+              <InputGroupDisplayNumber
+                label={custom_attr_e.name}
+                value={e}
+                loading={loading}
+              />
             </Col>
             <Col>
-              <InputGroup>
-                <InputGroupAddon addonType="prepend">
-                  {custom_attr_r.name}
-                </InputGroupAddon>
-                {loading ? (
-                  <InputGroupSpinner />
-                ) : (
-                  <Input readOnly value={r} invalid={invalid} valid={valid} />
-                )}
-              </InputGroup>
+              <InputGroupDisplayNumber
+                label={custom_attr_r.name}
+                value={r}
+                invalid={invalid}
+                valid={valid}
+                loading={loading}
+              />
             </Col>
             <Col>
               <Grade e={e} r={r} />

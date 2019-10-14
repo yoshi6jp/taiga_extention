@@ -1,0 +1,8 @@
+.input_group :global(.mdc-form-field) {
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+  padding: 0 12px;
+}
+.input_group :global(.mdc-form-field) > label {
+  margin-bottom: 0;
+}
