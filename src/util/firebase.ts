@@ -25,40 +25,49 @@ const firebaseConfig = {
   appId
 };
 firebase.initializeApp(firebaseConfig);
-export const messaging = firebase.messaging();
+let _messaging: firebase.messaging.Messaging | null = null;
+try {
+  _messaging = firebase.messaging();
+} catch (e) {
+  console.log(e);
+}
+export const messaging = _messaging;
 let token: string | null = null;
-navigator.serviceWorker
-  .register("./firebase-messaging-sw.js")
-  .then(registration => {
-    if (!_.get(messaging, "registrationToUse")) {
-      messaging.useServiceWorker(registration);
-    }
-    messaging.usePublicVapidKey(VapidKey || "");
-    messaging.onTokenRefresh(async () => {
-      token = await messaging.getToken();
+if (navigator.serviceWorker && messaging) {
+  navigator.serviceWorker
+    .register("./firebase-messaging-sw.js")
+    .then(registration => {
+      if (!_.get(messaging, "registrationToUse")) {
+        messaging.useServiceWorker(registration);
+      }
+      messaging.usePublicVapidKey(VapidKey || "");
+      messaging.onTokenRefresh(async () => {
+        token = await messaging.getToken();
+      });
+      messaging.getToken().then(val => {
+        token = val;
+      });
     });
-    messaging.getToken().then(val => {
-      token = val;
-    });
-  });
+}
 const db = firebase.firestore();
 export const Timers = db.collection("timers");
 export const getToken = () => token;
 
-messaging
-  .requestPermission()
-  .then(function() {
-    console.log("Notification permission granted.");
-  })
-  .catch(function(err) {
-    console.log("Unable to get permission to notify.", err);
-  });
-
+if (messaging) {
+  messaging
+    .requestPermission()
+    .then(function() {
+      console.log("Notification permission granted.");
+    })
+    .catch(function(err) {
+      console.log("Unable to get permission to notify.", err);
+    });
+}
 export const addTimer = async (
   title: string,
   body: string,
   remaining: number,
-  token: string,
+  token: string | null,
   mode: TimerMode
 ) => {
   const { id } = await Timers.add({

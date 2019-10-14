@@ -180,19 +180,23 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [dispatch, state.task_statuses, state.task_statuses.length]);
   useEffect(() => {
-    messaging.onTokenRefresh(async () => {
-      const token = await messaging.getToken();
-      dispatch({
-        type: ActionTypes.SET_TOKEN,
-        payload: { token }
+    if (messaging) {
+      messaging.onTokenRefresh(async () => {
+        if (messaging) {
+          const token = await messaging.getToken();
+          dispatch({
+            type: ActionTypes.SET_TOKEN,
+            payload: { token }
+          });
+        }
       });
-    });
-    messaging.getToken().then(token => {
-      dispatch({
-        type: ActionTypes.SET_TOKEN,
-        payload: { token }
+      messaging.getToken().then(token => {
+        dispatch({
+          type: ActionTypes.SET_TOKEN,
+          payload: { token }
+        });
       });
-    });
+    }
   }, [dispatch]);
   useEffect(() => {
     Object.values(TimerMode).forEach(mode => {
