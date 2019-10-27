@@ -2,6 +2,8 @@ import React, { useCallback, useContext } from "react";
 import { Input, InputGroup, InputGroupAddon } from "reactstrap";
 import { RootContext } from "../Provider";
 import { ActionTypes } from "../actions";
+import _ from "lodash";
+import { LinearLoader } from "./common/LinearLoader";
 
 export const CustomValuesSelector = () => {
   const {
@@ -36,35 +38,43 @@ export const CustomValuesSelector = () => {
     <div className="row">
       <InputGroup className="col">
         <InputGroupAddon addonType="prepend">Estimate</InputGroupAddon>
-        <Input
-          value={custom_eid}
-          name="eid"
-          type="select"
-          onChange={handleChange}
-        >
-          <option value=""> --- </option>
-          {custom_attrs.map(item => (
-            <option key={item.id} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </Input>
+        {_.isEmpty(custom_attrs) ? (
+          <LinearLoader></LinearLoader>
+        ) : (
+          <Input
+            value={custom_eid}
+            name="eid"
+            type="select"
+            onChange={handleChange}
+          >
+            <option value=""> --- </option>
+            {custom_attrs.map(item => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </Input>
+        )}
       </InputGroup>
       <InputGroup className="col">
         <InputGroupAddon addonType="prepend">Result</InputGroupAddon>
-        <Input
-          value={custom_rid}
-          name="rid"
-          type="select"
-          onChange={handleChange}
-        >
-          <option> --- </option>
-          {custom_attrs.map(item => (
-            <option key={item.id} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </Input>
+        {_.isEmpty(custom_attrs) ? (
+          <LinearLoader></LinearLoader>
+        ) : (
+          <Input
+            value={custom_rid}
+            name="rid"
+            type="select"
+            onChange={handleChange}
+          >
+            <option> --- </option>
+            {custom_attrs.map(item => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </Input>
+        )}
       </InputGroup>
     </div>
   );

@@ -7,10 +7,12 @@ import {
   CardHeader,
   Input,
   Label,
-  FormGroup
+  FormGroup,
+  InputGroup
 } from "reactstrap";
 import { IMilestone } from "../store";
 import { RootContext } from "../Provider";
+import { LinearLoader } from "./common/LinearLoader";
 import moment, { Moment } from "moment";
 import biz from "moment-business";
 import _ from "lodash";
@@ -116,13 +118,17 @@ const DayItem: React.FC<DayItemProps> = ({ item, idx }) => {
     </>
   );
 };
+type Moments = Moment[];
+type MomentOrNull = Moment | null;
+type MomentsOrNull = MomentOrNull[];
 
-export const DaysSelector: React.FC = () => {
+const DaysTable: React.FC = () => {
   const {
     state: { biz_days, milestone },
     dispatch
   } = useContext(RootContext);
-  const [items, setItems] = useState<Moment[]>([]);
+  const [items, setItems] = useState<Moments>([]);
+  const [weekdays, setWeekdays] = useState<MomentsOrNull[]>([]);
   useEffect(() => {
     if (milestone) {
       const items = getDays(milestone);
@@ -135,40 +141,56 @@ export const DaysSelector: React.FC = () => {
       }
     }
   }, [milestone, biz_days, dispatch]);
-  if (items.length === 0) {
-    return null;
-  } else {
-    const weekdays = _.chunk(
-      [..._.times(items[0].day(), () => null), ...items],
-      7
-    );
-    return (
-      <Card>
-        <CardHeader>Business Days</CardHeader>
-        <Table bordered>
-          <thead>
-            <tr>
-              {moment.weekdays().map((item, idx) => (
-                <th
-                  key={idx}
-                  className={classNames("text-center", weekClassName(idx))}
-                >
-                  {item}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {weekdays.map((days, i) => (
-              <tr key={i}>
-                {days.map((item, idx) => (
-                  <DayItem idx={idx} key={idx} item={item} />
-                ))}
-              </tr>
+  useEffect(() => {
+    if (items.length > 0) {
+      const weeks = _.chunk(
+        [..._.times(items[0].day(), () => null), ...items],
+        7
+      );
+      setWeekdays(weeks);
+    }
+  }, [items]);
+  return (
+    <Table bordered>
+      <thead>
+        <tr>
+          {moment.weekdays().map((item, idx) => (
+            <th
+              key={idx}
+              className={classNames("text-center", weekClassName(idx))}
+            >
+              {item}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {weekdays.map((days, i) => (
+          <tr key={i}>
+            {days.map((item, idx) => (
+              <DayItem idx={idx} key={idx} item={item} />
             ))}
-          </tbody>
-        </Table>
-      </Card>
-    );
-  }
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  );
+};
+
+export const DaysSelector: React.FC = () => {
+  const {
+    state: { milestone }
+  } = useContext(RootContext);
+  return (
+    <Card>
+      <CardHeader>Business Days</CardHeader>
+      {_.isEmpty(milestone) ? (
+        <InputGroup>
+          <LinearLoader />
+        </InputGroup>
+      ) : (
+        <DaysTable />
+      )}
+    </Card>
+  );
 };

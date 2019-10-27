@@ -30,9 +30,7 @@ import styles from "./Controller.module.css";
 import { ActionTypes } from "../actions";
 const getTaskboardUrl = (url: string, milestone: IMilestone) => {
   if (url && milestone.project_extra_info) {
-    return `${url}/project/${milestone.project_extra_info.slug}/taskboard/${
-      milestone.slug
-    }`;
+    return `${url}/project/${milestone.project_extra_info.slug}/taskboard/${milestone.slug}`;
   } else {
     return "";
   }

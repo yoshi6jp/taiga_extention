@@ -1,7 +1,9 @@
 import React, { useCallback, useContext } from "react";
 import { Input, InputGroup, InputGroupAddon } from "reactstrap";
+import { LinearLoader } from "./common/LinearLoader";
 import { RootContext } from "../Provider";
 import { ActionTypes } from "../actions";
+import _ from "lodash";
 export const ProjectSelector = () => {
   const {
     state: { pid, projects },
@@ -19,14 +21,18 @@ export const ProjectSelector = () => {
   return (
     <InputGroup className="col">
       <InputGroupAddon addonType="prepend">Project</InputGroupAddon>
-      <Input value={pid} type="select" onChange={handleChange}>
-        <option value=""> --- </option>
-        {projects.map(item => (
-          <option key={item.id} value={item.id}>
-            {item.name}
-          </option>
-        ))}
-      </Input>
+      {_.isEmpty(projects) ? (
+        <LinearLoader />
+      ) : (
+        <Input value={pid} type="select" onChange={handleChange}>
+          <option value=""> --- </option>
+          {projects.map(item => (
+            <option key={item.id} value={item.id}>
+              {item.name}
+            </option>
+          ))}
+        </Input>
+      )}
     </InputGroup>
   );
 };

@@ -1,7 +1,9 @@
 import React, { useCallback, useContext } from "react";
 import { Input, InputGroup, InputGroupAddon } from "reactstrap";
+import _ from "lodash";
 import { RootContext } from "../Provider";
 import { ActionTypes } from "../actions";
+import { LinearLoader } from "./common/LinearLoader";
 
 export const MilestoneSelector = () => {
   const {
@@ -21,14 +23,18 @@ export const MilestoneSelector = () => {
   return (
     <InputGroup className="col">
       <InputGroupAddon addonType="prepend">Sprint</InputGroupAddon>
-      <Input type="select" value={mid} onChange={handleChange}>
-        <option value=""> --- </option>
-        {milestones.map(item => (
-          <option key={item.id} value={item.id}>
-            {item.name}
-          </option>
-        ))}
-      </Input>
+      {_.isEmpty(milestones) ? (
+        <LinearLoader />
+      ) : (
+        <Input type="select" value={mid} onChange={handleChange}>
+          <option value=""> --- </option>
+          {milestones.map(item => (
+            <option key={item.id} value={item.id}>
+              {item.name}
+            </option>
+          ))}
+        </Input>
+      )}
     </InputGroup>
   );
 };
