@@ -9,7 +9,7 @@ import {
   isCustomValValid,
   TaskProgress,
   getSumCustomVal
-} from "./UserTasks";
+} from "./task/UserTasks";
 import { UserStory, Grade, convToTasksByUserStory } from "./UserStory";
 
 export const PersonalTasks: React.FC = () => {
@@ -34,7 +34,12 @@ export const PersonalTasks: React.FC = () => {
     [custom_attr_r.id, custom_value_map, user_tasks]
   );
   const valid = useMemo(
-    () => isCustomValValid(e, r, userStories.every(item => item.is_closed)),
+    () =>
+      isCustomValValid(
+        e,
+        r,
+        userStories.every(item => item.is_closed)
+      ),
     [e, r, userStories]
   );
   const invalid = useMemo(() => isCustomValInvalid(e, r), [e, r]);

@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Card, CardHeader } from "reactstrap";
 import { RootContext } from "../Provider";
 
-import { AvatarSquare } from "./UserTasks";
+import { AvatarSquare } from "./task/UserTasks";
 export const PersonalInfo: React.FC = () => {
   const {
     state: { user }

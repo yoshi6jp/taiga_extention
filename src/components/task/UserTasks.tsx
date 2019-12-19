@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useState, useMemo } from "react";
 import { Avatar, AvatarProps } from "@rmwc/avatar";
-import { ICustomValueMap, IUser, ITask } from "../store";
-import { RootContext } from "../Provider";
+import { ICustomValueMap, IUser, ITask } from "../../store";
+import { RootContext } from "../../Provider";
 import classNames from "classnames";
 import {
   Table,
@@ -26,12 +26,12 @@ import {
   faBurn,
   faLevelDownAlt
 } from "@fortawesome/free-solid-svg-icons";
-import { UpdateButton } from "./UpdateButton";
+import { UpdateButton } from "../UpdateButton";
 import styles from "./UserTasks.module.css";
 import moment from "moment";
 import { Link } from "react-router-dom";
-import { preventDefault } from "../util/handler";
-import { SignInForm } from "./SignInForm";
+import { preventDefault } from "../../util/handler";
+import { SignInForm } from "../SignInForm";
 
 interface ISortedUser extends IUser {
   burn_down: number;
@@ -80,7 +80,11 @@ const getSumCustomValClosed = (
   tasks: ITask[],
   id: number
 ) =>
-  getSumCustomVal(custom_value_map, tasks.filter(item => item.is_closed), id);
+  getSumCustomVal(
+    custom_value_map,
+    tasks.filter(item => item.is_closed),
+    id
+  );
 export const getCustomValVersion = (
   custon_value_map: ICustomValueMap,
   task: ITask

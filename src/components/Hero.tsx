@@ -11,10 +11,10 @@ import {
 import _ from "lodash";
 import classNames from "classnames";
 import { Elevation } from "@rmwc/elevation";
-import { AvatarSquare } from "./UserTasks";
+import { AvatarSquare } from "./task/UserTasks";
 // import CountUp from "react-countup";
 import { RootContext } from "../Provider";
-import { getTaskSumByUser } from "./UserTasks";
+import { getTaskSumByUser } from "./task/UserTasks";
 import { IUser, ITask } from "../store";
 import moment from "moment";
 import styles from "./Hero.module.css";

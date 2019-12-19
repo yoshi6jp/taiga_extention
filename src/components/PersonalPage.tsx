@@ -3,7 +3,7 @@ import { Button, Alert, Navbar } from "reactstrap";
 import { PersonalTasks } from "./PersonalTasks";
 import { PersonalInfo } from "./PersonalInfo";
 import { RootContext } from "../Provider";
-import { Chart } from "./chart/Chart";
+import { Chart } from "./chart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import { Link, useParams } from "react-router-dom";

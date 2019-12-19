@@ -55,7 +55,7 @@ import {
   Medal,
   AvatarSquare,
   getSumCustomVal
-} from "./UserTasks";
+} from "./task/UserTasks";
 import { ToggleIcon } from "./Controller";
 import ListGroup from "reactstrap/lib/ListGroup";
 import ListGroupItem from "reactstrap/lib/ListGroupItem";

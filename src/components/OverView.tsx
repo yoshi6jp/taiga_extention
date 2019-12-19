@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import { UserTasks } from "./UserTasks";
+import { UserTasks } from "./task/UserTasks";
 import { UnEstimatedTasks } from "./UnEstimatedTasks";
 import { NotAssignedTasks } from "./NotAssignedTasks";
-import { Chart } from "./chart/Chart";
+import { Chart } from "./chart";
 // import { Hero } from "./Hero";
 import { RootContext } from "../Provider";
 

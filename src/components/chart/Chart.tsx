@@ -9,13 +9,27 @@ import {
   Legend,
   TooltipFormatter
 } from "recharts";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faLevelDownAlt,
+  faLevelUpAlt
+} from "@fortawesome/free-solid-svg-icons";
+
 import { ITask } from "../../store";
 import moment from "moment";
 import _ from "lodash";
 import { RootContext } from "../../Provider";
 import { dayNameFromIdx } from "../DaysSelector";
-import { Card, CardHeader } from "reactstrap";
-import { getSumCustomVal } from "../UserTasks";
+import {
+  Card,
+  CardHeader,
+  UncontrolledButtonDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem
+} from "reactstrap";
+import { getSumCustomVal } from "../task/UserTasks";
+import { BurnUpChart } from "./BurnUp";
 interface IChartItem {
   label: string;
   ideal: number;
@@ -52,7 +66,39 @@ const getTaskCreated = (tasks: ITask[], date: string) =>
         .endOf("days")
         .diff(moment(task.created_date)) > 0
   );
+type ChartType = "Burn up" | "Burn down";
+interface ChartTypeItemProps {
+  type: ChartType;
+}
+
+const ChartTypeItem: React.FC<ChartTypeItemProps> = ({ type }) => {
+  const icon = type === "Burn down" ? faLevelDownAlt : faLevelUpAlt;
+  return (
+    <span>
+      {type}
+
+      <FontAwesomeIcon className="fa-fw" icon={icon} />
+    </span>
+  );
+};
+interface ChartTypeDropdownItemProps extends ChartTypeItemProps {
+  onSelect: (type: ChartType) => void;
+}
+const ChartTypeDropdownItem: React.FC<ChartTypeDropdownItemProps> = ({
+  type,
+  onSelect
+}) => {
+  const handleClick = useCallback(() => {
+    onSelect(type);
+  }, [onSelect, type]);
+  return (
+    <DropdownItem onClick={handleClick}>
+      <ChartTypeItem type={type} />
+    </DropdownItem>
+  );
+};
 export const Chart = ({ tasks }: { tasks: ITask[] }) => {
+  const [chartType, setChartType] = useState<ChartType>("Burn up");
   const [data, setData] = useState<IChartItem[]>([]);
   const {
     state: { biz_days, custom_value_map, custom_eid }
@@ -101,21 +147,39 @@ export const Chart = ({ tasks }: { tasks: ITask[] }) => {
     (value, name) => [Number(value).toFixed(1), _.upperFirst(name)],
     []
   );
+  const handleSelect = useCallback((type: ChartType) => {
+    setChartType(type);
+  }, []);
   if (data.length === 0) {
     return null;
   } else {
     return (
       <Card className="mb-2">
-        <CardHeader>Burn down chart</CardHeader>
-        <ComposedChart data={data} width={800} height={400}>
-          <YAxis />
-          <XAxis dataKey="label" />
-          <Tooltip formatter={formatter} />
-          <Legend formatter={_.upperFirst} />
-          <Bar dataKey="actual" fill="#8884d8" stackId="a" />
-          <Bar dataKey="add" fill="#82ca9d" stackId="a" />
-          <Line dataKey="ideal" />
-        </ComposedChart>
+        <CardHeader className="d-flex">
+          <div className="mr-auto">Chart</div>
+          <UncontrolledButtonDropdown>
+            <DropdownToggle className="my-n1" size="sm" caret>
+              <ChartTypeItem type={chartType} />
+            </DropdownToggle>
+            <DropdownMenu>
+              <ChartTypeDropdownItem type="Burn up" onSelect={handleSelect} />
+              <ChartTypeDropdownItem type="Burn down" onSelect={handleSelect} />
+            </DropdownMenu>
+          </UncontrolledButtonDropdown>
+        </CardHeader>
+        {chartType === "Burn down" ? (
+          <ComposedChart data={data} width={800} height={400}>
+            <YAxis />
+            <XAxis dataKey="label" />
+            <Tooltip formatter={formatter} />
+            <Legend formatter={_.upperFirst} />
+            <Bar dataKey="actual" fill="#8884d8" stackId="a" />
+            <Bar dataKey="add" fill="#82ca9d" stackId="a" />
+            <Line dataKey="ideal" />
+          </ComposedChart>
+        ) : (
+          <BurnUpChart tasks={tasks} />
+        )}
       </Card>
     );
   }
