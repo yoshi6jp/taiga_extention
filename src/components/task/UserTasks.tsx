@@ -22,9 +22,7 @@ import {
   faGrinBeam,
   faGrinBeamSweat,
   faDizzy,
-  faGhost,
-  faBurn,
-  faLevelDownAlt
+  faGhost
 } from "@fortawesome/free-solid-svg-icons";
 import { UpdateButton } from "../UpdateButton";
 import styles from "./UserTasks.module.css";
@@ -414,12 +412,7 @@ export const UserTasks = () => {
         <thead>
           <tr>
             <th>Name</th>
-            {!isPlanning && (
-              <th className="text-danger">
-                <FontAwesomeIcon icon={faLevelDownAlt} />
-                <FontAwesomeIcon icon={faBurn} />
-              </th>
-            )}
+            {!isPlanning && <th className="text-danger">Completed</th>}
             <th>{custom_attr_e.name}</th>
             {isPlanning ? (
               <>
