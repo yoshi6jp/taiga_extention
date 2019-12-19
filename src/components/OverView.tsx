@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { UserTasks } from "./UserTasks";
 import { UnEstimatedTasks } from "./UnEstimatedTasks";
 import { NotAssignedTasks } from "./NotAssignedTasks";
-import { Chart } from "./Chart";
+import { Chart } from "./chart/Chart";
 // import { Hero } from "./Hero";
 import { RootContext } from "../Provider";
 

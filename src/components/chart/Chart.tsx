@@ -7,19 +7,19 @@ import {
   YAxis,
   Bar,
   Legend,
-  TooltipFormatter,
-  LegendValueFormatter
+  TooltipFormatter
 } from "recharts";
-import { ITask } from "../store";
+import { ITask } from "../../store";
 import moment from "moment";
-import { RootContext } from "../Provider";
-import { dayNameFromIdx } from "./DaysSelector";
+import _ from "lodash";
+import { RootContext } from "../../Provider";
+import { dayNameFromIdx } from "../DaysSelector";
 import { Card, CardHeader } from "reactstrap";
-import { getSumCustomVal } from "./UserTasks";
+import { getSumCustomVal } from "../UserTasks";
 interface IChartItem {
   label: string;
-  estimate: number;
-  result?: number;
+  ideal: number;
+  actual?: number;
   add?: number;
 }
 
@@ -55,13 +55,7 @@ const getTaskCreated = (tasks: ITask[], date: string) =>
 export const Chart = ({ tasks }: { tasks: ITask[] }) => {
   const [data, setData] = useState<IChartItem[]>([]);
   const {
-    state: {
-      biz_days,
-      custom_value_map,
-      custom_eid,
-      custom_attr_e,
-      custom_attr_r
-    }
+    state: { biz_days, custom_value_map, custom_eid }
   } = useContext(RootContext);
   useEffect(() => {
     const days_len = biz_days.length;
@@ -74,7 +68,7 @@ export const Chart = ({ tasks }: { tasks: ITask[] }) => {
       );
       const data = biz_days.map((day, idx) => {
         const label = dayNameFromIdx(day, idx);
-        const estimate = allTaskVal - (allTaskVal * idx) / (days_len - 1);
+        const ideal = allTaskVal - (allTaskVal * idx) / (days_len - 1);
         if (
           moment()
             .local()
@@ -89,13 +83,13 @@ export const Chart = ({ tasks }: { tasks: ITask[] }) => {
                   getTaskCreatedToday(tasks, day),
                   eid
                 );
-          const result =
+          const actual =
             getSumCustomVal(custom_value_map, getTaskCreated(tasks, day), eid) -
             add -
             getSumCustomVal(custom_value_map, getTaskFinished(tasks, day), eid);
-          return { label, estimate, result, add };
+          return { label, ideal, actual, add };
         } else {
-          return { label, estimate };
+          return { label, ideal };
         }
       });
       setData(data);
@@ -103,25 +97,9 @@ export const Chart = ({ tasks }: { tasks: ITask[] }) => {
       setData([]);
     }
   }, [tasks, biz_days, custom_eid, custom_value_map, setData]);
-  const labelFormatter: LegendValueFormatter = useCallback(
-    (name: string) => {
-      switch (name) {
-        case "estimate": {
-          return custom_attr_e.name || name;
-        }
-        case "result": {
-          return custom_attr_r.name || name;
-        }
-        default: {
-          return name;
-        }
-      }
-    },
-    [custom_attr_e.name, custom_attr_r.name]
-  );
   const formatter: TooltipFormatter = useCallback(
-    (value, name) => [Number(value).toFixed(1), labelFormatter(name)],
-    [labelFormatter]
+    (value, name) => [Number(value).toFixed(1), _.upperFirst(name)],
+    []
   );
   if (data.length === 0) {
     return null;
@@ -133,10 +111,10 @@ export const Chart = ({ tasks }: { tasks: ITask[] }) => {
           <YAxis />
           <XAxis dataKey="label" />
           <Tooltip formatter={formatter} />
-          <Legend formatter={labelFormatter} />
-          <Bar dataKey="result" fill="#8884d8" stackId="a" />
+          <Legend formatter={_.upperFirst} />
+          <Bar dataKey="actual" fill="#8884d8" stackId="a" />
           <Bar dataKey="add" fill="#82ca9d" stackId="a" />
-          <Line dataKey="estimate" />
+          <Line dataKey="ideal" />
         </ComposedChart>
       </Card>
     );
