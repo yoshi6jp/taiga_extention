@@ -3,7 +3,7 @@ import { UserTasks } from "./UserTasks";
 import { UnEstimatedTasks } from "./UnEstimatedTasks";
 import { NotAssignedTasks } from "./NotAssignedTasks";
 import { Chart } from "./Chart";
-import { Hero } from "./Hero";
+// import { Hero } from "./Hero";
 import { RootContext } from "../Provider";
 
 export const OverView: React.FC = () => {
@@ -14,7 +14,7 @@ export const OverView: React.FC = () => {
     <>
       <UserTasks />
       <Chart tasks={tasks} />
-      <Hero />
+      {/* <Hero /> */}
       <NotAssignedTasks />
       <br />
       <UnEstimatedTasks />

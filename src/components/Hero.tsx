@@ -12,7 +12,7 @@ import _ from "lodash";
 import classNames from "classnames";
 import { Elevation } from "@rmwc/elevation";
 import { AvatarSquare } from "./UserTasks";
-import CountUp from "react-countup";
+// import CountUp from "react-countup";
 import { RootContext } from "../Provider";
 import { getTaskSumByUser } from "./UserTasks";
 import { IUser, ITask } from "../store";
@@ -94,7 +94,7 @@ const HeroItem: React.FC<HeroItemProps> = ({ name, src, value, ranking }) => {
             <Col>
               <Elevation z={6}>
                 <h1 className="text-center">
-                  <CountUp start={0} delay={3} duration={value} end={value} />
+                  {/* <CountUp start={0} delay={3} duration={value} end={value} /> */}
                 </h1>
               </Elevation>
             </Col>
