@@ -412,7 +412,7 @@ export const UserTasks = () => {
         <thead>
           <tr>
             <th>Name</th>
-            {!isPlanning && <th className="text-danger">Completed</th>}
+            {!isPlanning && <th className="text-success">Completed</th>}
             <th>{custom_attr_e.name}</th>
             {isPlanning ? (
               <>
