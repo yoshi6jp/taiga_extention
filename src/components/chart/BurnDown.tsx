@@ -14,16 +14,17 @@ import moment from "moment";
 import _ from "lodash";
 import { RootContext } from "../../Provider";
 import { dayNameFromIdx } from "../DaysSelector";
+
 import { getSumCustomVal } from "../task/UserTasks";
-import { getTaskCreated, getTaskFinished } from "./Chart";
+import { getTaskCreated, getTaskFinished, getTaskCreatedToday } from "./Chart";
 interface IChartItem {
   label: string;
   ideal: number;
-  completed?: number;
-  total: number;
+  actual?: number;
+  add?: number;
 }
 
-export const BurnUpChart = ({ tasks }: { tasks: ITask[] }) => {
+export const BurnDownChart = ({ tasks }: { tasks: ITask[] }) => {
   const [data, setData] = useState<IChartItem[]>([]);
   const {
     state: { biz_days, custom_value_map, custom_eid }
@@ -32,30 +33,35 @@ export const BurnUpChart = ({ tasks }: { tasks: ITask[] }) => {
     const days_len = biz_days.length;
     const eid = Number(custom_eid);
     if (days_len > 0 && tasks.length > 0 && custom_eid) {
-      const allTaskVal = getSumCustomVal(custom_value_map, tasks, eid);
+      const allTaskVal = getSumCustomVal(
+        custom_value_map,
+        getTaskCreated(tasks, biz_days[0]),
+        eid
+      );
       const data = biz_days.map((day, idx) => {
         const label = dayNameFromIdx(day, idx);
-        const ideal = (allTaskVal * idx) / (days_len - 1);
-        const total = getSumCustomVal(
-          custom_value_map,
-          getTaskCreated(tasks, day),
-          eid
-        );
-
+        const ideal = allTaskVal - (allTaskVal * idx) / (days_len - 1);
         if (
           moment()
             .local()
             .endOf("days")
             .diff(moment(day)) > 0
         ) {
-          const completed = getSumCustomVal(
-            custom_value_map,
-            getTaskFinished(tasks, day),
-            eid
-          );
-          return { label, ideal, completed, total };
+          const add =
+            idx === 0
+              ? 0
+              : getSumCustomVal(
+                  custom_value_map,
+                  getTaskCreatedToday(tasks, day),
+                  eid
+                );
+          const actual =
+            getSumCustomVal(custom_value_map, getTaskCreated(tasks, day), eid) -
+            add -
+            getSumCustomVal(custom_value_map, getTaskFinished(tasks, day), eid);
+          return { label, ideal, actual, add };
         } else {
-          return { label, ideal, total };
+          return { label, ideal };
         }
       });
       setData(data);
@@ -76,9 +82,9 @@ export const BurnUpChart = ({ tasks }: { tasks: ITask[] }) => {
         <XAxis dataKey="label" />
         <Tooltip formatter={formatter} />
         <Legend formatter={_.upperFirst} />
-        <Bar dataKey="completed" fill="#28a745" />
-        <Line dataKey="ideal" stroke="#17a2b8" strokeDasharray="5 5" />
-        <Line dataKey="total" stroke="#dc3545" />
+        <Bar dataKey="actual" fill="#8884d8" stackId="a" />
+        <Bar dataKey="add" fill="#82ca9d" stackId="a" />
+        <Line dataKey="ideal" />
       </ComposedChart>
     );
   }
