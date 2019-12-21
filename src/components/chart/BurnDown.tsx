@@ -20,7 +20,7 @@ import { getTaskCreated, getTaskFinished, getTaskCreatedToday } from "./Chart";
 interface IChartItem {
   label: string;
   ideal: number;
-  actual?: number;
+  remaining?: number;
   add?: number;
 }
 
@@ -55,11 +55,18 @@ export const BurnDownChart = ({ tasks }: { tasks: ITask[] }) => {
                   getTaskCreatedToday(tasks, day),
                   eid
                 );
-          const actual =
+          const remaining = Math.max(
             getSumCustomVal(custom_value_map, getTaskCreated(tasks, day), eid) -
-            add -
-            getSumCustomVal(custom_value_map, getTaskFinished(tasks, day), eid);
-          return { label, ideal, actual, add };
+              add -
+              getSumCustomVal(
+                custom_value_map,
+                getTaskFinished(tasks, day),
+                eid
+              ),
+            0
+          );
+
+          return { label, ideal, remaining, add };
         } else {
           return { label, ideal };
         }
@@ -82,7 +89,7 @@ export const BurnDownChart = ({ tasks }: { tasks: ITask[] }) => {
         <XAxis dataKey="label" />
         <Tooltip formatter={formatter} />
         <Legend formatter={_.upperFirst} />
-        <Bar dataKey="actual" fill="#8884d8" stackId="a" />
+        <Bar dataKey="remaining" fill="#8884d8" stackId="a" />
         <Bar dataKey="add" fill="#82ca9d" stackId="a" />
         <Line dataKey="ideal" />
       </ComposedChart>

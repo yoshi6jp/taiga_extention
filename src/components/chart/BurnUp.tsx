@@ -20,18 +20,20 @@ interface IChartItem {
   label: string;
   ideal: number;
   completed?: number;
+  result?: number;
   total: number;
 }
 
 export const BurnUpChart = ({ tasks }: { tasks: ITask[] }) => {
   const [data, setData] = useState<IChartItem[]>([]);
   const {
-    state: { biz_days, custom_value_map, custom_eid }
+    state: { biz_days, custom_value_map, custom_eid, custom_rid }
   } = useContext(RootContext);
   useEffect(() => {
     const days_len = biz_days.length;
     const eid = Number(custom_eid);
-    if (days_len > 0 && tasks.length > 0 && custom_eid) {
+    const rid = Number(custom_rid);
+    if (days_len > 0 && tasks.length > 0 && custom_eid && custom_rid) {
       const allTaskVal = getSumCustomVal(custom_value_map, tasks, eid);
       const data = biz_days.map((day, idx) => {
         const label = dayNameFromIdx(day, idx);
@@ -53,7 +55,13 @@ export const BurnUpChart = ({ tasks }: { tasks: ITask[] }) => {
             getTaskFinished(tasks, day),
             eid
           );
-          return { label, ideal, completed, total };
+          const actual = getSumCustomVal(
+            custom_value_map,
+            getTaskFinished(tasks, day),
+            rid
+          );
+
+          return { label, ideal, completed, actual, total };
         } else {
           return { label, ideal, total };
         }
@@ -62,7 +70,7 @@ export const BurnUpChart = ({ tasks }: { tasks: ITask[] }) => {
     } else {
       setData([]);
     }
-  }, [tasks, biz_days, custom_eid, custom_value_map, setData]);
+  }, [tasks, biz_days, custom_eid, custom_rid, custom_value_map, setData]);
   const formatter: TooltipFormatter = useCallback(
     (value, name) => [Number(value).toFixed(1), _.upperFirst(name)],
     []
@@ -77,7 +85,8 @@ export const BurnUpChart = ({ tasks }: { tasks: ITask[] }) => {
         <Tooltip formatter={formatter} />
         <Legend formatter={_.upperFirst} />
         <Bar dataKey="completed" fill="#28a745" />
-        <Line dataKey="ideal" stroke="#17a2b8" strokeDasharray="5 5" />
+        <Bar dataKey="actual" fill="#17a2b8" />
+        <Line dataKey="ideal" stroke="#007bff" strokeDasharray="5 5" />
         <Line dataKey="total" stroke="#dc3545" />
       </ComposedChart>
     );
