@@ -279,7 +279,7 @@ const UserRow = ({
         <>
           <td>
             <AvatarSquare src={item.photo} />
-            <Link to={`/${item.id}`}>{item.username}</Link>
+            <Link to={`/users/${item.id}`}>{item.username}</Link>
           </td>
           <td className="text-right">{item.burn_down || ""}</td>
           <td className="text-right">{e}</td>

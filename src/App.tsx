@@ -15,7 +15,7 @@ export const App = () => (
         <Pomodoro />
         <Controller />
         <Route exact path="/" component={OverView} />
-        <Route exact path="/:uid" component={PersonalPage} />
+        <Route exact path="/users/:uid" component={PersonalPage} />
       </Provider>
     </HashRouter>
   </div>

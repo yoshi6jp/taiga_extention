@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useCallback } from "react";
 import { Button, Alert, Navbar } from "reactstrap";
 import { PersonalTasks } from "./PersonalTasks";
 import { PersonalInfo } from "./PersonalInfo";
@@ -6,7 +6,7 @@ import { RootContext } from "../Provider";
 import { Chart } from "./chart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowCircleLeft } from "@fortawesome/free-solid-svg-icons";
-import { Link, useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { ActionTypes } from "../actions";
 import { UpdateButton } from "./UpdateButton";
 import { SignInForm } from "./SignInForm";
@@ -17,6 +17,10 @@ export const PersonalPage: React.FC = () => {
     dispatch
   } = useContext(RootContext);
   const { uid } = useParams();
+  const history = useHistory();
+  const handleGoBack = useCallback(() => {
+    history.goBack();
+  }, [history]);
   useEffect(() => {
     if (uid && url) {
       dispatch({ type: ActionTypes.FETCH_USER, payload: { uid } });
@@ -29,7 +33,7 @@ export const PersonalPage: React.FC = () => {
   return (
     <>
       <Navbar color="light" light>
-        <Button tag={Link} to="/" className="mr-auto">
+        <Button onClick={handleGoBack} className="mr-auto">
           <FontAwesomeIcon icon={faArrowCircleLeft} /> Go back
         </Button>
         <SignInForm />
