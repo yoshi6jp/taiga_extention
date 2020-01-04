@@ -7,15 +7,17 @@ import { HashRouter, Route } from "react-router-dom";
 import { OverView } from "./components/OverView";
 import { PersonalPage } from "./components/PersonalPage";
 import { Pomodoro } from "./components/Pomodoro";
+import { BoardPage } from "./features/page/BoardPage";
 import { BridgeEffect } from "./app/BridgeEffect";
 export const App: React.FC = () => (
-  <div className="container">
+  <div className="container-xl">
     <ToastContainer className="toast-top" />
     <HashRouter>
       <Provider>
         <Pomodoro />
         <Controller />
         <Route exact path="/" component={OverView} />
+        <Route exact path="/board" component={BoardPage} />
         <Route exact path="/users/:uid" component={PersonalPage} />
         <BridgeEffect />
       </Provider>

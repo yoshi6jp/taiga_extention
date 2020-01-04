@@ -45,9 +45,9 @@ export const PersonalPage: React.FC = () => {
         <>
           <PersonalInfo />
           <br />
-          <PersonalTasks />
-          <br />
           <Chart tasks={user_tasks} />
+          <br />
+          <PersonalTasks />
         </>
       ) : (
           <Alert color="danger">This user does not exist.</Alert>

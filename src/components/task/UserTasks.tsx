@@ -32,7 +32,7 @@ import { preventDefault } from "../../util/handler";
 import { SignInForm } from "../SignInForm";
 
 interface ISortedUser extends IUser {
-  burn_down: number;
+  closed: number;
 }
 const barStyles = ["success", "warning", "info", "danger"];
 const getTasksByUser = (items: ITask[]) => _.groupBy(items, "assigned_to");
@@ -276,17 +276,17 @@ const UserRow = ({
           </td>
         </>
       ) : (
-        <>
-          <td>
-            <AvatarSquare src={item.photo} />
-            <Link to={`/users/${item.id}`}>{item.username}</Link>
-          </td>
-          <td className="text-right">{item.burn_down || ""}</td>
-          <td className="text-right">{e}</td>
-          <td className="text-right">{r}</td>
-          <td>{_.isNumber(e) && <TaskProgress tasks={tasks} />}</td>
-        </>
-      )}
+          <>
+            <td>
+              <AvatarSquare src={item.photo} />
+              <Link to={`/users/${item.id}`}>{item.username}</Link>
+            </td>
+            <td className="text-right">{item.closed || ""}</td>
+            <td className="text-right">{e}</td>
+            <td className="text-right">{r}</td>
+            <td>{_.isNumber(e) && <TaskProgress tasks={tasks} />}</td>
+          </>
+        )}
 
       {isPast ? (
         <td>
@@ -362,13 +362,13 @@ export const UserTasks = () => {
       _.chain(members)
         .map(member => ({
           ...member,
-          burn_down: getSumCustomValClosed(
+          closed: getSumCustomValClosed(
             custom_value_map,
             tasksByUser[member.id] || [],
             Number(custom_eid)
           )
         }))
-        .sortBy("burn_down")
+        .sortBy("closed")
         .reverse()
         .value(),
     [custom_eid, custom_value_map, members, tasksByUser]
@@ -419,11 +419,11 @@ export const UserTasks = () => {
                 <th>Total</th> <th>Custom</th>
               </>
             ) : (
-              <>
-                <th>{custom_attr_r.name}</th>
-                <th>Progress</th>
-              </>
-            )}
+                <>
+                  <th>{custom_attr_r.name}</th>
+                  <th>Progress</th>
+                </>
+              )}
             {isPast ? <th>Grade</th> : null}
           </tr>
         </thead>

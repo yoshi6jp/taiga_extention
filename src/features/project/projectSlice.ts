@@ -10,6 +10,11 @@ export interface IProject {
   name: string;
   members: IUser[];
 }
+export interface IProjectExtraInfo {
+  id: number;
+  name: string;
+  slug: string;
+}
 interface State {
   list: IProject[];
   loading: boolean;

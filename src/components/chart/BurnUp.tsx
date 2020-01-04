@@ -9,13 +9,12 @@ import {
   Legend,
   TooltipFormatter
 } from "recharts";
-import { ITask } from "../../store";
 import moment from "moment";
 import _ from "lodash";
 import { RootContext } from "../../Provider";
 import { dayNameFromIdx } from "../DaysSelector";
 import { getSumCustomVal } from "../task/UserTasks";
-import { getTaskCreated, getTaskFinished } from "./Chart";
+import { getTaskCreated, getTaskFinished, BurnChartProps, chartSize } from "./Chart";
 interface IChartItem {
   label: string;
   ideal: number;
@@ -24,11 +23,12 @@ interface IChartItem {
   total: number;
 }
 
-export const BurnUpChart = ({ tasks }: { tasks: ITask[] }) => {
+export const BurnUpChart: React.FC<BurnChartProps> = ({ tasks, size = "lg" }) => {
   const [data, setData] = useState<IChartItem[]>([]);
   const {
     state: { biz_days, custom_value_map, custom_eid, custom_rid }
   } = useContext(RootContext);
+  const { width, height } = chartSize(size)
   useEffect(() => {
     const days_len = biz_days.length;
     const eid = Number(custom_eid);
@@ -79,11 +79,13 @@ export const BurnUpChart = ({ tasks }: { tasks: ITask[] }) => {
     return null;
   } else {
     return (
-      <ComposedChart data={data} width={800} height={400}>
+      <ComposedChart data={data} width={width} height={height}>
         <YAxis />
         <XAxis dataKey="label" />
         <Tooltip formatter={formatter} />
-        <Legend formatter={_.upperFirst} />
+        {size === "lg" &&
+          <Legend formatter={_.upperFirst} />
+        }
         <Bar dataKey="completed" fill="#28a745" />
         <Bar dataKey="actual" fill="#17a2b8" />
         <Line dataKey="ideal" stroke="#007bff" strokeDasharray="5 5" />

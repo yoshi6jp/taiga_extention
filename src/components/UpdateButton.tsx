@@ -4,13 +4,16 @@ import { faSyncAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { RootContext } from "../Provider";
 import { ActionTypes } from "../actions";
-export const UpdateButton: React.FC = () => {
+interface UpdateButtonProps {
+  size?: "sm",
+}
+export const UpdateButton: React.FC<UpdateButtonProps> = ({ size }) => {
   const { dispatch } = useContext(RootContext);
   const updateData = useCallback(() => {
     dispatch({ type: ActionTypes.UPDATE_DATA });
   }, [dispatch]);
   return (
-    <Button onClick={updateData}>
+    <Button onClick={updateData} size={size} >
       <FontAwesomeIcon icon={faSyncAlt} />
     </Button>
   );

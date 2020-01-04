@@ -12,8 +12,8 @@ export const OverView: React.FC = () => {
   } = useContext(RootContext);
   return (
     <>
-      <UserTasks />
       <Chart tasks={tasks} />
+      <UserTasks />
       {/* <Hero /> */}
       <NotAssignedTasks />
       <br />

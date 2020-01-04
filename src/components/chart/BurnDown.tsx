@@ -9,14 +9,13 @@ import {
   Legend,
   TooltipFormatter
 } from "recharts";
-import { ITask } from "../../store";
 import moment from "moment";
 import _ from "lodash";
 import { RootContext } from "../../Provider";
 import { dayNameFromIdx } from "../DaysSelector";
 
 import { getSumCustomVal } from "../task/UserTasks";
-import { getTaskCreated, getTaskFinished, getTaskCreatedToday } from "./Chart";
+import { getTaskCreated, getTaskFinished, getTaskCreatedToday, BurnChartProps, chartSize } from "./Chart";
 interface IChartItem {
   label: string;
   ideal: number;
@@ -24,11 +23,12 @@ interface IChartItem {
   add?: number;
 }
 
-export const BurnDownChart = ({ tasks }: { tasks: ITask[] }) => {
+export const BurnDownChart: React.FC<BurnChartProps> = ({ tasks, size = "lg" }) => {
   const [data, setData] = useState<IChartItem[]>([]);
   const {
     state: { biz_days, custom_value_map, custom_eid }
   } = useContext(RootContext);
+  const { width, height } = chartSize(size)
   useEffect(() => {
     const days_len = biz_days.length;
     const eid = Number(custom_eid);
@@ -51,18 +51,18 @@ export const BurnDownChart = ({ tasks }: { tasks: ITask[] }) => {
             idx === 0
               ? 0
               : getSumCustomVal(
-                  custom_value_map,
-                  getTaskCreatedToday(tasks, day),
-                  eid
-                );
+                custom_value_map,
+                getTaskCreatedToday(tasks, day),
+                eid
+              );
           const remaining = Math.max(
             getSumCustomVal(custom_value_map, getTaskCreated(tasks, day), eid) -
-              add -
-              getSumCustomVal(
-                custom_value_map,
-                getTaskFinished(tasks, day),
-                eid
-              ),
+            add -
+            getSumCustomVal(
+              custom_value_map,
+              getTaskFinished(tasks, day),
+              eid
+            ),
             0
           );
 
@@ -84,11 +84,13 @@ export const BurnDownChart = ({ tasks }: { tasks: ITask[] }) => {
     return null;
   } else {
     return (
-      <ComposedChart data={data} width={800} height={400}>
+      <ComposedChart data={data} width={width} height={height}>
         <YAxis />
         <XAxis dataKey="label" />
         <Tooltip formatter={formatter} />
-        <Legend formatter={_.upperFirst} />
+        {size === "lg" &&
+          <Legend formatter={_.upperFirst} />
+        }
         <Bar dataKey="remaining" fill="#8884d8" stackId="a" />
         <Bar dataKey="add" fill="#82ca9d" stackId="a" />
         <Line dataKey="ideal" />

@@ -1,12 +1,15 @@
 import React, { useState, useCallback } from "react";
+import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLevelDownAlt,
-  faLevelUpAlt
+  faLevelUpAlt,
+  faChalkboard
 } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import { ITask } from "../../store";
 import {
+  Button,
   Card,
   CardHeader,
   UncontrolledButtonDropdown,
@@ -20,9 +23,9 @@ export const getTaskFinished = (tasks: ITask[], date: string) =>
   tasks.filter(task =>
     task.finished_date
       ? moment(date)
-          .local()
-          .endOf("days")
-          .diff(moment(task.finished_date)) > 0
+        .local()
+        .endOf("days")
+        .diff(moment(task.finished_date)) > 0
       : false
   );
 
@@ -75,6 +78,24 @@ const ChartTypeDropdownItem: React.FC<ChartTypeDropdownItemProps> = ({
     </DropdownItem>
   );
 };
+type ChartSizeType = "lg" | "sm"
+export interface BurnChartProps {
+  tasks: ITask[]
+  size?: ChartSizeType
+}
+export const chartSize = (size: ChartSizeType) => {
+  if (size === "sm") {
+    return {
+      width: 250,
+      height: 200
+    }
+  } else {
+    return {
+      width: 800,
+      height: 400
+    }
+  }
+}
 export const Chart = ({ tasks }: { tasks: ITask[] }) => {
   const [chartType, setChartType] = useState<ChartType>("Burn up");
   const handleSelect = useCallback((type: ChartType) => {
@@ -86,7 +107,11 @@ export const Chart = ({ tasks }: { tasks: ITask[] }) => {
     return (
       <Card className="mb-2">
         <CardHeader className="d-flex">
-          <div className="mr-auto">Chart</div>
+          <div className="mr-auto">
+            <Button size="sm" tag={Link} to={"/board"} color="primary" className="mr-2" title="Board">
+              <FontAwesomeIcon icon={faChalkboard} />
+            </Button>
+            Chart</div>
           <UncontrolledButtonDropdown>
             <DropdownToggle className="my-n1" size="sm" caret>
               <ChartTypeItem type={chartType} />
@@ -100,8 +125,8 @@ export const Chart = ({ tasks }: { tasks: ITask[] }) => {
         {chartType === "Burn down" ? (
           <BurnDownChart tasks={tasks} />
         ) : (
-          <BurnUpChart tasks={tasks} />
-        )}
+            <BurnUpChart tasks={tasks} />
+          )}
       </Card>
     );
   }

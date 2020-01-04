@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import "bootstrap-css-only/css/bootstrap.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import "@material/switch/dist/mdc.switch.css";
 import "@material/form-field/dist/mdc.form-field.css";
 import "@rmwc/avatar/avatar.css";
