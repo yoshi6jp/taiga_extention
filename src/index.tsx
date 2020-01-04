@@ -10,11 +10,21 @@ import "@material/linear-progress/dist/mdc.linear-progress.css";
 import "@material/elevation/dist/mdc.elevation.css";
 import "react-toastify/dist/ReactToastify.css";
 import "react-calendar-heatmap/dist/styles.css";
-import App from "./App";
+import { Provider } from "react-redux";
+import { initialize } from "./app/initialize";
+import { store } from "./app/store";
+import { App } from "./App";
+import { SideEffect } from "./app/SideEffect";
 // import * as serviceWorker from "./serviceWorker";
 import "./util/firebase";
-
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+    <SideEffect />
+  </Provider>,
+  document.getElementById("root")
+);
+initialize()
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

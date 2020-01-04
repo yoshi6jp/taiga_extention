@@ -68,7 +68,7 @@ export interface ITaskStatus {
   is_closed: boolean;
   slug: string;
 }
-export interface IAttrValue {}
+export interface IAttrValue { }
 export interface ICustomValue {
   attributes_values: {
     [key: number]: string;
@@ -97,7 +97,6 @@ export interface IState {
   username: string;
   password: string;
   user: IUser | null;
-  projects: IProject[];
   pid: string; // url
   project: IProject;
   mid: string; // url
@@ -172,7 +171,6 @@ export const initialState: IState = {
   username: "",
   password: "",
   user: null,
-  projects: [],
   pid: "",
   project: {} as IProject,
   mid: "",

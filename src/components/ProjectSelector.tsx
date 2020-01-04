@@ -4,9 +4,11 @@ import { LinearLoader } from "./common/LinearLoader";
 import { RootContext } from "../Provider";
 import { ActionTypes } from "../actions";
 import _ from "lodash";
+import { useProjectSelector } from "../features/project/projectSlice";
 export const ProjectSelector = () => {
+  const projects = useProjectSelector.useList()
   const {
-    state: { pid, projects },
+    state: { pid, },
     dispatch
   } = useContext(RootContext);
   const handleChange = useCallback(
@@ -24,15 +26,15 @@ export const ProjectSelector = () => {
       {_.isEmpty(projects) ? (
         <LinearLoader />
       ) : (
-        <Input value={pid} type="select" onChange={handleChange}>
-          <option value=""> --- </option>
-          {projects.map(item => (
-            <option key={item.id} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </Input>
-      )}
+          <Input value={pid} type="select" onChange={handleChange}>
+            <option value=""> --- </option>
+            {projects.map(item => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </Input>
+        )}
     </InputGroup>
   );
 };

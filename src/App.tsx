@@ -7,7 +7,8 @@ import { HashRouter, Route } from "react-router-dom";
 import { OverView } from "./components/OverView";
 import { PersonalPage } from "./components/PersonalPage";
 import { Pomodoro } from "./components/Pomodoro";
-export const App = () => (
+import { BridgeEffect } from "./app/BridgeEffect";
+export const App: React.FC = () => (
   <div className="container">
     <ToastContainer className="toast-top" />
     <HashRouter>
@@ -16,8 +17,8 @@ export const App = () => (
         <Controller />
         <Route exact path="/" component={OverView} />
         <Route exact path="/users/:uid" component={PersonalPage} />
+        <BridgeEffect />
       </Provider>
     </HashRouter>
   </div>
 );
-export default App;

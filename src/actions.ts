@@ -20,8 +20,6 @@ export enum ActionTypes {
   SET_AUTH_TOKEN = "SET_AUTH_TOKEN",
   SET_AUTH_ERROR = "SET_AUTH_ERROR",
   SIGN_OUT = "SIGN_OUT",
-  FETCH_PROJECTS = "FETCH_PROJECTS",
-  SET_PROJECTS = "SET_PROJECTS",
   SET_PID = "SET_PID",
   FETCH_PROJECT = "FETCH_PROJECT",
   SET_PROJECT = "SET_PROJECT",
@@ -113,13 +111,13 @@ export interface SET_AUTH_ERROR extends IAction {
 export interface SIGN_OUT extends IAction {
   type: ActionTypes.SIGN_OUT;
 }
-export interface FETCH_PROJECTS extends IAction {
-  type: ActionTypes.FETCH_PROJECTS;
-}
-export interface SET_PROJECTS extends IAction {
-  type: ActionTypes.SET_PROJECTS;
-  payload: { projects: IProject[] };
-}
+// export interface FETCH_PROJECTS extends IAction {
+//   type: ActionTypes.FETCH_PROJECTS;
+// }
+// export interface SET_PROJECTS extends IAction {
+//   type: ActionTypes.SET_PROJECTS;
+//   payload: { projects: IProject[] };
+// }
 
 export interface SET_PID extends IAction {
   type: ActionTypes.SET_PID;
@@ -381,8 +379,6 @@ export type Actions =
   | SET_AUTH_TOKEN
   | SET_AUTH_ERROR
   | SIGN_OUT
-  | FETCH_PROJECTS
-  | SET_PROJECTS
   | SET_PID
   | FETCH_PROJECT
   | SET_PROJECT

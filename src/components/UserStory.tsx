@@ -28,6 +28,7 @@ import { ToggleNumberInput } from "./common/ToggleNumberInput";
 import classNames from "classnames";
 import { TaskTimerButton } from "./task/TaskTimerButton";
 import { InputGroupDisplayNumber } from "./common/InputGroupDisplayNumber";
+import { useSettingSelector } from "../features/setting/settingSlice";
 import {
   ITasksByUserStory,
   ITask,
@@ -85,9 +86,7 @@ const UserStoryLink = ({
   user_story_extra_info: IUserStoryExtraInfo;
   project_extra_info: IProjectExtraInfo;
 }) => {
-  const {
-    state: { url }
-  } = useContext(RootContext);
+  const url = useSettingSelector.useUrl()
   const { slug } = project_extra_info;
   const usName = user_story_extra_info
     ? `#${user_story_extra_info.ref} ${user_story_extra_info.subject}`
@@ -114,9 +113,7 @@ const UserStoryLink = ({
 };
 
 const TaskLink = ({ item }: { item: ITask }) => {
-  const {
-    state: { url }
-  } = useContext(RootContext);
+  const url = useSettingSelector.useUrl()
   const taskName = `#${item.ref} ${item.subject}`;
   const href = `${url}/project/${item.project_extra_info.slug}/task/${item.ref}`;
   return (
@@ -188,26 +185,26 @@ const TaskStatusSelector: React.FC<TaskStatusSelectorProps> = ({
       {loading ? (
         <Spinner type="grow" color="info" />
       ) : (
-        <UncontrolledDropdown>
-          <DropdownToggle
-            title={needAuthMsg(disabled)}
-            disabled={disabled}
-            caret={!disabled}
-          >
-            {task.status_extra_info.name}
-          </DropdownToggle>
-          <DropdownMenu>
-            {active_task_statuses.map(item => (
-              <TaskStatusItem
-                item={item}
-                key={item.id}
-                task={task}
-                onSelect={handleSelect}
-              />
-            ))}
-          </DropdownMenu>
-        </UncontrolledDropdown>
-      )}
+          <UncontrolledDropdown>
+            <DropdownToggle
+              title={needAuthMsg(disabled)}
+              disabled={disabled}
+              caret={!disabled}
+            >
+              {task.status_extra_info.name}
+            </DropdownToggle>
+            <DropdownMenu>
+              {active_task_statuses.map(item => (
+                <TaskStatusItem
+                  item={item}
+                  key={item.id}
+                  task={task}
+                  onSelect={handleSelect}
+                />
+              ))}
+            </DropdownMenu>
+          </UncontrolledDropdown>
+        )}
     </>
   );
 };
@@ -263,22 +260,22 @@ export const TaskUserSelector: React.FC<TaskUserSelectorProps> = ({
       {loading ? (
         <Spinner type="grow" color="info" />
       ) : (
-        <UncontrolledDropdown>
-          <DropdownToggle
-            title={needAuthMsg(disabled)}
-            size="sm"
-            disabled={disabled}
-            caret={!disabled}
-          >
-            Assign To
+          <UncontrolledDropdown>
+            <DropdownToggle
+              title={needAuthMsg(disabled)}
+              size="sm"
+              disabled={disabled}
+              caret={!disabled}
+            >
+              Assign To
           </DropdownToggle>
-          <DropdownMenu>
-            {(members || []).map(item => (
-              <UserItem item={item} onSelect={handleSelect} key={item.id} />
-            ))}
-          </DropdownMenu>
-        </UncontrolledDropdown>
-      )}
+            <DropdownMenu>
+              {(members || []).map(item => (
+                <UserItem item={item} onSelect={handleSelect} key={item.id} />
+              ))}
+            </DropdownMenu>
+          </UncontrolledDropdown>
+        )}
     </>
   );
 };
@@ -307,15 +304,15 @@ const NotAssignedButton: React.FC<NotAssignedButtonProps> = ({ task }) => {
       {loading ? (
         <Spinner type="grow" color="danger" />
       ) : (
-        <Button
-          className="mr-2"
-          title="Not assigned"
-          color="danger"
-          onClick={handleClick}
-        >
-          <FontAwesomeIcon icon={faUserTimes} />
-        </Button>
-      )}
+          <Button
+            className="mr-2"
+            title="Not assigned"
+            color="danger"
+            onClick={handleClick}
+          >
+            <FontAwesomeIcon icon={faUserTimes} />
+          </Button>
+        )}
     </>
   );
 };

@@ -15,13 +15,6 @@ export const reducer = (state = initialState, action: Actions) => {
       const { url } = action.payload;
       return { ...state, url };
     }
-    case ActionTypes.SET_PROJECTS: {
-      const { projects } = action.payload;
-      return {
-        ...state,
-        projects
-      };
-    }
     case ActionTypes.SET_PID: {
       const { pid } = action.payload;
       return {

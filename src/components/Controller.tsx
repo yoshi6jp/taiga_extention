@@ -1,6 +1,8 @@
 import React, { useContext, useState, useCallback, useMemo } from "react";
+import { useDispatch } from "react-redux";
 import _ from "lodash";
 import classNames from "classnames";
+import { settingActions, useSettingSelector } from "../features/setting/settingSlice";
 import { RootContext } from "../Provider";
 import {
   Card,
@@ -53,10 +55,12 @@ export const ToggleIcon = ({ isOpen }: { isOpen: boolean }) => {
     />
   );
 };
-export const Controller = () => {
+export const Controller: React.FC = () => {
+  const dispatch = useDispatch()
+  const stateUrl = useSettingSelector.useUrl()
   const {
-    state: { url: stateUrl, isOpen, biz_days, milestone },
-    dispatch
+    state: { isOpen, biz_days, milestone },
+    dispatch: xdispatch
   } = useContext(RootContext);
   const [url, setUrl] = useState("");
   const handleUrl = useCallback(
@@ -68,7 +72,7 @@ export const Controller = () => {
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       if (url) {
-        dispatch({ type: ActionTypes.SET_URL, payload: { url } });
+        dispatch(settingActions.setUrl(url))
       }
       e.preventDefault();
     },
@@ -76,11 +80,11 @@ export const Controller = () => {
   );
   const toggle = useCallback(() => {
     if (isOpen) {
-      dispatch({ type: ActionTypes.CLOSE_CONTROLLER });
+      xdispatch({ type: ActionTypes.CLOSE_CONTROLLER });
     } else {
-      dispatch({ type: ActionTypes.OPEN_CONTROLLER });
+      xdispatch({ type: ActionTypes.OPEN_CONTROLLER });
     }
-  }, [dispatch, isOpen]);
+  }, [xdispatch, isOpen]);
   const taskboardUrl = useMemo(() => getTaskboardUrl(stateUrl, milestone), [
     milestone,
     stateUrl

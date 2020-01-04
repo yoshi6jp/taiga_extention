@@ -2,7 +2,6 @@ import { Dispatch } from "react";
 import { Actions, ActionTypes } from "../actions";
 import { IState } from "../store";
 import { baseUrl } from "../Provider";
-import { fetchProjecs } from "./fetchProjects";
 import { fetchProject } from "./fetchProject";
 import { fetchMilestones } from "./fetchMilestones";
 import { fetchTasks } from "./fetchTasks";
@@ -71,10 +70,6 @@ export const rootSideEffector = (
   state: () => IState
 ) => {
   switch (action.type) {
-    case ActionTypes.FETCH_PROJECTS: {
-      fetchProjecs(action, dispatch, state);
-      return;
-    }
     case ActionTypes.FETCH_PROJECT: {
       fetchProject(action, dispatch, state);
       return;

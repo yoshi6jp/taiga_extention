@@ -10,10 +10,12 @@ import { useParams, useHistory } from "react-router-dom";
 import { ActionTypes } from "../actions";
 import { UpdateButton } from "./UpdateButton";
 import { SignInForm } from "./SignInForm";
+import { useSettingSelector } from "../features/setting/settingSlice";
 
 export const PersonalPage: React.FC = () => {
+  const url = useSettingSelector.useUrl()
   const {
-    state: { user, user_tasks, url },
+    state: { user, user_tasks },
     dispatch
   } = useContext(RootContext);
   const { uid } = useParams();
@@ -48,8 +50,8 @@ export const PersonalPage: React.FC = () => {
           <Chart tasks={user_tasks} />
         </>
       ) : (
-        <Alert color="danger">This user does not exist.</Alert>
-      )}
+          <Alert color="danger">This user does not exist.</Alert>
+        )}
     </>
   );
 };

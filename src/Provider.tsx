@@ -10,6 +10,7 @@ import { rootSideEffector } from "./sideEffectors";
 import { init } from "./init";
 import { messaging, Timers } from "./util/firebase";
 import { TimerMode } from "./util/timer";
+import { useSettingSelector } from "./features/setting/settingSlice";
 export const baseUrl = (url: string) => `${url.replace(/[¥/]$/, "")}/api/v1`;
 const getCustomAttr = (items: ICustomAttr[], id: number) =>
   _.find(items, { id });
@@ -23,9 +24,10 @@ const getUserTasks = (items: ITask[], uid: number) =>
 
 export const RootContext = createContext({
   state: initialState,
-  dispatch: (action: Actions) => {}
+  dispatch: (action: Actions) => { }
 });
 export const Provider = ({ children }: { children: React.ReactNode }) => {
+  const url = useSettingSelector.useUrl()
   const [state, dispatch] = useSideEffector(
     useReducer(reducer, initialState),
     rootSideEffector
@@ -36,12 +38,7 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    if (state.url) {
-      dispatch({ type: ActionTypes.FETCH_PROJECTS });
-    }
-  }, [dispatch, state.url]);
-  useEffect(() => {
-    if (state.url && state.pid) {
+    if (url && state.pid) {
       dispatch({
         type: ActionTypes.FETCH_MILESTONES,
         payload: { project: state.pid }
@@ -59,10 +56,10 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
         payload: { pid: state.pid }
       });
     }
-  }, [state.url, state.pid, dispatch]);
+  }, [url, state.pid, dispatch]);
   useEffect(() => {
     if (
-      state.url &&
+      url &&
       state.mid &&
       state.milestone.id &&
       state.timelimit_close_task
@@ -77,7 +74,7 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
       });
     }
   }, [
-    state.url,
+    url,
     state.mid,
     state.updated_time,
     state.reject_task_status_ids,
