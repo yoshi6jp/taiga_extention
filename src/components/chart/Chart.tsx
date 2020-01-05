@@ -2,8 +2,6 @@ import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faLevelDownAlt,
-  faLevelUpAlt,
   faChalkboard
 } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
@@ -12,11 +10,8 @@ import {
   Button,
   Card,
   CardHeader,
-  UncontrolledButtonDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem
 } from "reactstrap";
+import { ChartTypeSelector, ChartType } from "../../features/chart/ChartTypeSelector";
 import { BurnUpChart } from "./BurnUp";
 import { BurnDownChart } from "./BurnDown";
 export const getTaskFinished = (tasks: ITask[], date: string) =>
@@ -48,36 +43,8 @@ export const getTaskCreated = (tasks: ITask[], date: string) =>
         .endOf("days")
         .diff(moment(task.created_date)) > 0
   );
-type ChartType = "Burn up" | "Burn down";
-interface ChartTypeItemProps {
-  type: ChartType;
-}
 
-const ChartTypeItem: React.FC<ChartTypeItemProps> = ({ type }) => {
-  const icon = type === "Burn down" ? faLevelDownAlt : faLevelUpAlt;
-  return (
-    <span>
-      {type}
-      <FontAwesomeIcon className="fa-fw" icon={icon} />
-    </span>
-  );
-};
-interface ChartTypeDropdownItemProps extends ChartTypeItemProps {
-  onSelect: (type: ChartType) => void;
-}
-const ChartTypeDropdownItem: React.FC<ChartTypeDropdownItemProps> = ({
-  type,
-  onSelect
-}) => {
-  const handleClick = useCallback(() => {
-    onSelect(type);
-  }, [onSelect, type]);
-  return (
-    <DropdownItem onClick={handleClick}>
-      <ChartTypeItem type={type} />
-    </DropdownItem>
-  );
-};
+
 type ChartSizeType = "lg" | "sm"
 export interface BurnChartProps {
   tasks: ITask[]
@@ -100,7 +67,7 @@ export const Chart = ({ tasks }: { tasks: ITask[] }) => {
   const [chartType, setChartType] = useState<ChartType>("Burn up");
   const handleSelect = useCallback((type: ChartType) => {
     setChartType(type);
-  }, []);
+  }, [setChartType]);
   if (tasks.length === 0) {
     return null;
   } else {
@@ -112,15 +79,7 @@ export const Chart = ({ tasks }: { tasks: ITask[] }) => {
               <FontAwesomeIcon icon={faChalkboard} />
             </Button>
             Chart</div>
-          <UncontrolledButtonDropdown>
-            <DropdownToggle className="my-n1" size="sm" caret>
-              <ChartTypeItem type={chartType} />
-            </DropdownToggle>
-            <DropdownMenu>
-              <ChartTypeDropdownItem type="Burn up" onSelect={handleSelect} />
-              <ChartTypeDropdownItem type="Burn down" onSelect={handleSelect} />
-            </DropdownMenu>
-          </UncontrolledButtonDropdown>
+          <ChartTypeSelector onSelect={handleSelect} type={chartType} />
         </CardHeader>
         {chartType === "Burn down" ? (
           <BurnDownChart tasks={tasks} />

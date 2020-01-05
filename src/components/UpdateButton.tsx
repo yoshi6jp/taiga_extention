@@ -13,7 +13,7 @@ export const UpdateButton: React.FC<UpdateButtonProps> = ({ size }) => {
     dispatch({ type: ActionTypes.UPDATE_DATA });
   }, [dispatch]);
   return (
-    <Button onClick={updateData} size={size} >
+    <Button onClick={updateData} size={size} className="mx-1">
       <FontAwesomeIcon icon={faSyncAlt} />
     </Button>
   );
