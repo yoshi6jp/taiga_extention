@@ -1,4 +1,5 @@
 import React, { useContext, useMemo } from "react";
+import _ from "lodash";
 import { RootContext } from "../Provider";
 import { InputGroupDisplayNumber } from "./common/InputGroupDisplayNumber";
 import { Card, CardHeader, CardBody, CardFooter, Row, Col } from "reactstrap";
@@ -11,8 +12,10 @@ import {
   getSumCustomVal
 } from "./task/UserTasks";
 import { UserStory, Grade, convToTasksByUserStory } from "./UserStory";
+import { useUserStorySelector, IUserStory } from "../features/userStory/userStorySlice";
 
 export const PersonalTasks: React.FC = () => {
+  const usList = useUserStorySelector.useList()
   const {
     state: {
       custom_value_map,
@@ -22,9 +25,18 @@ export const PersonalTasks: React.FC = () => {
       custom_attr_r
     }
   } = useContext(RootContext);
+  const userStoryMap = useMemo(() => new Map<number, IUserStory>(usList.map(us => [us.id, us])), [usList])
   const userStories = useMemo(() => convToTasksByUserStory(user_tasks), [
     user_tasks
   ]);
+  const items = useMemo(() => _.chain(userStories)
+    .map(item => ({
+      item,
+      tags: _.chain(userStoryMap.get(item.user_story)).get("tags", []).map(i => _.first(i)).compact().value()
+    }))
+    .sortBy(i => Number.isNaN(i.item.user_story) ? -1 : i.tags.length)
+    .reverse()
+    .value(), [userStories, userStoryMap])
   const e = useMemo(
     () => getSumCustomVal(custom_value_map, user_tasks, custom_attr_e.id),
     [custom_attr_e.id, custom_value_map, user_tasks]
@@ -53,8 +65,8 @@ export const PersonalTasks: React.FC = () => {
 
   return (
     <>
-      {userStories.map(item => (
-        <UserStory item={item} key={item.user_story} />
+      {items.map(({ item, tags }) => (
+        <UserStory item={item} key={item.user_story} tags={tags} />
       ))}
       <Card>
         <CardHeader className={classNames("alert-info")}>Total</CardHeader>

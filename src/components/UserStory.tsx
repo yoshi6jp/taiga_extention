@@ -22,7 +22,8 @@ import {
   Spinner,
   Popover,
   PopoverHeader,
-  PopoverBody
+  PopoverBody,
+  Badge
 } from "reactstrap";
 import { ToggleNumberInput } from "./common/ToggleNumberInput";
 import classNames from "classnames";
@@ -44,7 +45,7 @@ import {
   faUserTimes,
   faPlus,
   faMinus,
-  faEraser
+  faEraser,
 } from "@fortawesome/free-solid-svg-icons";
 import { RootContext } from "../Provider";
 import { Tomato, TomatoState } from "./Tomato";
@@ -575,6 +576,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ item }) => {
 };
 interface UserStoryProps {
   item: ITasksByUserStory;
+  tags?: string[]
 }
 export const UserStoryWithEstimate: React.FC<UserStoryProps> = ({ item }) => {
   return (
@@ -631,7 +633,17 @@ export const UserStoryWithTaskUser: React.FC<UserStoryProps> = ({ item }) => {
   );
 };
 
-export const UserStory: React.FC<UserStoryProps> = ({ item }) => {
+interface TagProps {
+  label: string;
+}
+const Tag: React.FC<TagProps> = ({ label }) => {
+  return (
+    <Badge color="warning" className="mr-1" title={label} >{label}</Badge>
+  )
+
+}
+
+export const UserStory: React.FC<UserStoryProps> = ({ item, tags }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const {
     state: { custom_value_map, custom_attr_e, custom_attr_r }
@@ -684,6 +696,7 @@ export const UserStory: React.FC<UserStoryProps> = ({ item }) => {
             />
           </Col>
         </Row>
+        {tags?.map(label => (<Tag label={label} />))}
       </CardHeader>
       <Collapse isOpen={isOpen}>
         <ListGroup>

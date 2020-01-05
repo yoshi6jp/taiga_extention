@@ -34,7 +34,7 @@ export const projectReducer = createReducer(initialState, builder => builder
     ...state, loading: true
   }))
   .addCase(projectActions.setList, (state, { payload: list }) => ({
-    ...state, list
+    ...state, list, loading: false
   }))
 )
 

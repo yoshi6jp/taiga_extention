@@ -2,6 +2,7 @@
 
 import { store } from "./store";
 import { settingActions } from "../features/setting/settingSlice";
+import { milestoneActions } from "../features/milestone/milestoneSlice";
 export enum StorageKey {
   URL = "taiga_url",
   TIMER_ID = "taiga_timer_id",
@@ -34,12 +35,11 @@ export const setToStorageWithSubkey = (
   item: string
 ) => (subkey ? setToStorage(`${subkey}/${key}`, item) : null);
 export const syncStorage = () => {
-  console.log("xync")
   const { dispatch } = store
   const url = getFromStorage(StorageKey.URL);
   // const timer_id = getFromStorage(StorageKey.TIMER_ID);
   // const pid = getFromStorage(StorageKey.PID);
-  // const mid = getFromStorage(StorageKey.MID);
+  const mid = getFromStorage(StorageKey.MID);
   // const custom_eid = getFromStorageWithSubkey(StorageKey.CUSTOM_EID, pid);
   // const custom_rid = getFromStorageWithSubkey(StorageKey.CUSTOM_RID, pid);
   // const biz_days = _.compact(
@@ -65,6 +65,7 @@ export const syncStorage = () => {
   url && dispatch(settingActions.setUrl(url))
   // pid && dispatch({ type: ActionTypes.SET_PID, payload: { pid } });
   // mid && dispatch({ type: ActionTypes.SET_MID, payload: { mid } });
+  mid && dispatch(milestoneActions.setMid(mid))
   // custom_eid &&
   //   dispatch({ type: ActionTypes.SET_CUSTOM_EID, payload: { custom_eid } });
   // custom_rid &&
