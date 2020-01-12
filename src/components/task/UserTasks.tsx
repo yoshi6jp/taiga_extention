@@ -111,16 +111,32 @@ const getGrade = (e: number, r: number): [string | null, number] => {
   }
   return [null, 0];
 };
+interface UserLinkProps {
+  photo: string;
+  id: number;
+  username: string
+}
+const UserLink: React.FC<UserLinkProps> = ({ photo, id, username }) => {
+  return (
+    <>
+
+      <AvatarSquare src={photo} />
+      <Link to={`/users/${id}`}>{username}</Link>
+    </>
+  )
+}
+
 const NameAndWorkLoad = ({
   username,
   val,
   total,
-  imgSrc
+  imgSrc, id
 }: {
   username: string;
   val: number;
   total: number;
   imgSrc: string;
+  id: number;
 }) => {
   const [icon, tblCls] = useMemo(() => {
     const diff = total > 0 ? (val - total) / total : 0;
@@ -148,7 +164,7 @@ const NameAndWorkLoad = ({
   return (
     <>
       <td className={tblCls}>
-        <AvatarSquare src={imgSrc} /> {username}
+        <UserLink id={id} photo={imgSrc} username={username} />
         <FontAwesomeIcon className="mx-1" icon={icon} />
       </td>
       <td className={classNames(tblCls, "text-right")}>{val}</td>
@@ -251,8 +267,8 @@ const UserRow = ({
   const sumItem = _.get(sums, item.id);
   const e = _.get(sumItem, "e");
   const r = _.get(sumItem, "r");
-  const margedTotal = customTotal || total;
-  const totalStr = String(margedTotal);
+  const mergedTotal = customTotal || total;
+  const totalStr = String(mergedTotal);
   return (
     <tr key={item.id}>
       {total > 0 ? (
@@ -260,8 +276,9 @@ const UserRow = ({
           <NameAndWorkLoad
             username={item.username}
             val={e}
-            total={margedTotal}
+            total={mergedTotal}
             imgSrc={item.photo}
+            id={item.id}
           />
           <td className="text-right">{total}</td>
           <td className={styles.custom_input_td}>
@@ -278,8 +295,7 @@ const UserRow = ({
       ) : (
           <>
             <td>
-              <AvatarSquare src={item.photo} />
-              <Link to={`/users/${item.id}`}>{item.username}</Link>
+              <UserLink photo={item.photo} id={item.id} username={item.username} />
             </td>
             <td className="text-right">{item.closed || ""}</td>
             <td className="text-right">{e}</td>

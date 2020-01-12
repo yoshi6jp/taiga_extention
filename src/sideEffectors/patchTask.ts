@@ -1,5 +1,6 @@
 import { ActionTypes, ISideEffector, patchData, errToastr } from ".";
 import { toastr } from "../util/toastr";
+
 export const patchTask: ISideEffector = async (action, dispatch, state) => {
   if (action.type === ActionTypes.PATCH_TASK) {
     try {

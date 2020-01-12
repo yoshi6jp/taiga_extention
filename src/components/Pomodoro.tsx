@@ -1,4 +1,5 @@
 import React, { useContext, useState, useCallback, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import _ from "lodash";
 import moment from "moment";
 import { LinearProgress } from "@rmwc/linear-progress";
@@ -48,6 +49,8 @@ import { RootContext } from "../Provider";
 import { PomodoroHeatmap } from "./PomodoroHeatmap";
 import { ActionTypes } from "../sideEffectors";
 import { notify, NotifyClickHandler } from "../util/notify";
+import { commonActions } from "../features/common/commonSlice"
+
 const Favico = require("favico.js-slevomat");
 const favico = new Favico({ type: "rectangle" });
 const secToMin = (seconds: number) => Math.ceil(seconds / 60);
@@ -108,6 +111,7 @@ const clickToChangeFocus: NotifyClickHandler = closeFn => {
   closeFn();
 };
 export const Pomodoro: React.FC = () => {
+  const dispatch = useDispatch()
   const {
     state: {
       loaded,
@@ -119,7 +123,7 @@ export const Pomodoro: React.FC = () => {
       auth_token,
       pomodoro_live_counts
     },
-    dispatch
+    dispatch: xdispatch
   } = useContext(RootContext);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
@@ -180,7 +184,7 @@ export const Pomodoro: React.FC = () => {
       let num = pomodoro_number;
       handleState(status);
       if (status.mode === TimerMode.FOCUS) {
-        dispatch({
+        xdispatch({
           type: ActionTypes.ADD_POMODORO,
           meta: {
             completedAt: completedAt || new Date(),
@@ -194,6 +198,7 @@ export const Pomodoro: React.FC = () => {
         } else {
           timer.changeMode(TimerMode.SHORT);
         }
+        dispatch(commonActions.updateData())
       } else {
         timer.changeMode(TimerMode.FOCUS);
       }
@@ -232,14 +237,14 @@ export const Pomodoro: React.FC = () => {
         onDblclick
       });
     },
-    [dispatch, handleState, pomodoro_number]
+    [xdispatch, handleState, pomodoro_number, dispatch]
   );
   const handleRetry = useCallback(() => {
     timer.changeMode(TimerMode.FOCUS, true);
   }, []);
   const handleRemove = useCallback(() => {
-    dispatch({ type: ActionTypes.RESET_TASK_ID });
-  }, [dispatch]);
+    xdispatch({ type: ActionTypes.RESET_TASK_ID });
+  }, [xdispatch]);
   const handleAddFBTimer: TimerEventListener = useCallback(
     status => {
       let title: string = " from firebase!";
@@ -257,7 +262,7 @@ export const Pomodoro: React.FC = () => {
         title = `Start Focusing ${title}`;
       }
       const body = `${num} Pomodoros today!`;
-      dispatch({
+      xdispatch({
         type: ActionTypes.ADD_FB_TIMER,
         payload: {
           title,
@@ -266,15 +271,15 @@ export const Pomodoro: React.FC = () => {
         }
       });
     },
-    [dispatch, pomodoro_number]
+    [xdispatch, pomodoro_number]
   );
   const handleDelFBTimer: TimerEventListener = useCallback(
     status => {
-      dispatch({
+      xdispatch({
         type: ActionTypes.DEL_FB_TIMER
       });
     },
-    [dispatch]
+    [xdispatch]
   );
 
   useEffect(() => {
@@ -314,18 +319,18 @@ export const Pomodoro: React.FC = () => {
   useEffect(() => {
     const today = moment().format("YYYY-MM-DD");
     if (loaded && pomodoro_date !== today) {
-      dispatch({
+      xdispatch({
         type: ActionTypes.RESET_POMODORO,
         payload: { pomodoro_date: today }
       });
       timer.changeMode(TimerMode.FOCUS);
     }
-  }, [dispatch, loaded, pomodoro_date]);
+  }, [xdispatch, loaded, pomodoro_date]);
   useEffect(() => {
     if (Notification.permission !== "denied") {
       Notification.requestPermission();
     }
-  }, [dispatch]);
+  }, []);
   useEffect(() => {
     let bgColor = mode === TimerMode.FOCUS ? "#f00" : "#0f0";
     let textColor = mode === TimerMode.FOCUS ? "#fff" : "#000";
@@ -358,17 +363,17 @@ export const Pomodoro: React.FC = () => {
     setProgress(0.01 + ((duration - val) * 99) / duration / 100);
   }, [mode, remaining, unit]);
   useEffect(() => {
-    dispatch({
+    xdispatch({
       type: ActionTypes.SET_POMODORO_STATE,
       payload: { pomodoro_state: state }
     });
-  }, [dispatch, state]);
+  }, [xdispatch, state]);
   useEffect(() => {
-    dispatch({
+    xdispatch({
       type: ActionTypes.SET_POMODORO_MODE,
       payload: { pomodoro_mode: mode }
     });
-  }, [dispatch, mode]);
+  }, [xdispatch, mode]);
   const handleToggle = useCallback(() => {
     setIsOpen(prev => !prev);
   }, []);
@@ -378,10 +383,10 @@ export const Pomodoro: React.FC = () => {
   }
   const taskTitle = task
     ? `#${task.ref} ${_.get(
-        task,
-        "user_story_extra_info.subject",
-        "Unassigned tasks"
-      )} / ${task.subject}`
+      task,
+      "user_story_extra_info.subject",
+      "Unassigned tasks"
+    )} / ${task.subject}`
     : "";
   const taskSubject = task
     ? _.truncate(`#${task.ref} ${task.subject}`, { length: 10 })
@@ -435,10 +440,10 @@ export const Pomodoro: React.FC = () => {
                   <FontAwesomeIcon icon={faPause} />
                 </Button>
               ) : (
-                <Button color="primary" onClick={handleClick}>
-                  <FontAwesomeIcon icon={faPlay} />
-                </Button>
-              )}
+                  <Button color="primary" onClick={handleClick}>
+                    <FontAwesomeIcon icon={faPlay} />
+                  </Button>
+                )}
             </InputGroupAddon>
 
             {mode !== TimerMode.FOCUS && (

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback } from "react";
+import React, { useContext, useState, useCallback, useMemo } from "react";
 import _ from "lodash";
 import { RootContext } from "../../Provider";
 import { Col, Row, Card, CardHeader, CardBody, Breadcrumb, BreadcrumbItem } from "reactstrap";
@@ -40,12 +40,12 @@ const BoardItem: React.FC<BoardItemProps> = ({ user, tasks, type }) => {
 export const BoardPage: React.FC = () => {
   const { state: { tasks, project: { members }, custom_value_map, custom_eid } } = useContext(RootContext)
   const [chartType, setChartType] = useState<ChartType>("Burn up")
-  const tasksByUid = getTasksByUser(tasks)
-  const sortedTasks = _.chain(members)
+  const tasksByUid = useMemo(() => getTasksByUser(tasks), [tasks])
+  const sortedTasks = useMemo(() => _.chain(members)
     .filter(user => _.has(tasksByUid, user.id))
     .map(user => ({ user, tasks: tasksByUid[user.id], closed: getSumCustomValClosed(custom_value_map, tasksByUid[user.id], Number(custom_eid)) }))
     .sortBy("closed")
-    .value()
+    .value(), [tasksByUid, members, custom_value_map, custom_eid])
   const handleSelect = useCallback((type: ChartType) => {
     setChartType(type);
   }, [setChartType]);
