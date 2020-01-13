@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
+import React, { useContext, useState, useEffect, useCallback, useMemo } from "react";
 import {
   ComposedChart,
   Tooltip,
@@ -7,7 +7,7 @@ import {
   YAxis,
   Bar,
   Legend,
-  TooltipFormatter
+  TooltipFormatter,
 } from "recharts";
 import moment from "moment";
 import _ from "lodash";
@@ -19,8 +19,9 @@ interface IChartItem {
   label: string;
   ideal: number;
   completed?: number;
-  result?: number;
+  actual?: number;
   total: number;
+  "in progress"?: number;
 }
 
 export const BurnUpChart: React.FC<BurnChartProps> = ({ tasks, size = "lg" }) => {
@@ -29,6 +30,9 @@ export const BurnUpChart: React.FC<BurnChartProps> = ({ tasks, size = "lg" }) =>
     state: { biz_days, custom_value_map, custom_eid, custom_rid }
   } = useContext(RootContext);
   const { width, height } = chartSize(size)
+  const actualNow = useMemo(() => getSumCustomVal(custom_value_map, tasks, Number(custom_rid)), [
+    custom_value_map, tasks, custom_rid
+  ])
   useEffect(() => {
     const days_len = biz_days.length;
     const eid = Number(custom_eid);
@@ -60,8 +64,17 @@ export const BurnUpChart: React.FC<BurnChartProps> = ({ tasks, size = "lg" }) =>
             getTaskFinished(tasks, day),
             rid
           );
-
-          return { label, ideal, completed, actual, total };
+          if (
+            moment()
+              .local()
+              .startOf("days")
+              .diff(moment(day)) === 0
+          ) {
+            const inProgress = actualNow - actual;
+            return { label, ideal, completed, actual, total, "in progress": inProgress };
+          } else {
+            return { label, ideal, completed, actual, total };
+          }
         } else {
           return { label, ideal, total };
         }
@@ -70,7 +83,7 @@ export const BurnUpChart: React.FC<BurnChartProps> = ({ tasks, size = "lg" }) =>
     } else {
       setData([]);
     }
-  }, [tasks, biz_days, custom_eid, custom_rid, custom_value_map, setData]);
+  }, [tasks, biz_days, custom_eid, custom_rid, custom_value_map, setData, actualNow]);
   const formatter: TooltipFormatter = useCallback(
     (value, name) => [Number(value).toFixed(1), _.upperFirst(name)],
     []
@@ -87,7 +100,8 @@ export const BurnUpChart: React.FC<BurnChartProps> = ({ tasks, size = "lg" }) =>
           <Legend formatter={_.upperFirst} />
         }
         <Bar dataKey="completed" fill="#28a745" />
-        <Bar dataKey="actual" fill="#17a2b8" />
+        <Bar dataKey="actual" fill="#17a2b8" stackId="a" />
+        <Bar dataKey="in progress" fill="#ffc107" stackId="a" />
         <Line dataKey="ideal" stroke="#007bff" strokeDasharray="5 5" />
         <Line dataKey="total" stroke="#dc3545" />
       </ComposedChart>
