@@ -23,7 +23,9 @@ import {
   Popover,
   PopoverHeader,
   PopoverBody,
-  Badge
+  Badge,
+  Input,
+  FormGroup
 } from "reactstrap";
 import { ToggleNumberInput } from "./common/ToggleNumberInput";
 import classNames from "classnames";
@@ -40,6 +42,7 @@ import {
 } from "../store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faBiohazard,
   faExternalLinkAlt,
   faCloudUploadAlt,
   faUserTimes,
@@ -351,6 +354,7 @@ const EstimateInput: React.FC<CustomValueInputProps> = ({ item }) => {
     return null;
   }
   const unEstimated = !e;
+  const largeTask = e > 4
   const disabled = auth_token === "";
   const loading = !version;
 
@@ -359,7 +363,7 @@ const EstimateInput: React.FC<CustomValueInputProps> = ({ item }) => {
       onSubmit={handleSubmit}
       label={custom_attr_e.name}
       value={e}
-      invalid={unEstimated}
+      invalid={unEstimated || largeTask}
       disabled={disabled}
       loading={loading}
       disabledMessage={AuthMsg}
@@ -550,10 +554,11 @@ export const TaskItem: React.FC<TaskItemProps> = ({ item }) => {
   const inactive = r === 0 && !item.is_closed && !disabled && !loading;
   return (
     <ListGroupItem
-      className={classNames({ [styles.is_closed]: item.is_closed })}
+      className={classNames({ [styles.is_closed]: item.is_closed, "bg-warning": item.is_iocaine })}
     >
       <div className="d-flex mb-1">
         <div className="mr-auto text-truncate">
+          {item.is_iocaine && <FontAwesomeIcon icon={faBiohazard} className="mr-1 text-dark fa-2x" />}
           <TaskLink item={item} />
         </div>
         {inactive && <NotAssignedButton task={item} />}
@@ -577,6 +582,8 @@ export const TaskItem: React.FC<TaskItemProps> = ({ item }) => {
 interface UserStoryProps {
   item: ITasksByUserStory;
   tags?: string[]
+  totalHours?: number;
+  onSelect?: (id: number, value: number) => void
 }
 export const UserStoryWithEstimate: React.FC<UserStoryProps> = ({ item }) => {
   return (
@@ -640,10 +647,9 @@ const Tag: React.FC<TagProps> = ({ label }) => {
   return (
     <Badge color="warning" className="mr-1" title={label} >{label}</Badge>
   )
-
 }
 
-export const UserStory: React.FC<UserStoryProps> = ({ item, tags }) => {
+export const UserStory: React.FC<UserStoryProps> = ({ item, tags, totalHours = 0, onSelect }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const {
     state: { custom_value_map, custom_attr_e, custom_attr_r }
@@ -662,6 +668,9 @@ export const UserStory: React.FC<UserStoryProps> = ({ item, tags }) => {
     () => getSumCustomVal(custom_value_map, item.tasks, custom_attr_r.id),
     [custom_attr_r.id, custom_value_map, item.tasks]
   );
+  const handleChange = useCallback((evt: React.ChangeEvent<HTMLInputElement>) => {
+    onSelect?.(item.user_story, evt.target.checked ? 0 : e)
+  }, [onSelect, e, item.user_story])
   const loading = !custom_value_map.has(item.tasks[0]);
   return (
     <Card>
@@ -673,6 +682,11 @@ export const UserStory: React.FC<UserStoryProps> = ({ item, tags }) => {
       >
         <Row>
           <Col xs={12} md={8} className="text-truncate">
+            {totalHours > 0 &&
+              <FormGroup inline check>
+                <Input type="checkbox" defaultChecked={true} onChange={handleChange} onClick={stopPropagation} />
+              </FormGroup>
+            }
             <ToggleIcon isOpen={isOpen} />
             <UserStoryLink
               user_story_extra_info={item.user_story_extra_info}
@@ -696,7 +710,7 @@ export const UserStory: React.FC<UserStoryProps> = ({ item, tags }) => {
             />
           </Col>
         </Row>
-        {tags?.map(label => (<Tag label={label} />))}
+        {tags?.map((label, i) => (<Tag key={i} label={label} />))}
       </CardHeader>
       <Collapse isOpen={isOpen}>
         <ListGroup>

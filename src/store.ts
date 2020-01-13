@@ -51,6 +51,7 @@ export interface ITask {
   user_story: number;
   user_story_extra_info: IUserStoryExtraInfo;
   version: number;
+  is_iocaine: boolean;
 }
 export interface ITasksByUserStory {
   user_story: number;

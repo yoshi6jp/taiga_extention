@@ -1,0 +1,8 @@
+.total {
+  position: absolute;
+  opacity: 0.3;
+  height: 1rem;
+}
+.total.is_over {
+  opacity: 1.0;
+}

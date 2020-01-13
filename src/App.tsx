@@ -19,6 +19,7 @@ export const App: React.FC = () => (
         <Route exact path="/" component={OverView} />
         <Route exact path="/board" component={BoardPage} />
         <Route exact path="/users/:uid" component={PersonalPage} />
+        <Route exact path="/users/:uid/:total_hours" component={PersonalPage} />
         <BridgeEffect />
       </Provider>
     </HashRouter>

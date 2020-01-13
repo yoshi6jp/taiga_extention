@@ -18,7 +18,8 @@ export const PersonalPage: React.FC = () => {
     state: { user, user_tasks },
     dispatch
   } = useContext(RootContext);
-  const { uid } = useParams();
+  const { uid, total_hours } = useParams();
+  const totalHours = Number(total_hours || 0)
   const history = useHistory();
   const handleGoBack = useCallback(() => {
     history.goBack();
@@ -45,9 +46,13 @@ export const PersonalPage: React.FC = () => {
         <>
           <PersonalInfo />
           <br />
-          <Chart tasks={user_tasks} />
-          <br />
-          <PersonalTasks />
+          {totalHours === 0 &&
+            <>
+              <Chart tasks={user_tasks} />
+              <br />
+            </>
+          }
+          <PersonalTasks totalHours={totalHours} />
         </>
       ) : (
           <Alert color="danger">This user does not exist.</Alert>

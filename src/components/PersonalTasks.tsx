@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useMemo, useState, useCallback } from "react";
 import _ from "lodash";
 import { RootContext } from "../Provider";
 import { InputGroupDisplayNumber } from "./common/InputGroupDisplayNumber";
@@ -13,8 +13,12 @@ import {
 } from "./task/UserTasks";
 import { UserStory, Grade, convToTasksByUserStory } from "./UserStory";
 import { useUserStorySelector, IUserStory } from "../features/userStory/userStorySlice";
-
-export const PersonalTasks: React.FC = () => {
+import { TaskTotalHours } from "../features/task/TaskTotalHours";
+interface PersonalTasksProps {
+  totalHours?: number
+}
+export const PersonalTasks: React.FC<PersonalTasksProps> = ({ totalHours = 0 }) => {
+  const [rejectUS, setRejectUS] = useState<{ [key: number]: number }>({})
   const usList = useUserStorySelector.useList()
   const {
     state: {
@@ -59,14 +63,19 @@ export const PersonalTasks: React.FC = () => {
     () => user_tasks.some(item => !getCustomValVersion(custom_value_map, item)),
     [custom_value_map, user_tasks]
   );
+  const handleSelect = useCallback((id: number, value: number) => {
+    setRejectUS({ ...rejectUS, [id]: value })
+  }, [rejectUS, setRejectUS])
   if (!custom_attr_e.id || !custom_attr_r.id || biz_days.length <= 1) {
     return null;
   }
-
+  const rejectVal = _.sum(Object.values(rejectUS))
   return (
     <>
       {items.map(({ item, tags }) => (
-        <UserStory item={item} key={item.user_story} tags={tags} />
+        <UserStory item={item} key={item.user_story} tags={tags}
+          onSelect={handleSelect}
+          totalHours={totalHours} />
       ))}
       <Card>
         <CardHeader className={classNames("alert-info")}>Total</CardHeader>
@@ -75,7 +84,7 @@ export const PersonalTasks: React.FC = () => {
             <Col>
               <InputGroupDisplayNumber
                 label={custom_attr_e.name}
-                value={e}
+                value={e - rejectVal}
                 loading={loading}
               />
             </Col>
@@ -94,7 +103,10 @@ export const PersonalTasks: React.FC = () => {
           </Row>
         </CardBody>
         <CardFooter>
-          <TaskProgress tasks={user_tasks} />
+          {totalHours > 0 ?
+            <TaskTotalHours tasks={user_tasks} rejectVal={rejectVal} totalHours={totalHours || 1} /> :
+            <TaskProgress tasks={user_tasks} />
+          }
         </CardFooter>
       </Card>
     </>

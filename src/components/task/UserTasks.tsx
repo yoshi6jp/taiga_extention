@@ -114,14 +114,18 @@ const getGrade = (e: number, r: number): [string | null, number] => {
 interface UserLinkProps {
   photo: string;
   id: number;
-  username: string
+  username: string;
+  total_hours?: number;
 }
-const UserLink: React.FC<UserLinkProps> = ({ photo, id, username }) => {
+const UserLink: React.FC<UserLinkProps> = ({ photo, id, username, total_hours }) => {
+  let to = `/users/${id}`
+  if (total_hours) {
+    to = `${to}/${total_hours}`
+  }
   return (
     <>
-
       <AvatarSquare src={photo} />
-      <Link to={`/users/${id}`}>{username}</Link>
+      <Link to={to}>{username}</Link>
     </>
   )
 }
@@ -164,7 +168,7 @@ const NameAndWorkLoad = ({
   return (
     <>
       <td className={tblCls}>
-        <UserLink id={id} photo={imgSrc} username={username} />
+        <UserLink id={id} photo={imgSrc} username={username} total_hours={total} />
         <FontAwesomeIcon className="mx-1" icon={icon} />
       </td>
       <td className={classNames(tblCls, "text-right")}>{val}</td>
@@ -376,6 +380,7 @@ export const UserTasks = () => {
   const sortedMembers = useMemo(
     () =>
       _.chain(members)
+        .reject(member => _.isEmpty(tasksByUser[member.id]))
         .map(member => ({
           ...member,
           closed: getSumCustomValClosed(
@@ -432,7 +437,8 @@ export const UserTasks = () => {
             <th>{custom_attr_e.name}</th>
             {isPlanning ? (
               <>
-                <th>Total</th> <th>Custom</th>
+                <th>Total</th>
+                <th>Custom</th>
               </>
             ) : (
                 <>
