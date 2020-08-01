@@ -3,23 +3,23 @@ import _ from "lodash";
 export enum TimerState {
   STOPPED = "stopped",
   RUNNING = "running",
-  PAUSED = "paused"
+  PAUSED = "paused",
 }
 export enum TimerMode {
   FOCUS = "Focusing",
   SHORT = "Short break",
-  LONG = "Long break"
+  LONG = "Long break",
 }
 export const TimerDurationMin = {
   [TimerMode.FOCUS]: 25,
   [TimerMode.SHORT]: 5,
-  [TimerMode.LONG]: 15
+  [TimerMode.LONG]: 15,
 };
 enum StorageKey {
   STATE = "pomodoro_state",
   MODE = "pomodoro_mode",
   CHECKPOINT_START_AT = "pomodoro_checkpoint_start_at",
-  CHECKPOINT_ELAPSED = "pomodoro_checkpoint_elapsed"
+  CHECKPOINT_ELAPSED = "pomodoro_checkpoint_elapsed",
 }
 const isValidState = (val: string | null) =>
   _.includes(_.values(TimerState), val);
@@ -90,7 +90,7 @@ class Timer extends EventEmitter {
       remaining: this.remaining,
       checkpointElapsed: this.checkpointElapsed,
       checkpointStartAt: this.checkpointStartAt,
-      mode: this.mode
+      mode: this.mode,
     };
   }
   on(event: TimerEvents, listener: TimerEventListener) {

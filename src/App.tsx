@@ -9,12 +9,14 @@ import { PersonalPage } from "./components/PersonalPage";
 import { Pomodoro } from "./components/Pomodoro";
 import { BoardPage } from "./features/page/BoardPage";
 import { BridgeEffect } from "./app/BridgeEffect";
+import { Alarm } from "./features/alarm";
 export const App: React.FC = () => (
   <div className="container-xl">
     <ToastContainer className="toast-top" />
     <HashRouter>
       <Provider>
         <Pomodoro />
+        <Alarm />
         <Controller />
         <Route exact path="/" component={OverView} />
         <Route exact path="/board" component={BoardPage} />
