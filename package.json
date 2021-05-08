@@ -31,7 +31,7 @@
     "favico.js-slevomat": "^0.3.11",
     "firebase": "^7.2.0",
     "gh-pages": "^2.0.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "moment": "^2.24.0",
     "moment-business": "^3.0.1",
     "react": "^16.12.0",
